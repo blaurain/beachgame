@@ -10,15 +10,14 @@ var rendererOptions = {
   resolution: 1,
   autoResize: true
 }
-var GAME_WIDTH = 736;
-var GAME_HEIGHT = 414;
+var GAME_WIDTH = 568;
+var GAME_HEIGHT = 320;
 var renderer = PIXI.autoDetectRenderer(GAME_WIDTH, GAME_HEIGHT, rendererOptions); 
 var tileCorner = 10;
 var tileHeight, tileWidth;
-var isHorizontal;
-renderer.backgroundColor = 0xff0000;
 stage.interactive = true;
 
+drawTiles(stage);
 drawGrid(stage);
 //renderer.render(stage);
 
@@ -173,26 +172,23 @@ function resize() {
 		  else stage.scale.x = stage.scale.y = 1;
 		 
 		  // Update the renderer dimensions
-		  renderer.resize(Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH),
-		                  Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT));
+		  // renderer.resize(Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH),
+		  //                 Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT));
+		  renderer.resize(window.innerWidth, window.innerHeight);
 		}
 		else
 		{ //vertical
-		  ratio = Math.min(window.innerWidth/GAME_HEIGHT,
+		    ratio = Math.min(window.innerWidth/GAME_HEIGHT,
 		                   window.innerHeight/GAME_WIDTH);
 		  
-		  // Scale the view appropriately to fill that dimension
-		  if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
-		  else stage.scale.x = stage.scale.y = 1;
+		    // Scale the view appropriately to fill that dimension
+			stage.scale.x = stage.scale.y = ratio;
 
-		  rotateVertical();
-		  // Update the renderer dimensions
-		  renderer.resize(Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT),
-		                  Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH));
+		    rotateVertical();
+			renderer.resize(window.innerWidth, window.innerHeight);
 		}
 	}
 
- // renderer.resize(window.innerWidth,window.innerHeight);
  renderer.render(stage);
 }
 
