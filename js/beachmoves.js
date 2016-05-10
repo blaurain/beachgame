@@ -5,27 +5,29 @@ var stage = new PIXI.Container();
 // create a renderer instance
 // var mainCanvas = document.getElementById('mainCanvas');
 var rendererOptions = {
-  antialiasing: true,
+  antialiasing: false,
   transparent: false,
-  autoResize: true,
+  resolution: 1,
+  autoResize: true
 }
 var GAME_WIDTH = 736;
 var GAME_HEIGHT = 414;
 var renderer = PIXI.autoDetectRenderer(GAME_WIDTH, GAME_HEIGHT, rendererOptions); 
 var tileCorner = 10;
 var tileHeight, tileWidth;
+renderer.backgroundColor = 0xff0000;
+stage.interactive = true;
+
+drawGrid(stage);
+//renderer.render(stage);
 
 resize();
 // add the renderer view element to the DOM
 document.body.appendChild(renderer.view);
 window.addEventListener("resize", resize);
 //END SETUP**************************
+// renderer.render(stage);
 
-
-stage.interactive = true;
-
-drawTiles(stage);
-drawGrid(stage);
 
 function drawGrid(stage) {
 
@@ -140,56 +142,57 @@ function getRandomTileColor() {
 
 function resize() {
 //MAYBE DONT SCALE AT ALL? SMALLER THAN MOBILE WILL NEED SMALLER BOXES (worth it?)
-	// rotateHorizontal();
+	rotateHorizontal();
 
-	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
-	{ //Larger than needs be, desktop mode
-		renderer.resize(GAME_WIDTH, GAME_HEIGHT);
-		renderer.view.style.position = "relative";
+	// if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
+	// { //Larger than needs be, desktop mode
+	// 	renderer.resize(GAME_WIDTH, GAME_HEIGHT);
+	// 	renderer.view.style.position = "relative";
 
-		var centerX = Math.ceil((window.innerWidth / 2.0) - (GAME_WIDTH / 2.0));
-		var centerY = Math.ceil((window.innerHeight / 2.0) - (GAME_HEIGHT / 2.0));
+	// 	var centerX = Math.ceil((window.innerWidth / 2.0) - (GAME_WIDTH / 2.0));
+	// 	var centerY = Math.ceil((window.innerHeight / 2.0) - (GAME_HEIGHT / 2.0));
 
-		renderer.view.style.top = centerY + "px";
-		renderer.view.style.left = centerX + "px";
-	}
-	else
-	{  //mobile/small
-		renderer.view.style.position = "absolute";
-		renderer.view.style.top = "0px";
-		renderer.view.style.left = "0px";
+	// 	renderer.view.style.top = centerY + "px";
+	// 	renderer.view.style.left = centerX + "px";
+	// }
+	// else
+	// {  //mobile/small
+	// 	renderer.view.style.position = "absolute";
+	// 	renderer.view.style.top = "0px";
+	// 	renderer.view.style.left = "0px";
 
-		 if(window.innerWidth > window.innerHeight)
-		 { //horizontal
-		  // Determine which screen dimension is most constrained
-		  ratio = Math.min(window.innerWidth/GAME_WIDTH,
-		                   window.innerHeight/GAME_HEIGHT);
+	// 	 if(window.innerWidth > window.innerHeight)
+	// 	 { //horizontal
+	// 	  // Determine which screen dimension is most constrained
+	// 	  ratio = Math.min(window.innerWidth/GAME_WIDTH,
+	// 	                   window.innerHeight/GAME_HEIGHT);
 		 
-		  // Scale the view appropriately to fill that dimension
-		  if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
-		  else stage.scale.x = stage.scale.y = 1;
+	// 	  // Scale the view appropriately to fill that dimension
+	// 	  if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
+	// 	  else stage.scale.x = stage.scale.y = 1;
 		 
-		  // Update the renderer dimensions
-		  renderer.resize(Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH),
-		                  Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT));
-		}
-		else
-		{ //vertical
-		  ratio = Math.min(window.innerWidth/GAME_HEIGHT,
-		                   window.innerHeight/GAME_WIDTH);
+	// 	  // Update the renderer dimensions
+	// 	  renderer.resize(Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH),
+	// 	                  Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT));
+	// 	}
+	// 	else
+	// 	{ //vertical
+	// 	  ratio = Math.min(window.innerWidth/GAME_HEIGHT,
+	// 	                   window.innerHeight/GAME_WIDTH);
 		  
-		  // Scale the view appropriately to fill that dimension
-		  if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
-		  else stage.scale.x = stage.scale.y = 1;
+	// 	  // Scale the view appropriately to fill that dimension
+	// 	  if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
+	// 	  else stage.scale.x = stage.scale.y = 1;
 
-		  rotateVertical();
-		  // Update the renderer dimensions
-		  renderer.resize(Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT),
-		                  Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH));
-		}
-	}
+	// 	  rotateVertical();
+	// 	  // Update the renderer dimensions
+	// 	  renderer.resize(Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT),
+	// 	                  Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH));
+	// 	}
+	// }
 
- // renderer.resize(window.innerWidth,window.innerHeight)
+ renderer.resize(window.innerWidth,window.innerHeight);
+ renderer.render(stage);
 }
 
 function rotateHorizontal() {
