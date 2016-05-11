@@ -8,19 +8,26 @@ var rendererOptions = {
   antialiasing: false,
   transparent: false,
   resolution: 1,
-  autoResize: true
+  autoResize: false,
+  clearBeforeRender: true
 }
-var GAME_WIDTH = 568;
-var GAME_HEIGHT = 320;
+var GAME_WIDTH = 1136;
+var GAME_HEIGHT = 640;
 var renderer = PIXI.autoDetectRenderer(GAME_WIDTH, GAME_HEIGHT, rendererOptions); 
 var tileCorner = 10;
 var tileHeight, tileWidth;
+var gridShifter = 0;
+var isVertical = false;
 stage.interactive = true;
 
-drawTiles(stage);
-drawGrid(stage);
-//renderer.render(stage);
+var gridGraphics = new PIXI.Graphics();
+var tileGraphics = [];
 
+// redraw(stage);
+// drawTiles(stage);
+// drawGrid(stage);
+//renderer.render(stage);
+init();
 resize();
 // add the renderer view element to the DOM
 document.body.appendChild(renderer.view);
@@ -28,37 +35,54 @@ window.addEventListener("resize", resize);
 //END SETUP**************************
 // renderer.render(stage);
 
+function init() {
+	for (var row = 0; row < 4; row++) {
+		tileGraphics[row] = [];
+		for (var col = 0; col < 6; col++) {
+			tileGraphics[row][col] = new PIXI.Graphics();
+			stage.addChild(tileGraphics[row][col]);
+		};
+	};
+	stage.addChild(gridGraphics);
+}
+
+function redraw(stage){
+	setGridShifter();
+	drawTiles(stage);
+	drawGrid(stage);
+	renderer.render(stage);
+}
 
 function drawGrid(stage) {
-
-	var gridGraphics = new PIXI.Graphics();
+	// gridGraphics.clearBeforeRender = true;
+	gridGraphics.clear();
 	gridGraphics.lineStyle(10, 0xFF823A, 1); //width, color, alpha
 
 	//outside
-	gridGraphics.drawRoundedRect(pixelFromPercentWidth(26), pixelFromPercentHeight(6),
+	gridGraphics.drawRoundedRect(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(6),
 		pixelFromPercentWidth(72), pixelFromPercentHeight(88), 10);
 	//vertical
-	gridGraphics.moveTo(pixelFromPercentWidth(38), pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(38), pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(50), pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(50), pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(62), pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(62), pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(74), pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(74), pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(86), pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(86), pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(38) - gridShifter, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(38) - gridShifter, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(50) - gridShifter, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(50) - gridShifter, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(62) - gridShifter, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(62) - gridShifter, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(74) - gridShifter, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(74) - gridShifter, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(86) - gridShifter, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(86) - gridShifter, pixelFromPercentHeight(94));
 	//horizontal
-	gridGraphics.moveTo(pixelFromPercentWidth(26), pixelFromPercentHeight(72));
-	gridGraphics.lineTo(pixelFromPercentWidth(98), pixelFromPercentHeight(72));
-	gridGraphics.moveTo(pixelFromPercentWidth(26), pixelFromPercentHeight(50));
-	gridGraphics.lineTo(pixelFromPercentWidth(98), pixelFromPercentHeight(50));
-	gridGraphics.moveTo(pixelFromPercentWidth(26), pixelFromPercentHeight(28));
-	gridGraphics.lineTo(pixelFromPercentWidth(98), pixelFromPercentHeight(28));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(72));
+	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifter, pixelFromPercentHeight(72));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(50));
+	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifter, pixelFromPercentHeight(50));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(28));
+	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifter, pixelFromPercentHeight(28));
 	//return
-	gridGraphics.moveTo(pixelFromPercentWidth(26), pixelFromPercentHeight(6));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(6));
 
-	stage.addChild(gridGraphics);
+	// stage.addChild(gridGraphics);
 }
 
 function drawTiles(stage) {
@@ -96,22 +120,25 @@ function drawTiles(stage) {
 
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
-			var rectangle = new PIXI.Graphics();
 			var tileColor = getRandomTileColor();
-			rectangle.lineStyle(0, tileColor, 1);
-			rectangle.beginFill(tileColor);
-			rectangle.drawRoundedRect(pixelFromPercentWidth(starterTiles[row][col].xPercent), 
+			tileGraphics[row][col].clear();
+			tileGraphics[row][col].lineStyle(0, tileColor, 1);
+			tileGraphics[row][col].beginFill(tileColor);
+			tileGraphics[row][col].drawRoundedRect(pixelFromPercentWidth(starterTiles[row][col].xPercent) - gridShifter, 
 				pixelFromPercentHeight(starterTiles[row][col].yPercent) + 1, tileWidth, tileHeight, tileCorner);
-			rectangle.endFill();
-			stage.addChild(rectangle);
+			tileGraphics[row][col].endFill();
 		};
 	};
 }
 
 function pixelFromPercentWidth(percent) {
+	// if(!isVertical) return Math.ceil(renderer.width * (percent/100));
+	// else return Math.ceil(renderer.height * (percent/100));
 	return Math.ceil(renderer.width * (percent/100));
 }
 function pixelFromPercentHeight(percent) {
+	// if(!isVertical) return Math.ceil(renderer.height * (percent/100));
+	// else return Math.ceil(renderer.width * (percent/100));
 	return Math.ceil(renderer.height * (percent/100));
 }
 
@@ -140,12 +167,31 @@ function getRandomTileColor() {
 	}
 }
 
+function setGridShifter() {
+	if(window.innerWidth < GAME_WIDTH || window.innerHeight < GAME_HEIGHT) {
+		if(window.innerWidth < window.innerHeight) {
+			ratio = window.innerWidth/GAME_HEIGHT;
+		    yRatio = (window.innerHeight/GAME_WIDTH)
+		    if((ratio - yRatio) > .05 && ratio <= 1) {
+		    	gridShifter = window.innerHeight * .43;
+		    }
+		}
+
+	}
+}
+
 function resize() {
 //MAYBE DONT SCALE AT ALL? SMALLER THAN MOBILE WILL NEED SMALLER BOXES (worth it?)
-	rotateHorizontal();
+	renderer.resize(GAME_WIDTH, GAME_HEIGHT);
+	redraw(stage);
 
+	rotateHorizontal();
+	// gridShifter = 0;
+	isVertical = false;
+// redraw(stage);
 	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
 	{ //Larger than needs be, desktop mode
+		// redraw(stage);
 		renderer.resize(GAME_WIDTH, GAME_HEIGHT);
 		renderer.view.style.position = "relative";
 
@@ -170,25 +216,35 @@ function resize() {
 		  // Scale the view appropriately to fill that dimension
 		  if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
 		  else stage.scale.x = stage.scale.y = 1;
-		 
 		  // Update the renderer dimensions
 		  // renderer.resize(Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH),
 		  //                 Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT));
-		  renderer.resize(window.innerWidth, window.innerHeight);
+		  // renderer.resize(window.innerWidth, window.innerHeight);
 		}
 		else
 		{ //vertical
-		    ratio = Math.min(window.innerWidth/GAME_HEIGHT,
-		                   window.innerHeight/GAME_WIDTH);
-		  
+		    // ratio = Math.min(window.innerWidth/GAME_HEIGHT,
+		    //                window.innerHeight/GAME_WIDTH);
+			isVertical = true;
+		    ratio = window.innerWidth/GAME_HEIGHT;
+		    // yRatio = (window.innerHeight/GAME_WIDTH)
+		    // if((ratio - yRatio) > .05) {
+		    // 	gridShifter = 40;
+		    // }
+
 		    // Scale the view appropriately to fill that dimension
 			stage.scale.x = stage.scale.y = ratio;
 
 		    rotateVertical();
-			renderer.resize(window.innerWidth, window.innerHeight);
+			// renderer.resize(window.innerWidth, window.innerHeight);
 		}
+
+		// redraw(stage);
+		renderer.resize(window.innerWidth, window.innerHeight);
+
 	}
 
+	// redraw(stage);
  renderer.render(stage);
 }
 
@@ -200,6 +256,7 @@ function rotateHorizontal() {
 function rotateVertical() {
 	stage.rotation = Math.PI/2.0;
 	stage.x = window.innerWidth;
+	stage.y = 0;
 }
 
 
