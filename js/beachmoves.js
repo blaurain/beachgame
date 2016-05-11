@@ -16,7 +16,7 @@ var GAME_HEIGHT = 640;
 var renderer = PIXI.autoDetectRenderer(GAME_WIDTH, GAME_HEIGHT, rendererOptions); 
 var tileCorner = 10;
 var tileHeight, tileWidth;
-var gridShifter = 0;
+var gridShifterW = 0, gridShifterH = 0;
 var isVertical = false;
 stage.interactive = true;
 
@@ -47,7 +47,7 @@ function init() {
 }
 
 function redraw(stage){
-	setGridShifter();
+	setgridShifterW();
 	drawTiles(stage);
 	drawGrid(stage);
 	renderer.render(stage);
@@ -59,28 +59,28 @@ function drawGrid(stage) {
 	gridGraphics.lineStyle(10, 0xFF823A, 1); //width, color, alpha
 
 	//outside
-	gridGraphics.drawRoundedRect(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(6),
+	gridGraphics.drawRoundedRect(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6),
 		pixelFromPercentWidth(72), pixelFromPercentHeight(88), 10);
 	//vertical
-	gridGraphics.moveTo(pixelFromPercentWidth(38) - gridShifter, pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(38) - gridShifter, pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(50) - gridShifter, pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(50) - gridShifter, pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(62) - gridShifter, pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(62) - gridShifter, pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(74) - gridShifter, pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(74) - gridShifter, pixelFromPercentHeight(94));
-	gridGraphics.moveTo(pixelFromPercentWidth(86) - gridShifter, pixelFromPercentHeight(6));
-	gridGraphics.lineTo(pixelFromPercentWidth(86) - gridShifter, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(38) - gridShifterW, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(38) - gridShifterW, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(50) - gridShifterW, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(50) - gridShifterW, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(62) - gridShifterW, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(62) - gridShifterW, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(74) - gridShifterW, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(74) - gridShifterW, pixelFromPercentHeight(94));
+	gridGraphics.moveTo(pixelFromPercentWidth(86) - gridShifterW, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(86) - gridShifterW, pixelFromPercentHeight(94));
 	//horizontal
-	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(72));
-	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifter, pixelFromPercentHeight(72));
-	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(50));
-	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifter, pixelFromPercentHeight(50));
-	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(28));
-	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifter, pixelFromPercentHeight(28));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(72));
+	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(72));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(50));
+	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(50));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(28));
+	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(28));
 	//return
-	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifter, pixelFromPercentHeight(6));
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6));
 
 	// stage.addChild(gridGraphics);
 }
@@ -124,7 +124,7 @@ function drawTiles(stage) {
 			tileGraphics[row][col].clear();
 			tileGraphics[row][col].lineStyle(0, tileColor, 1);
 			tileGraphics[row][col].beginFill(tileColor);
-			tileGraphics[row][col].drawRoundedRect(pixelFromPercentWidth(starterTiles[row][col].xPercent) - gridShifter, 
+			tileGraphics[row][col].drawRoundedRect(pixelFromPercentWidth(starterTiles[row][col].xPercent) - gridShifterW, 
 				pixelFromPercentHeight(starterTiles[row][col].yPercent) + 1, tileWidth, tileHeight, tileCorner);
 			tileGraphics[row][col].endFill();
 		};
@@ -167,16 +167,22 @@ function getRandomTileColor() {
 	}
 }
 
-function setGridShifter() {
+function setgridShifterW() {
 	if(window.innerWidth < GAME_WIDTH || window.innerHeight < GAME_HEIGHT) {
-		if(window.innerWidth < window.innerHeight) {
+		if(window.innerWidth < window.innerHeight) { //vert
 			ratio = window.innerWidth/GAME_HEIGHT;
 		    yRatio = (window.innerHeight/GAME_WIDTH)
-		    if((ratio - yRatio) > .05 && ratio <= 1) {
-		    	gridShifter = window.innerHeight * .43;
+		    if((ratio - yRatio) > .05) {
+		    	gridShifterW = Math.min(window.innerHeight * .43, 280);
 		    }
 		}
-
+		else { //horizontal		  
+			ratio = window.innerHeight/GAME_HEIGHT;
+		    XRatio = (window.innerWidth/GAME_WIDTH)
+		    if((ratio - XRatio) > .05 ) {
+		    	gridShifterW = Math.min(window.innerWidth * .43, 280);
+		    }
+		}
 	}
 }
 
@@ -186,7 +192,7 @@ function resize() {
 	redraw(stage);
 
 	rotateHorizontal();
-	// gridShifter = 0;
+	// gridShifterW = 0;
 	isVertical = false;
 // redraw(stage);
 	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
@@ -210,12 +216,14 @@ function resize() {
 		 if(window.innerWidth > window.innerHeight)
 		 { //horizontal
 		  // Determine which screen dimension is most constrained
-		  ratio = Math.min(window.innerWidth/GAME_WIDTH,
-		                   window.innerHeight/GAME_HEIGHT);
+		  // ratio = Math.min(window.innerWidth/GAME_WIDTH,
+		  //                  window.innerHeight/GAME_HEIGHT);
+		  ratio = window.innerHeight/GAME_HEIGHT;
 		 
 		  // Scale the view appropriately to fill that dimension
-		  if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
-		  else stage.scale.x = stage.scale.y = 1;
+		  // if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
+		  // else stage.scale.x = stage.scale.y = 1;
+		  stage.scale.x = stage.scale.y = ratio;
 		  // Update the renderer dimensions
 		  // renderer.resize(Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH),
 		  //                 Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT));
@@ -227,10 +235,6 @@ function resize() {
 		    //                window.innerHeight/GAME_WIDTH);
 			isVertical = true;
 		    ratio = window.innerWidth/GAME_HEIGHT;
-		    // yRatio = (window.innerHeight/GAME_WIDTH)
-		    // if((ratio - yRatio) > .05) {
-		    // 	gridShifter = 40;
-		    // }
 
 		    // Scale the view appropriately to fill that dimension
 			stage.scale.x = stage.scale.y = ratio;
@@ -238,13 +242,9 @@ function resize() {
 		    rotateVertical();
 			// renderer.resize(window.innerWidth, window.innerHeight);
 		}
-
-		// redraw(stage);
 		renderer.resize(window.innerWidth, window.innerHeight);
 
 	}
-
-	// redraw(stage);
  renderer.render(stage);
 }
 
