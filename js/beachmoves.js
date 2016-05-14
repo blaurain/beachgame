@@ -50,7 +50,7 @@ function redraw(stage){
 	setgridShifterW();
 	drawTiles(stage);
 	drawGrid(stage);
-	renderer.render(stage);
+	// renderer.render(stage);
 }
 
 function drawGrid(stage) {
@@ -216,23 +216,15 @@ function resize() {
 		 if(window.innerWidth > window.innerHeight)
 		 { //horizontal
 		  // Determine which screen dimension is most constrained
-		  // ratio = Math.min(window.innerWidth/GAME_WIDTH,
-		  //                  window.innerHeight/GAME_HEIGHT);
 		  ratio = window.innerHeight/GAME_HEIGHT;
-		 
-		  // Scale the view appropriately to fill that dimension
-		  // if(ratio < 1) stage.scale.x = stage.scale.y = ratio;
-		  // else stage.scale.x = stage.scale.y = 1;
 		  stage.scale.x = stage.scale.y = ratio;
-		  // Update the renderer dimensions
-		  // renderer.resize(Math.min(Math.ceil(GAME_WIDTH * ratio), GAME_WIDTH),
-		  //                 Math.min(Math.ceil(GAME_HEIGHT * ratio), GAME_HEIGHT));
-		  // renderer.resize(window.innerWidth, window.innerHeight);
+
+		  if(window.pageYOffset > 0) {
+		 	renderer.view.style.top = window.pageYOffset + "px";
+		  }
 		}
 		else
 		{ //vertical
-		    // ratio = Math.min(window.innerWidth/GAME_HEIGHT,
-		    //                window.innerHeight/GAME_WIDTH);
 			isVertical = true;
 		    ratio = window.innerWidth/GAME_HEIGHT;
 
@@ -240,8 +232,8 @@ function resize() {
 			stage.scale.x = stage.scale.y = ratio;
 
 		    rotateVertical();
-			// renderer.resize(window.innerWidth, window.innerHeight);
 		}
+		 
 		renderer.resize(window.innerWidth, window.innerHeight);
 
 	}
