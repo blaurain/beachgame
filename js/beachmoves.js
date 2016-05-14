@@ -8,7 +8,7 @@ var rendererOptions = {
   antialiasing: false,
   transparent: false,
   resolution: 1,
-  autoResize: false,
+  autoResize: true,
   clearBeforeRender: true
 }
 var GAME_WIDTH = 1136;
@@ -168,28 +168,28 @@ function getRandomTileColor() {
 }
 
 function setgridShifterW() {
-	if(window.innerWidth < GAME_WIDTH || window.innerHeight < GAME_HEIGHT) {
-		if(window.innerWidth < window.innerHeight) { //vert
-			ratio = window.innerWidth/GAME_HEIGHT;
-		    yRatio = (window.innerHeight/GAME_WIDTH)
-		    if((ratio - yRatio) > .05) {
-		    	gridShifterW = Math.min(window.innerHeight * .43, 280);
-		    }
-		}
-		else { //horizontal		  
-			ratio = window.innerHeight/GAME_HEIGHT;
-		    XRatio = (window.innerWidth/GAME_WIDTH)
-		    if((ratio - XRatio) > .05 ) {
-		    	gridShifterW = Math.min(window.innerWidth * .43, 280);
-		    }
-		}
-	}
+	// if(window.innerWidth < GAME_WIDTH || window.innerHeight < GAME_HEIGHT) {
+	// 	if(window.innerWidth < window.innerHeight) { //vert
+	// 		ratio = window.innerWidth/GAME_HEIGHT;
+	// 	    yRatio = (window.innerHeight/GAME_WIDTH)
+	// 	    if((ratio - yRatio) > .05) {
+	// 	    	gridShifterW = Math.min(window.innerHeight * .43, 280);
+	// 	    }
+	// 	}
+	// 	else { //horizontal		  
+	// 		ratio = window.innerHeight/GAME_HEIGHT;
+	// 	    XRatio = (window.innerWidth/GAME_WIDTH)
+	// 	    if((ratio - XRatio) > .05 ) {
+	// 	    	gridShifterW = Math.min(window.innerWidth * .43, 280);
+	// 	    }
+	// 	}
+	// }
 }
 
 function resize() {
 //MAYBE DONT SCALE AT ALL? SMALLER THAN MOBILE WILL NEED SMALLER BOXES (worth it?)
-	renderer.resize(GAME_WIDTH, GAME_HEIGHT);
-	redraw(stage);
+	// renderer.resize(GAME_WIDTH, GAME_HEIGHT);
+	// redraw(stage);
 
 	rotateHorizontal();
 	// gridShifterW = 0;
@@ -206,6 +206,7 @@ function resize() {
 
 		renderer.view.style.top = centerY + "px";
 		renderer.view.style.left = centerX + "px";
+		redraw(stage);
 	}
 	else
 	{  //mobile/small
@@ -213,32 +214,81 @@ function resize() {
 		renderer.view.style.top = "0px";
 		renderer.view.style.left = "0px";
 
-		 if(window.innerWidth > window.innerHeight)
-		 { //horizontal
-		  // Determine which screen dimension is most constrained
-		  ratio = window.innerHeight/GAME_HEIGHT;
-		  stage.scale.x = stage.scale.y = ratio;
-
-		  if(window.pageYOffset > 0) {
-		 	renderer.view.style.top = window.pageYOffset + "px";
-		  }
-		}
-		else
-		{ //vertical
+		if(window.innerWidth < window.innerHeight)
+		{ //vert
 			isVertical = true;
-		    ratio = window.innerWidth/GAME_HEIGHT;
 
-		    // Scale the view appropriately to fill that dimension
-			stage.scale.x = stage.scale.y = ratio;
-
-		    rotateVertical();
+			renderer.resize(window.innerHeight, window.innerWidth);
+			redraw(stage);
+			renderer.resize(window.innerWidth, window.innerHeight);
+			rotateVertical();
 		}
-		 
-		renderer.resize(window.innerWidth, window.innerHeight);
+		else {
+			//horizontal
+			renderer.resize(window.innerWidth, window.innerHeight);
+			redraw(stage);
+		}
 
+		// if(window.pageYOffset > 0) {
+		//  	renderer.view.style.top = window.pageYOffset + "px";
+		// }
 	}
  renderer.render(stage);
 }
+
+// function resize() {
+// //MAYBE DONT SCALE AT ALL? SMALLER THAN MOBILE WILL NEED SMALLER BOXES (worth it?)
+// 	renderer.resize(GAME_WIDTH, GAME_HEIGHT);
+// 	redraw(stage);
+
+// 	rotateHorizontal();
+// 	// gridShifterW = 0;
+// 	isVertical = false;
+// // redraw(stage);
+// 	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
+// 	{ //Larger than needs be, desktop mode
+// 		// redraw(stage);
+// 		renderer.resize(GAME_WIDTH, GAME_HEIGHT);
+// 		renderer.view.style.position = "relative";
+
+// 		var centerX = Math.ceil((window.innerWidth / 2.0) - (GAME_WIDTH / 2.0));
+// 		var centerY = Math.ceil((window.innerHeight / 2.0) - (GAME_HEIGHT / 2.0));
+
+// 		renderer.view.style.top = centerY + "px";
+// 		renderer.view.style.left = centerX + "px";
+// 	}
+// 	else
+// 	{  //mobile/small
+// 		renderer.view.style.position = "absolute";
+// 		renderer.view.style.top = "0px";
+// 		renderer.view.style.left = "0px";
+
+// 		 if(window.innerWidth > window.innerHeight)
+// 		 { //horizontal
+// 		  // Determine which screen dimension is most constrained
+// 		  ratio = window.innerHeight/GAME_HEIGHT;
+// 		  stage.scale.x = stage.scale.y = ratio;
+
+// 		  if(window.pageYOffset > 0) {
+// 		 	renderer.view.style.top = window.pageYOffset + "px";
+// 		  }
+// 		}
+// 		else
+// 		{ //vertical
+// 			isVertical = true;
+// 		    ratio = window.innerWidth/GAME_HEIGHT;
+
+// 		    // Scale the view appropriately to fill that dimension
+// 			stage.scale.x = stage.scale.y = ratio;
+
+// 		    rotateVertical();
+// 		}
+		 
+// 		renderer.resize(window.innerWidth, window.innerHeight);
+
+// 	}
+//  renderer.render(stage);
+// }
 
 function rotateHorizontal() {
 	stage.rotation = 0;
