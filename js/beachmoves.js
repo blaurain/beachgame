@@ -243,11 +243,11 @@ function resize() {
 			//horizontal
 			renderer.resize(window.innerWidth, window.innerHeight);
 			redraw(stage);
-		}
 
-		// if(window.pageYOffset > 0) {
-		//  	renderer.view.style.top = window.pageYOffset + "px";
-		// }
+			if(window.pageYOffset > 0) {
+		 		renderer.view.style.top = window.pageYOffset + "px";
+			}
+		}
 	}
  renderer.render(stage);
 }
