@@ -26,17 +26,12 @@ var gridGraphics = new PIXI.Graphics();
 var tileGraphics = [];
 var tiles = [[]];
 
-// redraw(stage);
-// drawTiles(stage);
-// drawGrid(stage);
-//renderer.render(stage);
 init();
 resize();
 // add the renderer view element to the DOM
 document.body.appendChild(renderer.view);
 window.addEventListener("resize", resize);
 //END SETUP**************************
-// renderer.render(stage);
 
 function init() {
 	for (var row = 0; row < 4; row++) {
@@ -53,7 +48,6 @@ function init() {
 }
 
 function redraw(stage){
-	setgridShifterW();
 	drawTiles(stage);
 	drawGrid(stage);
 	// renderer.render(stage);
@@ -121,14 +115,9 @@ function createTiles(stage) {
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
 			tiles[row][col].tileColor = getRandomTileColor();
-			// tileGraphics[row][col].clear();
-			// tileGraphics[row][col].lineStyle(0, tiles[row][col].tileColor, selectedAlpha);
-			// tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
 			tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
 			tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
 			tiles[row][col].isSelected = false;
-			// tileGraphics[row][col].drawRoundedRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight, tileCorner);
-			// tileGraphics[row][col].endFill();
 			tileGraphics[row][col].interactive = true;
 			tileGraphics[row][col].on('mousedown', onTilePressDown.bind({"row": row, "col": col}));
 			tileGraphics[row][col].on('touchstart', onTilePressDown.bind({"row": row, "col": col}));
@@ -157,20 +146,14 @@ function drawTiles(stage) {
 }
 
 function pixelFromPercentWidth(percent) {
-	// if(!isVertical) return Math.ceil(renderer.width * (percent/100));
-	// else return Math.ceil(renderer.height * (percent/100));
 	return Math.ceil(renderer.width * (percent/100));
 }
 function pixelFromPercentHeight(percent) {
-	// if(!isVertical) return Math.ceil(renderer.height * (percent/100));
-	// else return Math.ceil(renderer.width * (percent/100));
 	return Math.ceil(renderer.height * (percent/100));
 }
 
-
 function setTileSelected(row, col, isSelected) {
 	tiles[row][col].isSelected = isSelected;
-	// tileGraphics[row][col].lineStyle(2, tiles[row][col].tileColor, 1);
 	tileGraphics[row][col].clear();
 	if(isSelected) tileGraphics[row][col].beginFill(tiles[row][col].tileColor, selectedAlpha);
 	else tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
@@ -256,25 +239,6 @@ function rotateVertical() {
 	stage.rotation = Math.PI/2.0;
 	stage.x = window.innerWidth;
 	stage.y = 0;
-}
-
-function setgridShifterW() {
-	// if(window.innerWidth < GAME_WIDTH || window.innerHeight < GAME_HEIGHT) {
-	// 	if(window.innerWidth < window.innerHeight) { //vert
-	// 		ratio = window.innerWidth/GAME_HEIGHT;
-	// 	    yRatio = (window.innerHeight/GAME_WIDTH)
-	// 	    if((ratio - yRatio) > .05) {
-	// 	    	gridShifterW = Math.min(window.innerHeight * .43, 280);
-	// 	    }
-	// 	}
-	// 	else { //horizontal		  
-	// 		ratio = window.innerHeight/GAME_HEIGHT;
-	// 	    XRatio = (window.innerWidth/GAME_WIDTH)
-	// 	    if((ratio - XRatio) > .05 ) {
-	// 	    	gridShifterW = Math.min(window.innerWidth * .43, 280);
-	// 	    }
-	// 	}
-	// }
 }
 
 
