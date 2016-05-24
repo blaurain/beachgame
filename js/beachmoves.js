@@ -49,6 +49,7 @@ function init() {
 		};
 	};
 	stage.addChild(gridGraphics);
+	createTiles(stage);
 }
 
 function redraw(stage){
@@ -86,56 +87,71 @@ function drawGrid(stage) {
 	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(28));
 	//return
 	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6));
-
-	// stage.addChild(gridGraphics);
 }
 
-function drawTiles(stage) {
+function createTiles(stage) {
 	tileHeight = pixelFromPercentHeight(22) - 2;
 	tileWidth = pixelFromPercentWidth(12) - 2;
 
-	tiles[0][0] = new Tile(0,0,26,6);
-	tiles[0][1] = new Tile(0,1,38,6);
-	tiles[0][2] = new Tile(0,2,50,6);
-	tiles[0][3] = new Tile(0,3,62,6);
-	tiles[0][4] = new Tile(0,4,74,6);
-	tiles[0][5] = new Tile(0,5,86,6);
-	tiles[1][0] = new Tile(1,0,26,28);
-	tiles[1][1] = new Tile(1,1,38,28);
-	tiles[1][2] = new Tile(1,2,50,28);
-	tiles[1][3] = new Tile(1,3,62,28);
-	tiles[1][4] = new Tile(1,4,74,28);
-	tiles[1][5] = new Tile(1,5,86,28);
-	tiles[2][0] = new Tile(2,0,26,50);
-	tiles[2][1] = new Tile(2,1,38,50);
-	tiles[2][2] = new Tile(2,2,50,50);
-	tiles[2][3] = new Tile(2,3,62,50);
-	tiles[2][4] = new Tile(2,4,74,50);
-	tiles[2][5] = new Tile(2,5,86,50);
-	tiles[3][0] = new Tile(3,0,26,72);
-	tiles[3][1] = new Tile(3,1,38,72);
-	tiles[3][2] = new Tile(3,2,50,72);
-	tiles[3][3] = new Tile(3,3,62,72);
-	tiles[3][4] = new Tile(3,4,74,72);
-	tiles[3][5] = new Tile(3,5,86,72);
+	tiles[0][0] = new Tile(0,0);
+	tiles[0][1] = new Tile(0,1);
+	tiles[0][2] = new Tile(0,2);
+	tiles[0][3] = new Tile(0,3);
+	tiles[0][4] = new Tile(0,4);
+	tiles[0][5] = new Tile(0,5);
+	tiles[1][0] = new Tile(1,0);
+	tiles[1][1] = new Tile(1,1);
+	tiles[1][2] = new Tile(1,2);
+	tiles[1][3] = new Tile(1,3);
+	tiles[1][4] = new Tile(1,4);
+	tiles[1][5] = new Tile(1,5);
+	tiles[2][0] = new Tile(2,0);
+	tiles[2][1] = new Tile(2,1);
+	tiles[2][2] = new Tile(2,2);
+	tiles[2][3] = new Tile(2,3);
+	tiles[2][4] = new Tile(2,4);
+	tiles[2][5] = new Tile(2,5);
+	tiles[3][0] = new Tile(3,0);
+	tiles[3][1] = new Tile(3,1);
+	tiles[3][2] = new Tile(3,2);
+	tiles[3][3] = new Tile(3,3);
+	tiles[3][4] = new Tile(3,4);
+	tiles[3][5] = new Tile(3,5);
 
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
 			tiles[row][col].tileColor = getRandomTileColor();
-			tileGraphics[row][col].clear();
-			tileGraphics[row][col].lineStyle(0, tiles[row][col].tileColor, selectedAlpha);
-			tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
-			tiles[row][col].xPosition = (pixelFromPercentWidth(tiles[row][col].xPercent) - gridShifterW);
-			tiles[row][col].yPosition = (pixelFromPercentHeight(tiles[row][col].yPercent) + 1);
+			// tileGraphics[row][col].clear();
+			// tileGraphics[row][col].lineStyle(0, tiles[row][col].tileColor, selectedAlpha);
+			// tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
+			tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
+			tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
 			tiles[row][col].isSelected = false;
-			tileGraphics[row][col].drawRoundedRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight, tileCorner);
-			tileGraphics[row][col].endFill();
+			// tileGraphics[row][col].drawRoundedRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight, tileCorner);
+			// tileGraphics[row][col].endFill();
 			tileGraphics[row][col].interactive = true;
 			tileGraphics[row][col].on('mousedown', onTilePressDown.bind({"row": row, "col": col}));
 			tileGraphics[row][col].on('touchstart', onTilePressDown.bind({"row": row, "col": col}));
 			tileGraphics[row][col].on('tap', onTileTap.bind({"row": row, "col": col}));
 			tileGraphics[row][col].on('click', onTileTap.bind({"row": row, "col": col}));
 
+		};
+	};
+}
+
+function drawTiles(stage) {
+	tileHeight = pixelFromPercentHeight(22) - 2;
+	tileWidth = pixelFromPercentWidth(12) - 2;
+	for (var row = 0; row < 4; row++) {
+		for (var col = 0; col < 6; col++) {
+			tileGraphics[row][col].clear();
+			tileGraphics[row][col].lineStyle(0, tiles[row][col].tileColor, selectedAlpha);
+			if(tiles[row][col].isSelected) tileGraphics[row][col].beginFill(tiles[row][col].tileColor, selectedAlpha);
+			else tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
+			tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
+			tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
+			tileGraphics[row][col].drawRoundedRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight, tileCorner);
+			tileGraphics[row][col].endFill();
 		};
 	};
 }
@@ -151,6 +167,7 @@ function pixelFromPercentHeight(percent) {
 	return Math.ceil(renderer.height * (percent/100));
 }
 
+
 function setTileSelected(row, col, isSelected) {
 	tiles[row][col].isSelected = isSelected;
 	// tileGraphics[row][col].lineStyle(2, tiles[row][col].tileColor, 1);
@@ -162,30 +179,7 @@ function setTileSelected(row, col, isSelected) {
 	renderer.render(stage);
 }
 
-function getRandomTileColor() {
-	switch(Math.floor(Math.random() * 8)) {
-	    case 0:
-	        return 0x72F6FF;
-	    // case 1:
-	    //     return 0xF04155;
-	    case 2:
-	        return 0xC1E8C7;
-	    // case 3:
-	    //     return 0xFF7D4F; //orange
-	    case 4:
-	        return 0xEFFF7BD;
-	    case 5:
-	        return 0xD3658D;
-	    case 6:
-	        return 0x95CFB7; 
-	    case 7:
-	        return 0xEDE9F8;
-	        //  case 5:
-	        // return 0xD3658D;
-	    default:
-	        return 0x00AAFF;
-	}
-}
+
 
 function onTilePressDown(data) {
 	var row = this.row;
@@ -226,6 +220,7 @@ function resize() {
 	}
 	else
 	{  //mobile/small
+		window.scrollBy(0,0);
 		renderer.view.style.position = "absolute";
 		renderer.view.style.top = "0px";
 		renderer.view.style.left = "0px";
