@@ -137,8 +137,11 @@ function drawTiles(stage) {
 						tiles[row][col].matchGraphic.drawRect(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + quarterTile, halfTile, halfTile);
 					break;
 					case 3:
-						tiles[row][col].matchGraphic.moveTo(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + quarterTile);
-						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + (2.0 * quarterTile), tiles[row][col].yPosition + (2.0 * quarterTile));
+						tiles[row][col].matchGraphic.moveTo(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + halfTile + quarterTile);
+						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfTile + quarterTile, tiles[row][col].yPosition + halfTile + quarterTile);
+						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + (2.0 * quarterTile), tiles[row][col].yPosition + quarterTile);
+						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + halfTile + quarterTile);
+
 					break;
 				}
 			}
