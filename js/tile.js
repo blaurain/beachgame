@@ -8,15 +8,9 @@ function Tile(row, col, type){
 	var tileColor;
 	var xPosition, yPosition;
 	var matchGraphic;
-	if(tileType !== 0) this.isMatchTile = true;
+	if(this.tileType !== 0) this.isMatchTile = true;
 	else this.isMatchTile = false;
-	// switch(type) {
-	// 	case 0:
-	// 		this.tileType = 
-	// }
-
 }
-
 
 	function percentFromRow(row) {
 		switch(row) {

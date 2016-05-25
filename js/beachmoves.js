@@ -59,7 +59,7 @@ function redraw(stage){
 function drawGrid(stage) {
 	// gridGraphics.clearBeforeRender = true;
 	gridGraphics.clear();
-	gridGraphics.lineStyle(10, 0xFF823A, 1); //width, color, alpha
+	gridGraphics.lineStyle(getGridWidth(), 0xFF823A, 1); //width, color, alpha
 
 	//outside
 	gridGraphics.drawRoundedRect(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6),
@@ -121,26 +121,28 @@ function drawTiles(stage) {
 			else tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
 			tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
 			tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
-			tileGraphics[row][col].drawRoundedRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight, tileCorner);
+			tileGraphics[row][col].drawRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight);
 			tileGraphics[row][col].endFill();
 			if(tiles[row][col].tileType !== 0) {
-				var halfTile = (tileWidth / 2.0);
+				var halfTile = (Math.min(tileWidth, tileHeight) / 2.0);
+				var halfWidth = (tileWidth / 2.0);
+				var halfHeight = (tileHeight / 2.0);
 				var quarterTile = (halfTile / 2.0);
 				tiles[row][col].matchGraphic.clear();
-				tiles[row][col].matchGraphic.lineStyle(5, 0x000000, 1); //width, color, alpha
+				tiles[row][col].matchGraphic.lineStyle(getMatchIconWidth(halfTile), 0x000000, 1); //width, color, alpha
 
 				switch(tiles[row][col].tileType){
-					case 1:
-						tiles[row][col].matchGraphic.drawCircle(tiles[row][col].xPosition + halfTile, tiles[row][col].yPosition + halfTile, quarterTile);
+					case 1: //Circle
+						tiles[row][col].matchGraphic.drawCircle(tiles[row][col].xPosition + halfWidth, tiles[row][col].yPosition + halfHeight, quarterTile);
 					break;
-					case 2:
-						tiles[row][col].matchGraphic.drawRect(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + quarterTile, halfTile, halfTile);
+					case 2: //Rectangle
+						tiles[row][col].matchGraphic.drawRect(tiles[row][col].xPosition + (halfWidth - quarterTile), tiles[row][col].yPosition + (halfHeight - quarterTile), halfTile, halfTile);
 					break;
-					case 3:
-						tiles[row][col].matchGraphic.moveTo(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + halfTile + quarterTile);
-						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfTile + quarterTile, tiles[row][col].yPosition + halfTile + quarterTile);
-						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + (2.0 * quarterTile), tiles[row][col].yPosition + quarterTile);
-						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + halfTile + quarterTile);
+					case 3: //Triangle
+						tiles[row][col].matchGraphic.moveTo(tiles[row][col].xPosition + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight + (halfHeight/2.0));
+						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfWidth + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight + (halfHeight/2.0));
+						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfWidth, tiles[row][col].yPosition + (halfHeight/2.0));
+						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight + (halfHeight/2.0));
 
 					break;
 				}
@@ -154,6 +156,26 @@ function pixelFromPercentWidth(percent) {
 }
 function pixelFromPercentHeight(percent) {
 	return Math.ceil(renderer.height * (percent/100));
+}
+
+function getGridWidth() {
+	var baseWidth = 5;
+	if(renderer.width < 500) return baseWidth;
+	else if(renderer.width < 700) return baseWidth + 1;
+	else if(renderer.width < 900) return baseWidth + 2;
+	else if(renderer.width < 1100) return baseWidth + 3;
+	else if(renderer.width < 1300) return baseWidth + 4;
+	else return baseWidth + 5;
+}
+
+function getMatchIconWidth(halfTile) {
+	var baseWidth = 3;
+	if(halfTile < 10) return baseWidth;
+	else if(halfTile < 20) return baseWidth + 0.5;
+	else if(halfTile < 30) return baseWidth + 1.0;
+	else if(halfTile < 40) return baseWidth + 1.5;
+	else if(halfTile < 50) return baseWidth + 2.0;
+	else return baseWidth + 2.5;
 }
 
 function setTileSelected(row, col, isSelected) {
