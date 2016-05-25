@@ -23,6 +23,7 @@ var isVertical = false;
 stage.interactive = true;
 
 var gridGraphics = new PIXI.Graphics();
+var matchTileGraphics = [];
 var tileGraphics = [];
 var tiles = [[]];
 
@@ -42,7 +43,9 @@ function init() {
 			stage.addChild(tileGraphics[row][col]);
 			tiles[row][col] = new Tile();
 		};
+
 	};
+
 	stage.addChild(gridGraphics);
 	createTiles(stage);
 }
@@ -87,33 +90,9 @@ function createTiles(stage) {
 	tileHeight = pixelFromPercentHeight(22) - 2;
 	tileWidth = pixelFromPercentWidth(12) - 2;
 
-	tiles[0][0] = new Tile(0,0);
-	tiles[0][1] = new Tile(0,1);
-	tiles[0][2] = new Tile(0,2);
-	tiles[0][3] = new Tile(0,3);
-	tiles[0][4] = new Tile(0,4);
-	tiles[0][5] = new Tile(0,5);
-	tiles[1][0] = new Tile(1,0);
-	tiles[1][1] = new Tile(1,1);
-	tiles[1][2] = new Tile(1,2);
-	tiles[1][3] = new Tile(1,3);
-	tiles[1][4] = new Tile(1,4);
-	tiles[1][5] = new Tile(1,5);
-	tiles[2][0] = new Tile(2,0);
-	tiles[2][1] = new Tile(2,1);
-	tiles[2][2] = new Tile(2,2);
-	tiles[2][3] = new Tile(2,3);
-	tiles[2][4] = new Tile(2,4);
-	tiles[2][5] = new Tile(2,5);
-	tiles[3][0] = new Tile(3,0);
-	tiles[3][1] = new Tile(3,1);
-	tiles[3][2] = new Tile(3,2);
-	tiles[3][3] = new Tile(3,3);
-	tiles[3][4] = new Tile(3,4);
-	tiles[3][5] = new Tile(3,5);
-
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
+			tiles[row][col] = new Tile(row, col, grid1[row][col]);
 			tiles[row][col].tileColor = getRandomTileColor();
 			tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
 			tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
@@ -123,7 +102,10 @@ function createTiles(stage) {
 			tileGraphics[row][col].on('touchstart', onTilePressDown.bind({"row": row, "col": col}));
 			tileGraphics[row][col].on('tap', onTileTap.bind({"row": row, "col": col}));
 			tileGraphics[row][col].on('click', onTileTap.bind({"row": row, "col": col}));
-
+			if(tiles[row][col].tileType !== 0) {
+				tiles[row][col].matchGraphic = new PIXI.Graphics();
+				stage.addChild(tiles[row][col].matchGraphic);
+			}
 		};
 	};
 }
@@ -141,6 +123,25 @@ function drawTiles(stage) {
 			tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
 			tileGraphics[row][col].drawRoundedRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight, tileCorner);
 			tileGraphics[row][col].endFill();
+			if(tiles[row][col].tileType !== 0) {
+				var halfTile = (tileWidth / 2.0);
+				var quarterTile = (halfTile / 2.0);
+				tiles[row][col].matchGraphic.clear();
+				tiles[row][col].matchGraphic.lineStyle(5, 0x000000, 1); //width, color, alpha
+
+				switch(tiles[row][col].tileType){
+					case 1:
+						tiles[row][col].matchGraphic.drawCircle(tiles[row][col].xPosition + halfTile, tiles[row][col].yPosition + halfTile, quarterTile);
+					break;
+					case 2:
+						tiles[row][col].matchGraphic.drawRect(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + quarterTile, halfTile, halfTile);
+					break;
+					case 3:
+						tiles[row][col].matchGraphic.moveTo(tiles[row][col].xPosition + quarterTile, tiles[row][col].yPosition + quarterTile);
+						tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + (2.0 * quarterTile), tiles[row][col].yPosition + (2.0 * quarterTile));
+					break;
+				}
+			}
 		};
 	};
 }
@@ -161,8 +162,6 @@ function setTileSelected(row, col, isSelected) {
 	tileGraphics[row][col].endFill();
 	renderer.render(stage);
 }
-
-
 
 function onTilePressDown(data) {
 	var row = this.row;

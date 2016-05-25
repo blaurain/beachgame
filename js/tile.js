@@ -1,12 +1,17 @@
-function Tile(row, col){
+function Tile(row, col, type){
 	this.startRow = this.row = row;
 	this.startCol = this.col = col;
 	this.xPercent = percentFromCol(col);
 	this.yPercent = percentFromRow(row);
+	this.tileType = type;
 	this.isSelected = false;
 	var tileColor;
 	var xPosition, yPosition;
-
+	var matchGraphic;
+	// switch(type) {
+	// 	case 0:
+	// 		this.tileType = 
+	// }
 
 }
 
