@@ -1,6 +1,6 @@
 function Tile(row, col, type){
-	this.startRow = this.row = row;
-	this.startCol = this.col = col;
+	this.tileRow = this.row = row;
+	this.tileCol = this.col = col;
 	this.xPercent = percentFromCol(col);
 	this.yPercent = percentFromRow(row);
 	this.tileType = type;

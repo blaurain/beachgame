@@ -11,6 +11,12 @@ var rendererOptions = {
   autoResize: true,
   clearBeforeRender: true
 }
+var match = {
+	start: null,
+	end: null,
+	type: null,
+	path: []
+}
 var GAME_WIDTH = 1136;
 var GAME_HEIGHT = 640;
 var renderer = PIXI.autoDetectRenderer(GAME_WIDTH, GAME_HEIGHT, rendererOptions); 
@@ -20,12 +26,11 @@ var unselectedAlpha = .7;
 var tileHeight, tileWidth;
 var gridShifterW = 0, gridShifterH = 0;
 var isVertical = false;
-stage.interactive = true;
-
 var gridGraphics = new PIXI.Graphics();
 var matchTileGraphics = [];
 var tileGraphics = [];
 var tiles = [[]];
+var currentGrid = [[]];
 
 init();
 resize();
@@ -38,12 +43,11 @@ function init() {
 	for (var row = 0; row < 4; row++) {
 		tileGraphics[row] = [];
 		tiles[row] = [];
+		currentGrid[row] = [];
 		for (var col = 0; col < 6; col++) {
 			tileGraphics[row][col] = new PIXI.Graphics();
 			stage.addChild(tileGraphics[row][col]);
-			tiles[row][col] = new Tile();
 		};
-
 	};
 
 	stage.addChild(gridGraphics);
@@ -92,7 +96,8 @@ function createTiles(stage) {
 
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
-			tiles[row][col] = new Tile(row, col, grid1[row][col]);
+			currentGrid[row][col] = {"row": row, "col": col};
+			tiles[row][col] = new Tile(row, col, grid1[row][col]); //TODO: Change this to load different grids
 			tiles[row][col].tileColor = getRandomTileColor();
 			tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
 			tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
@@ -184,6 +189,27 @@ function getMatchIconWidth(halfTile) {
 	else return baseWidth + 2.5;
 }
 
+function selectTile(row, col) {
+	if(tiles[row][col].isMatchTile && !tiles[row][col].isSelected && match.start === null) { //start match
+		match.start = tiles[row][col];
+		match.end = match.start;
+		match.type = match.start.tileType;
+		match.path.push(tiles[row][col]);
+		setTileSelected(row, col, true);
+	} else if((!tiles[row][col].isMatchTile || (tiles[row][col].isMatchTile && tiles[row][col].tileType === match.type)) 
+		&& !tiles[row][col].isSelected && match.start !== null && isMatchRun(tiles[row][col])) { //continue match run
+		match.path.push(tiles[row][col]);
+		match.end = tiles[row][col];
+		setTileSelected(row, col, true);
+		if(tiles[row][col].isMatchTile && tiles[row][col].tileType === match.type) { //match complete
+			removePathTiles();
+			clearMatch();
+		}
+	} else { //no match
+		clearMatch();
+	}
+}
+
 function setTileSelected(row, col, isSelected) {
 	tiles[row][col].isSelected = isSelected;
 	tileGraphics[row][col].clear();
@@ -194,30 +220,61 @@ function setTileSelected(row, col, isSelected) {
 	renderer.render(stage);
 }
 
+function clearMatch() {
+	for (var i = 0; i < match.path.length; i++) {
+		setTileSelected(match.path[i].row, match.path[i].col, false);
+	};
+	match.start = null;
+	match.end = null;
+	match.path = [];
+	match.type = null;
+}
+
 function onTilePressDown(data) {
-	var row = this.row;
-	var col = this.col;
+	var tileRow = this.row;
+	var tileCol = this.col;
 // TODO: make selection smoother later, just tap for now
-	// setTileSelected(row, col, true);
+	// selectTile(row, col, true);
 }
 
 function onTileTap(data) {
 	//tap can be remove too
-	var row = this.row;
-	var col = this.col;
+	var tileRow = this.row;
+	var tileCol = this.col;
 
-	setTileSelected(row, col, !tiles[row][col].isSelected);
+	selectTile(tileRow, tileCol);
+}
+
+function isMatchRun(tile) {
+	if(match.end === null) return false;
+	if(!touching(tile, match.end)) return false;
+
+	for (var i = 0; i < match.path.length; i++) {
+		if(match.path[i] === match.end) continue;
+		if(touching(tile, match.path[i])) return false; //touching one in the run
+	};
+	return true;
+}
+
+function touching(tile1, tile2) {
+	if(((tile1.row === (tile2.row - 1)) || (tile1.row === (tile2.row + 1))) && tile1.col === tile2.col) {
+		return true;
+	} else if (((tile1.col === (tile2.col - 1)) || (tile1.col === (tile2.col + 1))) && tile1.row === tile2.row) {
+		return true;
+	}
+	return false;
+}
+
+function removePathTiles() {
+	for (var i = 0; i < match.path.length; i++) {
+		tileGraphics[match.path[i].row][match.path[i].col].alpha = 0;
+	};
+	renderer.render(stage);
 }
 
 function resize() {
-//MAYBE DONT SCALE AT ALL? SMALLER THAN MOBILE WILL NEED SMALLER BOXES (worth it?)
-	// renderer.resize(GAME_WIDTH, GAME_HEIGHT);
-	// redraw(stage);
-
 	rotateHorizontal();
-	// gridShifterW = 0;
 	isVertical = false;
-// redraw(stage);
 	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
 	{ //Larger than needs be, desktop mode
 		// redraw(stage);
