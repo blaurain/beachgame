@@ -5,6 +5,7 @@ function Tile(row, col, type){
 	this.yPercent = percentFromRow(row);
 	this.tileType = type;
 	this.isSelected = false;
+	this.isAlive = true;
 	var tileColor;
 	var xPosition, yPosition;
 	var matchGraphic;

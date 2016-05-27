@@ -220,16 +220,6 @@ function setTileSelected(row, col, isSelected) {
 	renderer.render(stage);
 }
 
-function clearMatch() {
-	for (var i = 0; i < match.path.length; i++) {
-		setTileSelected(match.path[i].row, match.path[i].col, false);
-	};
-	match.start = null;
-	match.end = null;
-	match.path = [];
-	match.type = null;
-}
-
 function onTilePressDown(data) {
 	var tileRow = this.row;
 	var tileCol = this.col;
@@ -267,9 +257,20 @@ function touching(tile1, tile2) {
 
 function removePathTiles() {
 	for (var i = 0; i < match.path.length; i++) {
+		match.path[i].isAlive = false;
 		tileGraphics[match.path[i].row][match.path[i].col].alpha = 0;
 	};
 	renderer.render(stage);
+}
+
+function clearMatch() {
+	for (var i = 0; i < match.path.length; i++) {
+		setTileSelected(match.path[i].row, match.path[i].col, false);
+	};
+	match.start = null;
+	match.end = null;
+	match.path = [];
+	match.type = null;
 }
 
 function resize() {
