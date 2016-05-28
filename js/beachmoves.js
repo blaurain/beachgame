@@ -205,9 +205,9 @@ function selectTile(row, col) {
 			removePathTiles();
 			clearMatch();
 		}
-	} else { //no match
+	} else if(!isTouchingPath(tiles[row][col])){ //not selectable and away from path, select new
 		clearMatch();
-	}
+	} //else do nothing its next to the path but not selectable
 }
 
 function setTileSelected(row, col, isSelected) {
@@ -239,11 +239,15 @@ function isMatchRun(tile) {
 	if(match.end === null) return false;
 	if(!touching(tile, match.end)) return false;
 
+	return !isTouchingPath(tile);
+}
+
+function isTouchingPath(tile) {
 	for (var i = 0; i < match.path.length; i++) {
 		if(match.path[i] === match.end) continue;
-		if(touching(tile, match.path[i])) return false; //touching one in the run
+		if(touching(tile, match.path[i])) return true; //touching one in the run
 	};
-	return true;
+	return false;
 }
 
 function touching(tile1, tile2) {
