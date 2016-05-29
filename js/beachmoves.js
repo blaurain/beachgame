@@ -52,6 +52,13 @@ function init() {
 
 	stage.addChild(gridGraphics);
 	GAME.Grid.createTiles(stage);
+	setInterval(update, 100);
+}
+
+function update() {
+	if(GAME.Grid.somethingFalling) {
+		GAME.Grid.applyGravity();
+	}
 }
 
 function redraw(stage) {
@@ -158,6 +165,7 @@ function touching(tile1, tile2) {
 function removePathTiles() {
 	for (var i = 0; i < match.path.length; i++) {
 		match.path[i].isAlive = false;
+		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].isAlive = false;
 		tileGraphics[match.path[i].row][match.path[i].col].alpha = 0;
 	};
 	renderer.render(stage);

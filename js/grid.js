@@ -10,13 +10,16 @@ GAME.Grid.Direction = {
 }
 GAME.Grid.currentGrid = [[]];
 GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+GAME.Grid.somethingFalling = false;
 GAME.Grid.checkGrav = function() {
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) { 
+			var toFall = [];
 			switch(GAME.Grid.gravDirection) {
 				case GAME.Grid.Direction.Down:
 					if(col < 5 && GAME.Grid.currentGrid[row][col + 1].isAlive === false) {
-						setFall(tiles[GAME.Grid.currentGrid[row][col].row, GAME.Grid.currentGrid[row][col].col]);
+						toFall.push({"tile":tiles[GAME.Grid.currentGrid[row][col].row, GAME.Grid.currentGrid[row][col].col], "row":row, "col":(col + 1)})
+						// GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row, GAME.Grid.currentGrid[row][col].col], row, col + 1);
 					}
 				break;
 				case Grid.Direction.Left:
@@ -26,11 +29,28 @@ GAME.Grid.checkGrav = function() {
 
 				break;
 			}
+			if(toFall.length !== 0) { //delay to avoid conflict with currentGrid
+				for(var t = 0; t < toFall.length; t++) {
+					GAME.Grid.setFall(toFall[t].tile, toFall[t].row, toFall[t].col);
+				}
+			}
 		}
 	}
 }
-GAME.Grid.setFall = function(tile) {
-	var t = tile;
+GAME.Grid.setFall = function(tile, fallRow, fallCol) {
+	GAME.Grid.somethingFalling = true;
+	GAME.Grid.currentGrid[tile.row][tile.col].isAlive = false;
+	GAME.Grid.currentGrid[tile.row][tile.col].row = -1;
+	GAME.Grid.currentGrid[tile.row][tile.col].col = -1;
+	GAME.Grid.currentGrid[fallRow][fallCol].isAlive = true;
+	GAME.Grid.currentGrid[fallRow][fallCol].row = tile.row;
+	GAME.Grid.currentGrid[fallRow][fallCol].col = tile.col;
+	tile.isFalling = true;
+	tile.row = fallRow;
+	tile.col = fallCol;
+}
+GAME.Grid.applyGravity = function() {
+	var i = 0; //TODO;
 }
 GAME.Grid.drawGrid = function(stage) {
 	// gridGraphics.clearBeforeRender = true;
