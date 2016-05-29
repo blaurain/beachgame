@@ -112,7 +112,7 @@ function selectTile(row, col) {
 	} else if(!isTouchingPath(tiles[row][col])){ //not selectable and away from path, select new
 		clearMatch();
 	} //else do nothing its next to the path but not selectable
-}
+} //TODO: not selecting match tile until it clears on another tile after a successfull match, idk why
 
 function setTileSelected(row, col, isSelected) {
 	tiles[row][col].isSelected = isSelected;

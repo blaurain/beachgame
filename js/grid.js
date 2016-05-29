@@ -18,8 +18,7 @@ GAME.Grid.checkGrav = function() {
 			switch(GAME.Grid.gravDirection) {
 				case GAME.Grid.Direction.Down:
 					if(col < 5 && GAME.Grid.currentGrid[row][col + 1].isAlive === false) {
-						toFall.push({"tile":tiles[GAME.Grid.currentGrid[row][col].row, GAME.Grid.currentGrid[row][col].col], "row":row, "col":(col + 1)})
-						// GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row, GAME.Grid.currentGrid[row][col].col], row, col + 1);
+						toFall.push({"tile":tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], "row":row, "col":(col + 1)})
 					}
 				break;
 				case Grid.Direction.Left:
