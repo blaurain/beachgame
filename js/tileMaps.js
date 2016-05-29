@@ -1,8 +1,6 @@
 var GAME = GAME || {};
 
-GAME.TileMap = function() {
-
-}
+GAME.TileMap = function() {}
 GAME.TileMap.constructor = GAME.TileMap;
 
 GAME.TileMap.grid1 = [
