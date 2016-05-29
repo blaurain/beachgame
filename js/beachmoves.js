@@ -161,7 +161,7 @@ function removePathTiles() {
 		tileGraphics[match.path[i].row][match.path[i].col].alpha = 0;
 	};
 	renderer.render(stage);
-	checkGrav();
+	GAME.Grid.checkGrav();
 }
 
 function clearMatch() {

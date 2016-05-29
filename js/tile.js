@@ -1,8 +1,10 @@
-function Tile(row, col, type){
+var GAME = GAME || {};
+
+GAME.Tile = function(row, col, type){
 	this.tileRow = this.row = row;
 	this.tileCol = this.col = col;
-	this.xPercent = percentFromCol(col);
-	this.yPercent = percentFromRow(row);
+	this.xPercent = GAME.Tile.percentFromCol(col);
+	this.yPercent = GAME.Tile.percentFromRow(row);
 	this.tileType = type;
 	this.isSelected = false;
 	this.isAlive = true;
@@ -12,8 +14,9 @@ function Tile(row, col, type){
 	if(this.tileType !== 0) this.isMatchTile = true;
 	else this.isMatchTile = false;
 }
+GAME.Tile.constructor = GAME.Tile;
 
-	function percentFromRow(row) {
+	GAME.Tile.percentFromRow = function(row) {
 		switch(row) {
 			case 0: 
 				return 6;
@@ -26,7 +29,7 @@ function Tile(row, col, type){
 		}
 	}
 
-	function percentFromCol(col) {
+	GAME.Tile.percentFromCol = function(col) {
 		switch(col) {
 			case 0: 
 				return 26;
@@ -43,7 +46,7 @@ function Tile(row, col, type){
 		}
 	}
 
-	function getRandomTileColor() {
+	GAME.Tile.getRandomTileColor = function() {
 	switch(Math.floor(Math.random() * 8)) {
 	    case 0:
 	        return 0x72F6FF;

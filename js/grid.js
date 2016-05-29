@@ -70,10 +70,10 @@ var GAME = GAME || {};
 		for (var row = 0; row < 4; row++) {
 			for (var col = 0; col < 6; col++) {
 				GAME.Grid.currentGrid[row][col] = {"row": row, "col": col, "isAlive": true};
-				tiles[row][col] = new Tile(row, col, grid1[row][col]); //TODO: Change this to load different grids
-				tiles[row][col].tileColor = getRandomTileColor();
-				tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
-				tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
+				tiles[row][col] = new GAME.Tile(row, col, grid1[row][col]); //TODO: Change this to load different grids
+				tiles[row][col].tileColor = GAME.Tile.getRandomTileColor();
+				tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
+				tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
 				tiles[row][col].isSelected = false;
 				tileGraphics[row][col].interactive = true;
 				tileGraphics[row][col].on('mousedown', onTilePressDown.bind({"row": row, "col": col}));
@@ -96,8 +96,8 @@ var GAME = GAME || {};
 				tileGraphics[row][col].lineStyle(0, tiles[row][col].tileColor, selectedAlpha);
 				if(tiles[row][col].isSelected) tileGraphics[row][col].beginFill(tiles[row][col].tileColor, selectedAlpha);
 				else tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
-				tiles[row][col].xPosition = (pixelFromPercentWidth(percentFromCol(tiles[row][col].col)) - gridShifterW);
-				tiles[row][col].yPosition = (pixelFromPercentHeight(percentFromRow(tiles[row][col].row)) + 1);
+				tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
+				tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
 				tileGraphics[row][col].drawRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight);
 				tileGraphics[row][col].endFill();
 				if(tiles[row][col].tileType !== 0) {
