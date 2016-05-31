@@ -50,7 +50,7 @@ GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	tile.row = fallRow;
 	tile.col = fallCol;
 
-	//Temp
+	//TODO: Tile graphics might be tied to wrong thing on click, figure those out better on grav move
 
 }
 GAME.Grid.applyGravity = function() {
@@ -97,11 +97,13 @@ GAME.Grid.createTiles = function(stage) {
 			tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
 			tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
 			tiles[row][col].isSelected = false;
-			tileGraphics[row][col].interactive = true;
-			tileGraphics[row][col].on('mousedown', onTilePressDown.bind({"row": row, "col": col}));
-			tileGraphics[row][col].on('touchstart', onTilePressDown.bind({"row": row, "col": col}));
-			tileGraphics[row][col].on('tap', onTileTap.bind({"row": row, "col": col}));
-			tileGraphics[row][col].on('click', onTileTap.bind({"row": row, "col": col}));
+			tiles[row][col].tileGraphic = new PIXI.Graphics();
+			tiles[row][col].tileGraphic.interactive = true;
+			tiles[row][col].tileGraphic.on('mousedown', onTilePressDown.bind({"row": row, "col": col}));
+			tiles[row][col].tileGraphic.on('touchstart', onTilePressDown.bind({"row": row, "col": col}));
+			tiles[row][col].tileGraphic.on('tap', onTileTap.bind({"row": row, "col": col}));
+			tiles[row][col].tileGraphic.on('click', onTileTap.bind({"row": row, "col": col}));
+			stage.addChild(tiles[row][col].tileGraphic);
 			if(tiles[row][col].tileType !== 0) {
 				tiles[row][col].matchGraphic = new PIXI.Graphics();
 				stage.addChild(tiles[row][col].matchGraphic);
@@ -114,48 +116,50 @@ GAME.Grid.drawTiles = function() {
 	tileWidth = pixelFromPercentWidth(12) - 2;
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
-			GAME.Grid.drawTile(row,col);
+			if(tiles[row][col].isAlive) GAME.Grid.drawTile(row,col);
 		};
 	};
 }
 GAME.Grid.drawTile = function(row, col) {
-	tileGraphics[row][col].clear();
-	tileGraphics[row][col].lineStyle(0, tiles[row][col].tileColor, selectedAlpha);
-	if(tiles[row][col].isSelected) tileGraphics[row][col].beginFill(tiles[row][col].tileColor, selectedAlpha);
-	else tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
-	tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
-	tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
-	tileGraphics[row][col].drawRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight);
-	tileGraphics[row][col].endFill();
-	if(tiles[row][col].tileType !== 0) {
+	var tile = tiles[row][col];
+	var tileGraphic = tile.tileGraphic;
+	tileGraphic.clear();
+	tileGraphic.lineStyle(0, tile.tileColor, selectedAlpha);
+	if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
+	else tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
+	tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+	tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+	tileGraphic.drawRect(tile.xPosition, tile.yPosition, tileWidth, tileHeight);
+	tileGraphic.endFill();
+	if(tile.tileType !== 0) {
 		var halfTile = (Math.min(tileWidth, tileHeight) / 2.0);
 		var halfWidth = (tileWidth / 2.0);
 		var halfHeight = (tileHeight / 2.0);
 		var quarterTile = (halfTile / 2.0);
-		tiles[row][col].matchGraphic.clear();
-		tiles[row][col].matchGraphic.lineStyle(getMatchIconWidth(halfTile), 0x000000, 1); //width, color, alpha
+		tile.matchGraphic.clear();
+		tile.matchGraphic.lineStyle(getMatchIconWidth(halfTile), 0x000000, 1); //width, color, alpha
 
-		switch(tiles[row][col].tileType) {
+		switch(tile.tileType) {
 			case 1: //Circle
-				tiles[row][col].matchGraphic.drawCircle(tiles[row][col].xPosition + halfWidth, tiles[row][col].yPosition + halfHeight, quarterTile);
+				tile.matchGraphic.drawCircle(tile.xPosition + halfWidth, tile.yPosition + halfHeight, quarterTile);
 			break;
 			case 2: //Rectangle
-				tiles[row][col].matchGraphic.drawRect(tiles[row][col].xPosition + (halfWidth - quarterTile), tiles[row][col].yPosition + (halfHeight - quarterTile), halfTile, halfTile);
+				tile.matchGraphic.drawRect(tile.xPosition + (halfWidth - quarterTile), tile.yPosition + (halfHeight - quarterTile), halfTile, halfTile);
 			break;
 			case 3: //Triangle
 				if(isVertical){
-					tiles[row][col].matchGraphic.moveTo(tiles[row][col].xPosition + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight);
-					tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfWidth + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight + (halfHeight/2.0));
-					tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfWidth + (halfWidth/2.0), tiles[row][col].yPosition + (halfHeight/2.0));
-					tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight);
+					tile.matchGraphic.moveTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight);
+					tile.matchGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
+					tile.matchGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + (halfHeight/2.0));
+					tile.matchGraphic.lineTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight);
 				} else {
-					tiles[row][col].matchGraphic.moveTo(tiles[row][col].xPosition + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight + (halfHeight/2.0));
-					tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfWidth + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight + (halfHeight/2.0));
-					tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + halfWidth, tiles[row][col].yPosition + (halfHeight/2.0));
-					tiles[row][col].matchGraphic.lineTo(tiles[row][col].xPosition + (halfWidth/2.0), tiles[row][col].yPosition + halfHeight + (halfHeight/2.0));
+					tile.matchGraphic.moveTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
+					tile.matchGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
+					tile.matchGraphic.lineTo(tile.xPosition + halfWidth, tile.yPosition + (halfHeight/2.0));
+					tile.matchGraphic.lineTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
 				}
 			break;
 		}
-}
+	}
 }
 

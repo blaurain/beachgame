@@ -27,8 +27,6 @@ var tileHeight, tileWidth;
 var gridShifterW = 0, gridShifterH = 0;
 var isVertical = false;
 var gridGraphics = new PIXI.Graphics();
-var matchTileGraphics = [];
-var tileGraphics = [];
 var tiles = [[]];
 
 
@@ -41,17 +39,11 @@ window.addEventListener("resize", resize);
 
 function init() {
 	for (var row = 0; row < 4; row++) {
-		tileGraphics[row] = [];
 		tiles[row] = [];
 		GAME.Grid.currentGrid[row] = [];
-		for (var col = 0; col < 6; col++) {
-			tileGraphics[row][col] = new PIXI.Graphics();
-			stage.addChild(tileGraphics[row][col]);
-		};
 	};
-
-	stage.addChild(gridGraphics);
 	GAME.Grid.createTiles(stage);
+	stage.addChild(gridGraphics);
 	setInterval(update, 100);
 }
 
@@ -93,34 +85,36 @@ function getMatchIconWidth(halfTile) {
 	else return baseWidth + 2.5;
 }
 
-function selectTile(row, col) {
-	if(tiles[row][col].isMatchTile && !tiles[row][col].isSelected && match.start === null) { //start match
-		match.start = tiles[row][col];
+function selectTile(tile) {
+	if(tile.isMatchTile && !tile.isSelected && match.start === null) { //start match
+		match.start = tile;
 		match.end = match.start;
 		match.type = match.start.tileType;
-		match.path.push(tiles[row][col]);
-		setTileSelected(row, col, true);
-	} else if((!tiles[row][col].isMatchTile || (tiles[row][col].isMatchTile && tiles[row][col].tileType === match.type)) 
-		&& !tiles[row][col].isSelected && match.start !== null && isMatchRun(tiles[row][col])) { //continue match run
-		match.path.push(tiles[row][col]);
-		match.end = tiles[row][col];
-		setTileSelected(row, col, true);
-		if(tiles[row][col].isMatchTile && tiles[row][col].tileType === match.type) { //match complete
+		match.path.push(tile);
+		setTileSelected(tile, true);
+	} else if((!tile.isMatchTile || (tile.isMatchTile && tile.tileType === match.type)) 
+		&& !tile.isSelected && match.start !== null && isMatchRun(tile)) { //continue match run
+		match.path.push(tile);
+		match.end = tile;
+		setTileSelected(tile, true);
+		if(tile.isMatchTile && tile.tileType === match.type) { //match complete
 			removePathTiles();
 			clearMatch();
 		}
-	} else if(!isTouchingPath(tiles[row][col])){ //not selectable and away from path, select new
+	} else if(!isTouchingPath(tile)) { //not selectable and away from path, select new
 		clearMatch();
-	} //else do nothing its next to the path but not selectable
+	} else if(tile === match.start) { //hit start tile again
+		clearMatch();
+	}//else do nothing its next to the path but not selectable
 } //TODO: not selecting match tile until it clears on another tile after a successfull match, idk why
 
-function setTileSelected(row, col, isSelected) {
-	tiles[row][col].isSelected = isSelected;
-	tileGraphics[row][col].clear();
-	if(isSelected) tileGraphics[row][col].beginFill(tiles[row][col].tileColor, selectedAlpha);
-	else tileGraphics[row][col].beginFill(tiles[row][col].tileColor, unselectedAlpha);
-	tileGraphics[row][col].drawRoundedRect(tiles[row][col].xPosition, tiles[row][col].yPosition, tileWidth, tileHeight, tileCorner);
-	tileGraphics[row][col].endFill();
+function setTileSelected(tile, isSelected) {
+	tile.isSelected = isSelected;
+	tile.tileGraphic.clear();
+	if(isSelected) tile.tileGraphic.beginFill(tile.tileColor, selectedAlpha);
+	else tile.tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
+	tile.tileGraphic.drawRect(tile.xPosition, tile.yPosition, tileWidth, tileHeight);
+	tile.tileGraphic.endFill();
 	renderer.render(stage);
 }
 
@@ -135,7 +129,10 @@ function onTileTap(data) {
 	//tap can be remove too
 	var tileRow = this.row;
 	var tileCol = this.col;
-	selectTile(tileRow, tileCol);
+	if(GAME.Grid.currentGrid[tileRow][tileCol].isAlive) {
+		selectTile(tiles[GAME.Grid.currentGrid[tileRow][tileCol].row][GAME.Grid.currentGrid[tileRow][tileCol].col]);
+	}
+	// selectTile(tileRow, tileCol);
 }
 
 function isMatchRun(tile) {
@@ -166,15 +163,18 @@ function removePathTiles() {
 	for (var i = 0; i < match.path.length; i++) {
 		match.path[i].isAlive = false;
 		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].isAlive = false;
-		tileGraphics[match.path[i].row][match.path[i].col].alpha = 0;
+		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].row = -1;
+		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].col = -1;
+		match.path[i].tileGraphic.alpha = 0;
+		if(match.path[i].isMatchTile) match.path[i].matchGraphic.alpha = 0;
 	};
-	renderer.render(stage);
 	GAME.Grid.checkGrav();
+	renderer.render(stage);
 }
 
 function clearMatch() {
 	for (var i = 0; i < match.path.length; i++) {
-		setTileSelected(match.path[i].row, match.path[i].col, false);
+		setTileSelected(match.path[i], false);
 	};
 	match.start = null;
 	match.end = null;

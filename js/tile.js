@@ -11,7 +11,7 @@ GAME.Tile = function(row, col, type){
 	this.isFalling = false;
 	var tileColor;
 	var xPosition, yPosition;
-	var matchGraphic;
+	var tileGraphic, matchGraphic;
 	if(this.tileType !== 0) this.isMatchTile = true;
 	else this.isMatchTile = false;
 }
