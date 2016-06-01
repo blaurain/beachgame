@@ -15,33 +15,31 @@ GAME.Grid.checkGrav = function() {
 	var toFall = [];
 	switch(GAME.Grid.gravDirection) {
 		case GAME.Grid.Direction.Down:
-		for (var row = 0; row < 4; row++) {
-			for (var col = 5; col >= 0; col--) { 
-				if(col < 5 && GAME.Grid.currentGrid[row][col].isAlive === true && 
-				    GAME.Grid.currentGrid[row][col + 1].isAlive === false) {
-					var dropCol = col + 1;
-					while(dropCol < 5 && GAME.Grid.currentGrid[row][dropCol + 1].isAlive === false) {
-						dropCol++;
+			for (var row = 0; row < 4; row++) {
+				for (var col = 5; col >= 0; col--) { 
+					if(col < 5 && GAME.Grid.currentGrid[row][col].isAlive === true && 
+					   GAME.Grid.currentGrid[row][col + 1].isAlive === false) {
+						var dropCol = col + 1;
+						while(dropCol < 5 && GAME.Grid.currentGrid[row][dropCol + 1].isAlive === false) { dropCol++; }
+						GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], row, dropCol);
 					}
-					GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], row, dropCol);
-					// toFall.push({"tile":tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], "row":row, "col":(col + 1)})
 				}
 			}
-		}
 		break;
-		case Grid.Direction.Left:
-
-		break;
-		case Grid.Direction.Right:
-
+		case GAME.Grid.Direction.Left:
+		case GAME.Grid.Direction.Right:
+			for (var col = 5; col >= 0; col--) { 
+				for (var row = 3; row >= 0; row--) {
+					if(row < 3 && GAME.Grid.currentGrid[row][col].isAlive === true && 
+					   GAME.Grid.currentGrid[row + 1][col].isAlive === false) {
+						var dropRow = row + 1;
+						while(dropRow < 3 && GAME.Grid.currentGrid[dropRow + 1][col].isAlive === false) { dropRow++; }
+						GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], dropRow, col);
+					}
+				}
+			}
 		break;
 	}
-	// if(toFall.length !== 0) { //delay to avoid conflict with currentGrid
-	// 	for(var t = 0; t < toFall.length; t++) {
-	// 		GAME.Grid.setFall(toFall[t].tile, toFall[t].row, toFall[t].col);
-	// 	}
-	// 	GAME.Grid.checkGrav(); //recursive
-	// }
 }
 GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	GAME.Grid.somethingFalling = true;

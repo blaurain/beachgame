@@ -35,6 +35,8 @@ resize();
 // add the renderer view element to the DOM
 document.body.appendChild(renderer.view);
 window.addEventListener("resize", resize);
+window.addEventListener("orientationchange", orientationchange);
+
 //END SETUP**************************
 
 function init() {
@@ -99,6 +101,9 @@ function removePathTiles() {
 	clearMatch();
 	GAME.Grid.checkGrav();
 	renderer.render(stage);
+
+	//TEMP for testing TODO: remove
+	resize();
 }
 
 function clearMatch() {
@@ -220,7 +225,7 @@ function resize() {
 		if(window.innerWidth < window.innerHeight)
 		{ //vert
 			isVertical = true;
-
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 			renderer.resize(window.innerHeight, window.innerWidth);
 			redraw(stage);
 			renderer.resize(window.innerWidth, window.innerHeight);
@@ -228,15 +233,40 @@ function resize() {
 		}
 		else {
 			//horizontal
+			if(window.orientation !== null && window.orientation === 90) {
+				GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
+			} else if(window.orientation !== null && window.orientation === -90) {
+				GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
+			} else { GAME.Grid.gravDirection = GAME.Grid.Direction.Left; }
 			renderer.resize(window.innerWidth, window.innerHeight);
 			redraw(stage);
-
 			if(window.pageYOffset > 0) {
 		 		renderer.view.style.top = window.pageYOffset + "px";
 			}
 		}
 	}
  renderer.render(stage);
+}
+
+function orientationchange(event) { 
+	// switch(window.orientation) {
+	// 	case 0:
+	// 		GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+	// 	break;
+	// 	case -90:
+	// 		GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
+	// 	break;
+	// 	case 90:
+	// 	default:
+	// 		GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
+	// 	break;
+	// }
+
+	// GAME.Grid.checkGrav();
+	// renderer.render(stage);
+
+	// //TEMP for testing TODO: remove
+	// resize();
 }
 
 
