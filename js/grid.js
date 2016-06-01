@@ -13,30 +13,35 @@ GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 GAME.Grid.somethingFalling = false;
 GAME.Grid.checkGrav = function() {
 	var toFall = [];
-	for (var row = 0; row < 4; row++) {
-		for (var col = 0; col < 6; col++) { 
-			if(GAME.Grid.currentGrid[row][col].isAlive === false) continue;
-			switch(GAME.Grid.gravDirection) {
-				case GAME.Grid.Direction.Down:
-					if(col < 5 && GAME.Grid.currentGrid[row][col + 1].isAlive === false) {
-						toFall.push({"tile":tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], "row":row, "col":(col + 1)})
+	switch(GAME.Grid.gravDirection) {
+		case GAME.Grid.Direction.Down:
+		for (var row = 0; row < 4; row++) {
+			for (var col = 5; col >= 0; col--) { 
+				if(col < 5 && GAME.Grid.currentGrid[row][col].isAlive === true && 
+				    GAME.Grid.currentGrid[row][col + 1].isAlive === false) {
+					var dropCol = col + 1;
+					while(dropCol < 5 && GAME.Grid.currentGrid[row][dropCol + 1].isAlive === false) {
+						dropCol++;
 					}
-				break;
-				case Grid.Direction.Left:
-
-				break;
-				case Grid.Direction.Right:
-
-				break;
+					GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], row, dropCol);
+					// toFall.push({"tile":tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], "row":row, "col":(col + 1)})
+				}
 			}
 		}
+		break;
+		case Grid.Direction.Left:
+
+		break;
+		case Grid.Direction.Right:
+
+		break;
 	}
-	if(toFall.length !== 0) { //delay to avoid conflict with currentGrid
-		for(var t = 0; t < toFall.length; t++) {
-			GAME.Grid.setFall(toFall[t].tile, toFall[t].row, toFall[t].col);
-		}
-		GAME.Grid.checkGrav(); //recursive
-	}
+	// if(toFall.length !== 0) { //delay to avoid conflict with currentGrid
+	// 	for(var t = 0; t < toFall.length; t++) {
+	// 		GAME.Grid.setFall(toFall[t].tile, toFall[t].row, toFall[t].col);
+	// 	}
+	// 	GAME.Grid.checkGrav(); //recursive
+	// }
 }
 GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	GAME.Grid.somethingFalling = true;
@@ -49,9 +54,6 @@ GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	tile.isFalling = true;
 	tile.row = fallRow;
 	tile.col = fallCol;
-
-	//TODO: Tile graphics might be tied to wrong thing on click, figure those out better on grav move
-
 }
 GAME.Grid.applyGravity = function() {
 	var i = 0; //TODO;
@@ -99,10 +101,10 @@ GAME.Grid.createTiles = function(stage) {
 			tiles[row][col].isSelected = false;
 			tiles[row][col].tileGraphic = new PIXI.Graphics();
 			tiles[row][col].tileGraphic.interactive = true;
-			tiles[row][col].tileGraphic.on('mousedown', onTilePressDown.bind({"row": row, "col": col}));
-			tiles[row][col].tileGraphic.on('touchstart', onTilePressDown.bind({"row": row, "col": col}));
-			tiles[row][col].tileGraphic.on('tap', onTileTap.bind({"row": row, "col": col}));
-			tiles[row][col].tileGraphic.on('click', onTileTap.bind({"row": row, "col": col}));
+			tiles[row][col].tileGraphic.on('mousedown', onTilePressDown.bind({"row": row, "col": col, "tile":tiles[row][col]}));
+			tiles[row][col].tileGraphic.on('touchstart', onTilePressDown.bind({"row": row, "col": col, "tile":tiles[row][col]}));
+			tiles[row][col].tileGraphic.on('tap', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
+			tiles[row][col].tileGraphic.on('click', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
 			stage.addChild(tiles[row][col].tileGraphic);
 			if(tiles[row][col].tileType !== 0) {
 				tiles[row][col].matchGraphic = new PIXI.Graphics();
@@ -120,10 +122,11 @@ GAME.Grid.drawTiles = function() {
 		};
 	};
 }
-GAME.Grid.drawTile = function(row, col) {
+GAME.Grid.drawTile = function(row, col) { 
 	var tile = tiles[row][col];
 	var tileGraphic = tile.tileGraphic;
 	tileGraphic.clear();
+	if(!tile.isAlive) return; //dont draw anything if not alive
 	tileGraphic.lineStyle(0, tile.tileColor, selectedAlpha);
 	if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
 	else tileGraphic.beginFill(tile.tileColor, unselectedAlpha);

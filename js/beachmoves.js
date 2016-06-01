@@ -85,6 +85,32 @@ function getMatchIconWidth(halfTile) {
 	else return baseWidth + 2.5;
 }
 
+function removePathTiles() {
+	for (var i = 0; i < match.path.length; i++) {
+		match.path[i].isAlive = false;
+		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].isAlive = false;
+		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].row = -1;
+		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].col = -1;
+		match.path[i].tileGraphic.visible = false;
+		if(match.path[i].isMatchTile) {
+			match.path[i].matchGraphic.clear();
+		} 
+	};
+	clearMatch();
+	GAME.Grid.checkGrav();
+	renderer.render(stage);
+}
+
+function clearMatch() {
+	for (var i = 0; i < match.path.length; i++) {
+		setTileSelected(match.path[i], false);
+	};
+	match.start = null;
+	match.end = null;
+	match.path = [];
+	match.type = null;
+}
+
 function selectTile(tile) {
 	if(tile.isMatchTile && !tile.isSelected && match.start === null) { //start match
 		match.start = tile;
@@ -99,7 +125,6 @@ function selectTile(tile) {
 		setTileSelected(tile, true);
 		if(tile.isMatchTile && tile.tileType === match.type) { //match complete
 			removePathTiles();
-			clearMatch();
 		}
 	} else if(!isTouchingPath(tile)) { //not selectable and away from path, select new
 		clearMatch();
@@ -129,10 +154,9 @@ function onTileTap(data) {
 	//tap can be remove too
 	var tileRow = this.row;
 	var tileCol = this.col;
-	if(GAME.Grid.currentGrid[tileRow][tileCol].isAlive) {
-		selectTile(tiles[GAME.Grid.currentGrid[tileRow][tileCol].row][GAME.Grid.currentGrid[tileRow][tileCol].col]);
+	if(this.tile.isAlive) {
+		selectTile(this.tile);
 	}
-	// selectTile(tileRow, tileCol);
 }
 
 function isMatchRun(tile) {
@@ -157,29 +181,6 @@ function touching(tile1, tile2) {
 		return true;
 	}
 	return false;
-}
-
-function removePathTiles() {
-	for (var i = 0; i < match.path.length; i++) {
-		match.path[i].isAlive = false;
-		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].isAlive = false;
-		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].row = -1;
-		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].col = -1;
-		match.path[i].tileGraphic.alpha = 0;
-		if(match.path[i].isMatchTile) match.path[i].matchGraphic.alpha = 0;
-	};
-	GAME.Grid.checkGrav();
-	renderer.render(stage);
-}
-
-function clearMatch() {
-	for (var i = 0; i < match.path.length; i++) {
-		setTileSelected(match.path[i], false);
-	};
-	match.start = null;
-	match.end = null;
-	match.path = [];
-	match.type = null;
 }
 
 function rotateHorizontal() {
