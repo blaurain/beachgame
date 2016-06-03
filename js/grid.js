@@ -8,7 +8,6 @@ GAME.Grid.Direction = {
 	Left: 1,
 	Right: 2
 }
-GAME.Grid.currentGrid = [[]];
 GAME.Grid.currentTiles = [[]];
 GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 GAME.Grid.somethingFalling = false;
@@ -60,17 +59,12 @@ GAME.Grid.checkGrav = function() {
 }
 GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	GAME.Grid.somethingFalling = true; //TODO: remove current grid completely
-	GAME.Grid.currentGrid[tile.row][tile.col].isAlive = false;
-	GAME.Grid.currentGrid[tile.row][tile.col].row = -1;
-	GAME.Grid.currentGrid[tile.row][tile.col].col = -1;
-	GAME.Grid.currentGrid[fallRow][fallCol].isAlive = true;
-	GAME.Grid.currentGrid[fallRow][fallCol].row = tile.row;
-	GAME.Grid.currentGrid[fallRow][fallCol].col = tile.col;
 	GAME.Grid.currentTiles[fallRow][fallCol] = tile;
 	GAME.Grid.currentTiles[tile.row][tile.col] = null;
 	tile.isFalling = true;
 	tile.row = fallRow;
 	tile.col = fallCol;
+	clearMatch();
 }
 GAME.Grid.applyGravity = function() {
 	var i = 0; //TODO;
@@ -111,7 +105,6 @@ GAME.Grid.createTiles = function(stage) {
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
 			tiles[row][col] = new GAME.Tile(row, col, GAME.TileMap.grid1[row][col]); //TODO: Change this to load different grids
-			GAME.Grid.currentGrid[row][col] = {"row": row, "col": col, "isAlive": true};
 			GAME.Grid.currentTiles[row][col] = tiles[row][col];
 			tiles[row][col].tileColor = GAME.Tile.getRandomTileColor();
 			switch(GAME.Grid.gravDirection) {

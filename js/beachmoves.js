@@ -42,7 +42,6 @@ window.addEventListener("orientationchange", orientationchange);
 function init() {
 	for (var row = 0; row < 4; row++) {
 		tiles[row] = [];
-		GAME.Grid.currentGrid[row] = [];
 		GAME.Grid.currentTiles[row] = [];
 	};
 	GAME.Grid.createTiles(stage);
@@ -91,9 +90,6 @@ function getMatchIconWidth(halfTile) {
 function removePathTiles() {
 	for (var i = 0; i < match.path.length; i++) {
 		match.path[i].isAlive = false;
-		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].isAlive = false;
-		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].row = -1;
-		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].col = -1;
 		GAME.Grid.currentTiles[match.path[i].row][match.path[i].col] = null;
 		match.path[i].tileGraphic.visible = false;
 		if(match.path[i].isMatchTile) {
