@@ -9,6 +9,7 @@ GAME.Grid.Direction = {
 	Right: 2
 }
 GAME.Grid.currentGrid = [[]];
+GAME.Grid.currentTiles = [[]];
 GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 GAME.Grid.somethingFalling = false;
 GAME.Grid.checkGrav = function() {
@@ -17,11 +18,12 @@ GAME.Grid.checkGrav = function() {
 		case GAME.Grid.Direction.Down:
 			for (var row = 0; row < 4; row++) {
 				for (var col = 5; col >= 0; col--) { 
-					if(col < 5 && GAME.Grid.currentGrid[row][col].isAlive === true && 
-					   GAME.Grid.currentGrid[row][col + 1].isAlive === false) {
+					if(col < 5 && GAME.Grid.currentTiles[row][col] !== null && GAME.Grid.currentTiles[row][col].isAlive && 
+						(GAME.Grid.currentTiles[row][col + 1] === null || !GAME.Grid.currentTiles[row][col + 1].isAlive)) {
 						var dropCol = col + 1;
-						while(dropCol < 5 && GAME.Grid.currentGrid[row][dropCol + 1].isAlive === false) { dropCol++; }
-						GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], row, dropCol);
+						while(dropCol < 5 && (GAME.Grid.currentTiles[row][dropCol + 1] === null || 
+							GAME.Grid.currentTiles[row][dropCol + 1].isAlive === false)) { dropCol++; }
+						GAME.Grid.setFall(GAME.Grid.currentTiles[row][col], row, dropCol);
 					}
 				}
 			}
@@ -30,11 +32,12 @@ GAME.Grid.checkGrav = function() {
 		case GAME.Grid.Direction.Right:
 			for (var col = 5; col >= 0; col--) { 
 				for (var row = 3; row >= 0; row--) {
-					if(row < 3 && GAME.Grid.currentGrid[row][col].isAlive === true && 
-					   GAME.Grid.currentGrid[row + 1][col].isAlive === false) {
+					if(row < 3 && GAME.Grid.currentTiles[row][col] !== null  && GAME.Grid.currentTiles[row][col].isAlive &&
+					 (GAME.Grid.currentTiles[row + 1][col] === null || !GAME.Grid.currentTiles[row + 1][col].isAlive)) {
 						var dropRow = row + 1;
-						while(dropRow < 3 && GAME.Grid.currentGrid[dropRow + 1][col].isAlive === false) { dropRow++; }
-						GAME.Grid.setFall(tiles[GAME.Grid.currentGrid[row][col].row][GAME.Grid.currentGrid[row][col].col], dropRow, col);
+						while(dropRow < 3 && (GAME.Grid.currentTiles[dropRow + 1][col] === null || 
+							GAME.Grid.currentTiles[dropRow + 1][col].isAlive === false)) { dropRow++; }
+						GAME.Grid.setFall(GAME.Grid.currentTiles[row][col], dropRow, col);
 					}
 				}
 			}
@@ -49,6 +52,8 @@ GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	GAME.Grid.currentGrid[fallRow][fallCol].isAlive = true;
 	GAME.Grid.currentGrid[fallRow][fallCol].row = tile.row;
 	GAME.Grid.currentGrid[fallRow][fallCol].col = tile.col;
+	GAME.Grid.currentTiles[fallRow][fallCol] = tile;
+	GAME.Grid.currentTiles[tile.row][tile.col] = null;
 	tile.isFalling = true;
 	tile.row = fallRow;
 	tile.col = fallCol;
@@ -91,8 +96,9 @@ GAME.Grid.createTiles = function(stage) {
 
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
-			GAME.Grid.currentGrid[row][col] = {"row": row, "col": col, "isAlive": true};
 			tiles[row][col] = new GAME.Tile(row, col, GAME.TileMap.grid1[row][col]); //TODO: Change this to load different grids
+			GAME.Grid.currentGrid[row][col] = {"row": row, "col": col, "isAlive": true};
+			GAME.Grid.currentTiles[row][col] = tiles[row][col];
 			tiles[row][col].tileColor = GAME.Tile.getRandomTileColor();
 			tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
 			tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);

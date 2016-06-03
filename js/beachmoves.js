@@ -43,6 +43,7 @@ function init() {
 	for (var row = 0; row < 4; row++) {
 		tiles[row] = [];
 		GAME.Grid.currentGrid[row] = [];
+		GAME.Grid.currentTiles[row] = [];
 	};
 	GAME.Grid.createTiles(stage);
 	stage.addChild(gridGraphics);
@@ -93,6 +94,7 @@ function removePathTiles() {
 		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].isAlive = false;
 		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].row = -1;
 		GAME.Grid.currentGrid[match.path[i].row][match.path[i].col].col = -1;
+		GAME.Grid.currentTiles[match.path[i].row][match.path[i].col] = null;
 		match.path[i].tileGraphic.visible = false;
 		if(match.path[i].isMatchTile) {
 			match.path[i].matchGraphic.clear();
@@ -136,7 +138,7 @@ function selectTile(tile) {
 	} else if(tile === match.start) { //hit start tile again
 		clearMatch();
 	}//else do nothing its next to the path but not selectable
-} //TODO: not selecting match tile until it clears on another tile after a successfull match, idk why
+} 
 
 function setTileSelected(tile, isSelected) {
 	tile.isSelected = isSelected;
@@ -202,6 +204,18 @@ function rotateVertical() {
 function resize() {
 	rotateHorizontal();
 	isVertical = false;
+	if(window.orientation === undefined) { //desktop only
+		var oldGrav = GAME.Grid.gravDirection;
+		if(window.innerWidth < window.innerHeight)
+		{ //vert 
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+		} else {
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
+		}
+		if(oldGrav !== GAME.Grid.gravDirection) {
+			GAME.Grid.checkGrav();
+		}
+	}
 	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
 	{ //Larger than needs be, desktop mode
 		// redraw(stage);
@@ -230,14 +244,13 @@ function resize() {
 			redraw(stage);
 			renderer.resize(window.innerWidth, window.innerHeight);
 			rotateVertical();
+
+			if(oldGrav !== GAME.Grid.Direction.Down && window.orientation === undefined){
+
+			}
 		}
 		else {
 			//horizontal
-			if(window.orientation !== null && window.orientation === 90) {
-				GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
-			} else if(window.orientation !== null && window.orientation === -90) {
-				GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
-			} else { GAME.Grid.gravDirection = GAME.Grid.Direction.Left; }
 			renderer.resize(window.innerWidth, window.innerHeight);
 			redraw(stage);
 			if(window.pageYOffset > 0) {
@@ -245,28 +258,29 @@ function resize() {
 			}
 		}
 	}
- renderer.render(stage);
+ 	renderer.render(stage);
 }
 
-function orientationchange(event) { 
-	// switch(window.orientation) {
-	// 	case 0:
-	// 		GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
-	// 	break;
-	// 	case -90:
-	// 		GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
-	// 	break;
-	// 	case 90:
-	// 	default:
-	// 		GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
-	// 	break;
-	// }
+function orientationchange(event) {  //Mobile only
+	if(window.orientation === undefined) return;
+	switch(window.orientation) {
+		case 0:
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+		break;
+		case -90:
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
+		break;
+		case 90:
+		default:
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
+		break;
+	}
 
-	// GAME.Grid.checkGrav();
-	// renderer.render(stage);
+	GAME.Grid.checkGrav();
+	renderer.render(stage);
 
-	// //TEMP for testing TODO: remove
-	// resize();
+	//TEMP for testing TODO: remove
+	resize();
 }
 
 
