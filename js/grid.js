@@ -10,6 +10,7 @@ GAME.Grid.Direction = {
 }
 GAME.Grid.currentTiles = [[]];
 GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+GAME.Grid.gravity = 1;
 GAME.Grid.somethingFalling = false;
 GAME.Grid.reverseTileX = 112;
 GAME.Grid.reverseTileY = 78;
@@ -58,7 +59,7 @@ GAME.Grid.checkGrav = function() {
 	}
 }
 GAME.Grid.setFall = function(tile, fallRow, fallCol) {
-	GAME.Grid.somethingFalling = true; //TODO: remove current grid completely
+	GAME.Grid.somethingFalling = true; 
 	GAME.Grid.currentTiles[fallRow][fallCol] = tile;
 	GAME.Grid.currentTiles[tile.row][tile.col] = null;
 	tile.isFalling = true;
@@ -67,7 +68,39 @@ GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	clearMatch();
 }
 GAME.Grid.applyGravity = function() {
-	var i = 0; //TODO;
+	if(isVertical) { renderer.resize(window.innerHeight, window.innerWidth); }
+	var falling = false;
+	for (var col = 5; col >= 0; col--) { 
+		for (var row = 3; row >= 0; row--) {
+			if(tiles[row][col].isFalling) {
+				falling = true;
+				GAME.Grid.drawTile(row, col);
+				tiles[row][col].velocity += GAME.Grid.gravity;
+			}
+		}
+	}
+	if(!falling) { //nothing falling anymore
+		GAME.Grid.stopFalling();
+	}
+	if(isVertical) { renderer.resize(window.innerWidth, window.innerHeight); }
+ 	renderer.render(stage);
+}
+GAME.Grid.moveTileToward = function(point1, point2, velocity) {
+	if(Math.abs(point1 - point2) <= 10) { //close enough
+		return point2;
+	} else if(point1 < point2) {
+		return point1 + velocity;
+	} else { //point1 > point2
+		return point1 - velocity;
+	}
+}
+GAME.Grid.stopFalling = function() { 
+	GAME.Grid.somethingFalling = false;
+	for (var col = 5; col >= 0; col--) { 
+		for (var row = 3; row >= 0; row--) {
+			tiles[row][col].isFalling = false;
+		}
+	}
 }
 GAME.Grid.drawGrid = function() {
 	// gridGraphics.clearBeforeRender = true;
@@ -150,17 +183,47 @@ GAME.Grid.drawTile = function(row, col) {
 	tileGraphic.lineStyle(0, tile.tileColor, selectedAlpha);
 	if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
 	else tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
-	tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
-	switch(GAME.Grid.gravDirection) {
-		case GAME.Grid.Direction.Right:
-			tile.xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
-			tile.yPosition = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tile.row)) + 1); 
-		break;
-		case GAME.Grid.Direction.Left:	
-		case GAME.Grid.Direction.Down:
-			tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
-			tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+	if(tile.isFalling) {
+		var target;
+		switch(GAME.Grid.gravDirection) {
+			case GAME.Grid.Direction.Right:
+
+				break;
+			case GAME.Grid.Direction.Left:	
+				// tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
+				// tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
+				// target = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+				// tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+				// tile.xPosition = GAME.Grid.moveTileToward(
+				// 	tile.xPosition, 
+				// 	target,
+				// 	tile.velocity);
+				break;
+			case GAME.Grid.Direction.Down:	
+				target = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+				tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+				tile.xPosition = GAME.Grid.moveTileToward(
+					tile.xPosition, 
+					target,
+					tile.velocity);
+				break;
+		}
+		if(Math.abs(target - tile.xPosition) < 2) { //close enough
+			tile.isFalling = false;
+			tile.velocity = tile.startVelocity;
+		}
+	} else { // Not falling - regular
+		switch(GAME.Grid.gravDirection) {
+			case GAME.Grid.Direction.Right:
+				tile.xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+				tile.yPosition = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tile.row)) + 1); 
 			break;
+			case GAME.Grid.Direction.Left:	
+			case GAME.Grid.Direction.Down:
+				tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+				tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+			break;
+		}
 	}
 	tileGraphic.drawRect(tile.xPosition, tile.yPosition, tileWidth, tileHeight);
 	tileGraphic.endFill();

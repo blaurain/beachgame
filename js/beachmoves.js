@@ -26,6 +26,7 @@ var unselectedAlpha = .7;
 var tileHeight, tileWidth;
 var gridShifterW = 0, gridShifterH = 0;
 var isVertical = false;
+var isMobile = false;
 var gridGraphics = new PIXI.Graphics();
 var tiles = [[]];
 
@@ -101,7 +102,7 @@ function removePathTiles() {
 	renderer.render(stage);
 
 	//TEMP for testing TODO: remove
-	resize();
+	// resize();
 }
 
 function clearMatch() {
@@ -209,12 +210,14 @@ function resize() {
 			GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
 		}
 		if(oldGrav !== GAME.Grid.gravDirection) {
+			GAME.Grid.stopFalling();
 			GAME.Grid.checkGrav();
 		}
 	}
 	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
 	{ //Larger than needs be, desktop mode
 		// redraw(stage);
+		isMobile = false;
 		renderer.resize(GAME_WIDTH, GAME_HEIGHT);
 		renderer.view.style.position = "relative";
 
@@ -223,10 +226,11 @@ function resize() {
 
 		renderer.view.style.top = centerY + "px";
 		renderer.view.style.left = centerX + "px";
-		redraw(stage);
+		redraw(stage); //TODO: if vert on desktop probably need to resize like mobile
 	}
 	else
 	{  //mobile/small
+		isMobile = true;
 		window.scrollBy(0,0);
 		renderer.view.style.position = "absolute";
 		renderer.view.style.top = "0px";
@@ -268,11 +272,11 @@ function orientationchange(event) {  //Mobile only
 		break;
 	}
 
-	GAME.Grid.checkGrav();
-	renderer.render(stage);
+	// renderer.render(stage);
 
-	//TEMP for testing TODO: remove
+	GAME.Grid.stopFalling();
 	resize();
+	GAME.Grid.checkGrav();
 }
 
 
