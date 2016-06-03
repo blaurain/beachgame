@@ -244,10 +244,6 @@ function resize() {
 			redraw(stage);
 			renderer.resize(window.innerWidth, window.innerHeight);
 			rotateVertical();
-
-			if(oldGrav !== GAME.Grid.Direction.Down && window.orientation === undefined){
-
-			}
 		}
 		else {
 			//horizontal

@@ -12,6 +12,8 @@ GAME.Grid.currentGrid = [[]];
 GAME.Grid.currentTiles = [[]];
 GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 GAME.Grid.somethingFalling = false;
+GAME.Grid.reverseTileX = 112;
+GAME.Grid.reverseTileY = 78;
 GAME.Grid.checkGrav = function() {
 	var toFall = [];
 	switch(GAME.Grid.gravDirection) {
@@ -28,8 +30,7 @@ GAME.Grid.checkGrav = function() {
 				}
 			}
 		break;
-		case GAME.Grid.Direction.Left:
-		case GAME.Grid.Direction.Right:
+		case GAME.Grid.Direction.Left: 
 			for (var col = 5; col >= 0; col--) { 
 				for (var row = 3; row >= 0; row--) {
 					if(row < 3 && GAME.Grid.currentTiles[row][col] !== null  && GAME.Grid.currentTiles[row][col].isAlive &&
@@ -42,10 +43,23 @@ GAME.Grid.checkGrav = function() {
 				}
 			}
 		break;
+		case GAME.Grid.Direction.Right:
+		for (var col = 5; col >= 0; col--) { 
+				for (var row = 0; row < 4; row++) {
+					if(row > 0 && GAME.Grid.currentTiles[row][col] !== null  && GAME.Grid.currentTiles[row][col].isAlive &&
+					 (GAME.Grid.currentTiles[row - 1][col] === null || !GAME.Grid.currentTiles[row - 1][col].isAlive)) {
+						var dropRow = row - 1;
+						while(dropRow > 0 && (GAME.Grid.currentTiles[dropRow - 1][col] === null || 
+							GAME.Grid.currentTiles[dropRow - 1][col].isAlive === false)) { dropRow--; }
+						GAME.Grid.setFall(GAME.Grid.currentTiles[row][col], dropRow, col);
+					}
+				}
+			}
+		break;
 	}
 }
 GAME.Grid.setFall = function(tile, fallRow, fallCol) {
-	GAME.Grid.somethingFalling = true;
+	GAME.Grid.somethingFalling = true; //TODO: remove current grid completely
 	GAME.Grid.currentGrid[tile.row][tile.col].isAlive = false;
 	GAME.Grid.currentGrid[tile.row][tile.col].row = -1;
 	GAME.Grid.currentGrid[tile.row][tile.col].col = -1;
@@ -100,8 +114,17 @@ GAME.Grid.createTiles = function(stage) {
 			GAME.Grid.currentGrid[row][col] = {"row": row, "col": col, "isAlive": true};
 			GAME.Grid.currentTiles[row][col] = tiles[row][col];
 			tiles[row][col].tileColor = GAME.Tile.getRandomTileColor();
-			tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
-			tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
+			switch(GAME.Grid.gravDirection) {
+				case GAME.Grid.Direction.Right:
+					tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
+					tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
+					break;
+				case GAME.Grid.Direction.Down:
+				case GAME.Grid.Direction.Left:	
+					tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
+					tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
+					break;
+			}
 			tiles[row][col].isSelected = false;
 			tiles[row][col].tileGraphic = new PIXI.Graphics();
 			tiles[row][col].tileGraphic.interactive = true;
@@ -135,7 +158,17 @@ GAME.Grid.drawTile = function(row, col) {
 	if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
 	else tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
 	tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
-	tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+	switch(GAME.Grid.gravDirection) {
+		case GAME.Grid.Direction.Right:
+			tile.xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+			tile.yPosition = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tile.row)) + 1); 
+		break;
+		case GAME.Grid.Direction.Left:	
+		case GAME.Grid.Direction.Down:
+			tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+			tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+			break;
+	}
 	tileGraphic.drawRect(tile.xPosition, tile.yPosition, tileWidth, tileHeight);
 	tileGraphic.endFill();
 	if(tile.tileType !== 0) {
