@@ -187,7 +187,7 @@ GAME.Grid.drawTile = function(row, col) {
 	tileGraphic.lineStyle(0, tile.tileColor, selectedAlpha);
 	if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
 	else tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
-	if(tile.isFalling) {
+	if(tile.isFalling) { //animate tile fall
 		var target;
 		switch(GAME.Grid.gravDirection) {
 			case GAME.Grid.Direction.Right:

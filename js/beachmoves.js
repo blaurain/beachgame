@@ -240,9 +240,9 @@ function resize() {
 		{ //vert
 			isVertical = true;
 			// GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
-			renderer.resize(window.innerHeight, window.innerWidth);
+			GAME.Grid.beginDraw();
 			redraw(stage);
-			renderer.resize(window.innerWidth, window.innerHeight);
+			GAME.Grid.endDraw();
 			rotateVertical();
 		}
 		else {
