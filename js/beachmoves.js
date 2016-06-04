@@ -207,7 +207,7 @@ function resize() {
 		{ //vert 
 			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 		} else {
-			GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 		}
 		if(oldGrav !== GAME.Grid.gravDirection) {
 			GAME.Grid.stopFalling();
@@ -239,7 +239,7 @@ function resize() {
 		if(window.innerWidth < window.innerHeight)
 		{ //vert
 			isVertical = true;
-			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+			// GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 			renderer.resize(window.innerHeight, window.innerWidth);
 			redraw(stage);
 			renderer.resize(window.innerWidth, window.innerHeight);
@@ -271,11 +271,8 @@ function orientationchange(event) {  //Mobile only
 			GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 		break;
 	}
-
-	// renderer.render(stage);
-
 	GAME.Grid.stopFalling();
-	resize();
+	// resize();
 	GAME.Grid.checkGrav();
 }
 

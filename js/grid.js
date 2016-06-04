@@ -67,26 +67,32 @@ GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	tile.col = fallCol;
 	clearMatch();
 }
-GAME.Grid.applyGravity = function() {
+GAME.Grid.beginDraw = function() { //TODO: for desktop change this to max draw size 
 	if(isVertical) { renderer.resize(window.innerHeight, window.innerWidth); }
+}
+GAME.Grid.endDraw = function() {
+	if(isVertical) { renderer.resize(window.innerWidth, window.innerHeight); }
+}
+GAME.Grid.applyGravity = function() {
+	GAME.Grid.beginDraw();
 	var falling = false;
 	for (var col = 5; col >= 0; col--) { 
 		for (var row = 3; row >= 0; row--) {
 			if(tiles[row][col].isFalling) {
 				falling = true;
 				GAME.Grid.drawTile(row, col);
-				tiles[row][col].velocity += GAME.Grid.gravity;
+				tiles[row][col].velocity = Math.min(tiles[row][col].velocity + GAME.Grid.gravity, 50);
 			}
 		}
 	}
 	if(!falling) { //nothing falling anymore
 		GAME.Grid.stopFalling();
 	}
-	if(isVertical) { renderer.resize(window.innerWidth, window.innerHeight); }
+	GAME.Grid.endDraw();
  	renderer.render(stage);
 }
 GAME.Grid.moveTileToward = function(point1, point2, velocity) {
-	if(Math.abs(point1 - point2) <= 10) { //close enough
+	if(Math.abs(point1 - point2) <= velocity) { //close enough
 		return point2;
 	} else if(point1 < point2) {
 		return point1 + velocity;
@@ -106,7 +112,6 @@ GAME.Grid.drawGrid = function() {
 	// gridGraphics.clearBeforeRender = true;
 	gridGraphics.clear();
 	gridGraphics.lineStyle(getGridWidth(), 0xFF823A, 1); //width, color, alpha
-
 	//outside
 	gridGraphics.drawRoundedRect(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6),
 		pixelFromPercentWidth(72), pixelFromPercentHeight(88), 10);
@@ -134,7 +139,6 @@ GAME.Grid.drawGrid = function() {
 GAME.Grid.createTiles = function(stage) {
 	tileHeight = pixelFromPercentHeight(22) - 2;
 	tileWidth = pixelFromPercentWidth(12) - 2;
-
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 6; col++) {
 			tiles[row][col] = new GAME.Tile(row, col, GAME.TileMap.grid1[row][col]); //TODO: Change this to load different grids
@@ -187,30 +191,35 @@ GAME.Grid.drawTile = function(row, col) {
 		var target;
 		switch(GAME.Grid.gravDirection) {
 			case GAME.Grid.Direction.Right:
-
+				target = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tile.row)) + 1);
+				tile.xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+				tile.yPosition = GAME.Grid.moveTileToward(tile.yPosition, target, tile.velocity);
+				if(Math.abs(target - tile.yPosition) < tile.velocity || tile.yPosition > target) { //close enough
+					tile.isFalling = false;
+					tile.velocity = tile.startVelocity;
+					tile.yPosition = target;
+				}
 				break;
 			case GAME.Grid.Direction.Left:	
-				// tiles[row][col].xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tiles[row][col].col)) - gridShifterW);
-				// tiles[row][col].yPosition = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tiles[row][col].row)) + 1);
-				// target = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
-				// tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
-				// tile.xPosition = GAME.Grid.moveTileToward(
-				// 	tile.xPosition, 
-				// 	target,
-				// 	tile.velocity);
+				target = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+				tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+				tile.yPosition = GAME.Grid.moveTileToward(tile.yPosition, target, tile.velocity);
+				if(Math.abs(target - tile.yPosition) < tile.velocity|| tile.yPosition > target) { //close enough
+					tile.isFalling = false;
+					tile.velocity = tile.startVelocity;
+					tile.yPosition = target;
+				}
 				break;
 			case GAME.Grid.Direction.Down:	
 				target = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
 				tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
-				tile.xPosition = GAME.Grid.moveTileToward(
-					tile.xPosition, 
-					target,
-					tile.velocity);
+				tile.xPosition = GAME.Grid.moveTileToward(tile.xPosition, target, tile.velocity);
+				if(Math.abs(target - tile.xPosition) < tile.velocity|| tile.xPosition > target) { //close enough
+					tile.isFalling = false;
+					tile.velocity = tile.startVelocity;
+					tile.xPosition = target;
+				}
 				break;
-		}
-		if(Math.abs(target - tile.xPosition) < 2) { //close enough
-			tile.isFalling = false;
-			tile.velocity = tile.startVelocity;
 		}
 	} else { // Not falling - regular
 		switch(GAME.Grid.gravDirection) {
@@ -234,7 +243,6 @@ GAME.Grid.drawTile = function(row, col) {
 		var quarterTile = (halfTile / 2.0);
 		tile.matchGraphic.clear();
 		tile.matchGraphic.lineStyle(getMatchIconWidth(halfTile), 0x000000, 1); //width, color, alpha
-
 		switch(tile.tileType) {
 			case 1: //Circle
 				tile.matchGraphic.drawCircle(tile.xPosition + halfWidth, tile.yPosition + halfHeight, quarterTile);
