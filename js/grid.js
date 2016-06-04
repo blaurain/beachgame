@@ -188,10 +188,9 @@ GAME.Grid.drawTile = function(row, col) {
 	if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
 	else tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
 	if(tile.isFalling) { //animate tile fall
-		var target;
 		switch(GAME.Grid.gravDirection) {
 			case GAME.Grid.Direction.Right:
-				target = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tile.row)) + 1);
+				var target = (pixelFromPercentHeight(GAME.Grid.reverseTileY - GAME.Tile.percentFromRow(tile.row)) + 1);
 				tile.xPosition = (pixelFromPercentWidth(GAME.Grid.reverseTileX - GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
 				tile.yPosition = GAME.Grid.moveTileToward(tile.yPosition, target, tile.velocity);
 				if(Math.abs(target - tile.yPosition) < tile.velocity || tile.yPosition > target) { //close enough
@@ -201,7 +200,7 @@ GAME.Grid.drawTile = function(row, col) {
 				}
 				break;
 			case GAME.Grid.Direction.Left:	
-				target = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
+				var target = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
 				tile.xPosition = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
 				tile.yPosition = GAME.Grid.moveTileToward(tile.yPosition, target, tile.velocity);
 				if(Math.abs(target - tile.yPosition) < tile.velocity|| tile.yPosition > target) { //close enough
@@ -211,7 +210,7 @@ GAME.Grid.drawTile = function(row, col) {
 				}
 				break;
 			case GAME.Grid.Direction.Down:	
-				target = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
+				var target = (pixelFromPercentWidth(GAME.Tile.percentFromCol(tile.col)) - gridShifterW);
 				tile.yPosition = (pixelFromPercentHeight(GAME.Tile.percentFromRow(tile.row)) + 1);
 				tile.xPosition = GAME.Grid.moveTileToward(tile.xPosition, target, tile.velocity);
 				if(Math.abs(target - tile.xPosition) < tile.velocity|| tile.xPosition > target) { //close enough
