@@ -27,6 +27,7 @@ var tileHeight, tileWidth;
 var gridShifterW = 0, gridShifterH = 0;
 var isVertical = false;
 var isMobile = false;
+var isTilting = false;
 var gridGraphics = new PIXI.Graphics();
 var tiles = [[]];
 
@@ -35,8 +36,8 @@ init();
 resize();
 // add the renderer view element to the DOM
 document.body.appendChild(renderer.view);
-window.addEventListener("resize", resize);
 window.addEventListener("orientationchange", orientationchange);
+window.addEventListener("resize", resize);
 
 //END SETUP**************************
 
@@ -51,7 +52,7 @@ function init() {
 }
 
 function update() {
-	if(GAME.Grid.somethingFalling) {
+	if(GAME.Grid.somethingFalling && !isTilting) {
 		GAME.Grid.applyGravity();
 	}
 }
@@ -201,7 +202,7 @@ function rotateVertical() {
 
 function resize() {
 	rotateHorizontal();
-	isVertical = false;
+	// isVertical = false;
 	if(window.orientation === undefined) { //desktop only
 		var oldGrav = GAME.Grid.gravDirection;
 		if(window.innerWidth < window.innerHeight)
@@ -215,9 +216,9 @@ function resize() {
 			GAME.Grid.checkGrav();
 		}
 	}
-	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT)
-	{ //Larger than needs be, desktop mode
+	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT) { //Larger than needs be, desktop mode
 		// redraw(stage);
+		isVertical = false; //temp till real desktop mode
 		isMobile = false;
 		renderer.resize(GAME_WIDTH, GAME_HEIGHT);
 		renderer.view.style.position = "relative";
@@ -228,26 +229,37 @@ function resize() {
 		renderer.view.style.top = centerY + "px";
 		renderer.view.style.left = centerX + "px";
 		redraw(stage); //TODO: if vert on desktop probably need to resize like mobile
-	}
-	else
-	{  //mobile/small
+	} else {  //mobile/small
 		isMobile = true;
 		window.scrollBy(0,0);
 		renderer.view.style.position = "absolute";
 		renderer.view.style.top = "0px";
 		renderer.view.style.left = "0px";
 
-		if(window.innerWidth < window.innerHeight)
-		{ //vert
+		if(window.innerWidth < window.innerHeight) { //vert
+			if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
+				isTilting = true;
+				renderer.render(stage);
+				return;
+			} //prevent double refresh
 			isVertical = true;
-			// GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
 			GAME.Grid.beginDraw();
 			redraw(stage);
 			GAME.Grid.endDraw();
 			rotateVertical();
-		}
-		else {
+		} else {
 			//horizontal
+			if(window.orientation !== undefined && (
+			(GAME.Grid.gravDirection === GAME.Grid.Direction.Down) ||
+			(GAME.Grid.gravDirection === GAME.Grid.Direction.Right && window.orientation === 90) || 
+			(GAME.Grid.gravDirection === GAME.Grid.Direction.Left && window.orientation === -90))) { //prevent double refresh 
+				isTilting = true;
+				renderer.resize(window.innerWidth, window.innerHeight);
+				renderer.render(stage);
+				return;
+			}
+			isVertical = false;
 			renderer.resize(window.innerWidth, window.innerHeight);
 			redraw(stage);
 			if(window.pageYOffset > 0) {
@@ -255,6 +267,7 @@ function resize() {
 			}
 		}
 	}
+ 	isTilting = false;
  	renderer.render(stage);
 }
 
@@ -272,11 +285,13 @@ function orientationchange(event) {  //Mobile only
 			GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 		break;
 	}
+	// isTilting = true;
 	GAME.Grid.stopFalling();
 	// resize();
 	GAME.Grid.checkGrav();
-}
-
+} //TODO: this is getting called after resize so vert is considered "right" and drawing upside down
+//when reize is called the orientation variable hasn't changed yet, need to make them independent
+//resize is called twice, once on resize and then orientation change triggers a new resize after it changes
 
 
 
