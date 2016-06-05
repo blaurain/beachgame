@@ -94,7 +94,7 @@ function removePathTiles() {
 		GAME.Grid.currentTiles[match.path[i].row][match.path[i].col] = null;
 		match.path[i].tileGraphic.visible = false;
 		if(match.path[i].isMatchTile) {
-			match.path[i].matchGraphic.clear();
+			match.path[i].overGraphic.clear();
 		} 
 	};
 	clearMatch();
@@ -116,6 +116,7 @@ function clearMatch() {
 }
 
 function selectTile(tile) {
+	if(tile.tileType === 4) return; //static tile
 	if(tile.isMatchTile && !tile.isSelected && match.start === null) { //start match
 		match.start = tile;
 		match.end = match.start;

@@ -20,7 +20,8 @@ GAME.Grid.checkGrav = function() {
 		case GAME.Grid.Direction.Down:
 			for (var row = 0; row < 4; row++) {
 				for (var col = 5; col >= 0; col--) { 
-					if(col < 5 && GAME.Grid.currentTiles[row][col] !== null && GAME.Grid.currentTiles[row][col].isAlive && 
+					if(col < 5 && GAME.Grid.currentTiles[row][col] !== null && 
+						GAME.Grid.currentTiles[row][col].tileType !== 4 && GAME.Grid.currentTiles[row][col].isAlive && 
 						(GAME.Grid.currentTiles[row][col + 1] === null || !GAME.Grid.currentTiles[row][col + 1].isAlive)) {
 						var dropCol = col + 1;
 						while(dropCol < 5 && (GAME.Grid.currentTiles[row][dropCol + 1] === null || 
@@ -33,8 +34,9 @@ GAME.Grid.checkGrav = function() {
 		case GAME.Grid.Direction.Left: 
 			for (var col = 5; col >= 0; col--) { 
 				for (var row = 3; row >= 0; row--) {
-					if(row < 3 && GAME.Grid.currentTiles[row][col] !== null  && GAME.Grid.currentTiles[row][col].isAlive &&
-					 (GAME.Grid.currentTiles[row + 1][col] === null || !GAME.Grid.currentTiles[row + 1][col].isAlive)) {
+					if(row < 3 && GAME.Grid.currentTiles[row][col] !== null && 
+						GAME.Grid.currentTiles[row][col].tileType !== 4  && GAME.Grid.currentTiles[row][col].isAlive &&
+					 	(GAME.Grid.currentTiles[row + 1][col] === null || !GAME.Grid.currentTiles[row + 1][col].isAlive)) {
 						var dropRow = row + 1;
 						while(dropRow < 3 && (GAME.Grid.currentTiles[dropRow + 1][col] === null || 
 							GAME.Grid.currentTiles[dropRow + 1][col].isAlive === false)) { dropRow++; }
@@ -46,8 +48,9 @@ GAME.Grid.checkGrav = function() {
 		case GAME.Grid.Direction.Right:
 		for (var col = 5; col >= 0; col--) { 
 				for (var row = 0; row < 4; row++) {
-					if(row > 0 && GAME.Grid.currentTiles[row][col] !== null  && GAME.Grid.currentTiles[row][col].isAlive &&
-					 (GAME.Grid.currentTiles[row - 1][col] === null || !GAME.Grid.currentTiles[row - 1][col].isAlive)) {
+					if(row > 0 && GAME.Grid.currentTiles[row][col] !== null && 
+						GAME.Grid.currentTiles[row][col].tileType !== 4  && GAME.Grid.currentTiles[row][col].isAlive &&
+					 	(GAME.Grid.currentTiles[row - 1][col] === null || !GAME.Grid.currentTiles[row - 1][col].isAlive)) {
 						var dropRow = row - 1;
 						while(dropRow > 0 && (GAME.Grid.currentTiles[dropRow - 1][col] === null || 
 							GAME.Grid.currentTiles[dropRow - 1][col].isAlive === false)) { dropRow--; }
@@ -164,8 +167,8 @@ GAME.Grid.createTiles = function(stage) {
 			tiles[row][col].tileGraphic.on('click', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
 			stage.addChild(tiles[row][col].tileGraphic);
 			if(tiles[row][col].tileType !== 0) {
-				tiles[row][col].matchGraphic = new PIXI.Graphics();
-				stage.addChild(tiles[row][col].matchGraphic);
+				tiles[row][col].overGraphic = new PIXI.Graphics();
+				stage.addChild(tiles[row][col].overGraphic);
 			}
 		};
 	};
@@ -233,36 +236,46 @@ GAME.Grid.drawTile = function(row, col) {
 			break;
 		}
 	}
+	if(tile.tileType !== 0) GAME.Grid.drawSpecialTile(tile);
 	tileGraphic.drawRect(tile.xPosition, tile.yPosition, tileWidth, tileHeight);
 	tileGraphic.endFill();
-	if(tile.tileType !== 0) {
-		var halfTile = (Math.min(tileWidth, tileHeight) / 2.0);
-		var halfWidth = (tileWidth / 2.0);
-		var halfHeight = (tileHeight / 2.0);
-		var quarterTile = (halfTile / 2.0);
-		tile.matchGraphic.clear();
-		tile.matchGraphic.lineStyle(getMatchIconWidth(halfTile), 0x000000, 1); //width, color, alpha
-		switch(tile.tileType) {
-			case 1: //Circle
-				tile.matchGraphic.drawCircle(tile.xPosition + halfWidth, tile.yPosition + halfHeight, quarterTile);
+}
+GAME.Grid.drawSpecialTile = function(tile) {
+	var halfTile = (Math.min(tileWidth, tileHeight) / 2.0);
+	var halfWidth = (tileWidth / 2.0);
+	var halfHeight = (tileHeight / 2.0);
+	var quarterTile = (halfTile / 2.0);
+	tile.overGraphic.clear();
+	tile.overGraphic.lineStyle(getMatchIconWidth(halfTile), 0x000000, 1); //width, color, alpha
+	switch(tile.tileType) {
+		case 1: //Circle match
+			tile.overGraphic.drawCircle(tile.xPosition + halfWidth, tile.yPosition + halfHeight, quarterTile);
 			break;
-			case 2: //Rectangle
-				tile.matchGraphic.drawRect(tile.xPosition + (halfWidth - quarterTile), tile.yPosition + (halfHeight - quarterTile), halfTile, halfTile);
+		case 2: //Rectangle match
+			tile.overGraphic.drawRect(tile.xPosition + (halfWidth - quarterTile), tile.yPosition + (halfHeight - quarterTile), halfTile, halfTile);
 			break;
-			case 3: //Triangle
-				if(isVertical){
-					tile.matchGraphic.moveTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight);
-					tile.matchGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
-					tile.matchGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + (halfHeight/2.0));
-					tile.matchGraphic.lineTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight);
-				} else {
-					tile.matchGraphic.moveTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
-					tile.matchGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
-					tile.matchGraphic.lineTo(tile.xPosition + halfWidth, tile.yPosition + (halfHeight/2.0));
-					tile.matchGraphic.lineTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
-				}
+		case 3: //Triangle match
+			if(isVertical){
+				tile.overGraphic.moveTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight);
+				tile.overGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
+				tile.overGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + (halfHeight/2.0));
+				tile.overGraphic.lineTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight);
+			} else {
+				tile.overGraphic.moveTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
+				tile.overGraphic.lineTo(tile.xPosition + halfWidth + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
+				tile.overGraphic.lineTo(tile.xPosition + halfWidth, tile.yPosition + (halfHeight/2.0));
+				tile.overGraphic.lineTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
+			}
 			break;
-		}
+		case 4: //Static tile
+			var border = .4;
+			tile.tileGraphic.beginFill(0x000000, 1);
+			tile.overGraphic.lineStyle(0, 0x000000, 1); //width, color, alpha
+			tile.overGraphic.beginFill(tile.tileColor, 1);
+			tile.overGraphic.drawRect(tile.xPosition + (tileWidth * (border/2.0)), tile.yPosition + (tileHeight * (border/2.0)), 
+				(tileWidth * (1 - border)), (tileHeight * (1 - border)));
+			tile.overGraphic.endFill();
+			break;
 	}
 }
 

@@ -13,11 +13,12 @@ GAME.Tile = function(row, col, type){
 	this.isFalling = false;
 	var tileColor;
 	var xPosition, yPosition;
-	var tileGraphic, matchGraphic;
+	var tileGraphic, overGraphic;
 	if(this.tileType !== 0) this.isMatchTile = true;
 	else this.isMatchTile = false;
 }
 GAME.Tile.constructor = GAME.Tile;
+
 
 GAME.Tile.percentFromRow = function(row) {
 	switch(row) {
