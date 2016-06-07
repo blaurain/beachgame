@@ -48,6 +48,7 @@ function init() {
 	};
 	GAME.Grid.createTiles(stage);
 	stage.addChild(gridGraphics);
+	GAME.Title.init();
 	setInterval(update, 100);
 }
 
