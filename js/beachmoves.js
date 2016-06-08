@@ -61,6 +61,7 @@ function update() {
 function redraw(stage) {
 	GAME.Grid.drawTiles();
 	GAME.Grid.drawGrid();
+	GAME.Title.draw();
 }
 
 function pixelFromPercentWidth(percent) {
