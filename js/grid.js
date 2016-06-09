@@ -10,21 +10,21 @@ GAME.Grid.Direction = {
 }
 GAME.Grid.currentTiles = [[]];
 GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
-GAME.Grid.gravity = 1;
+GAME.Grid.gravity = .2;
 GAME.Grid.somethingFalling = false;
-GAME.Grid.reverseTileX = 112;
+GAME.Grid.reverseTileX = 100;
 GAME.Grid.reverseTileY = 78;
 GAME.Grid.checkGrav = function() {
 	var toFall = [];
 	switch(GAME.Grid.gravDirection) {
 		case GAME.Grid.Direction.Down:
 			for (var row = 0; row < 4; row++) {
-				for (var col = 5; col >= 0; col--) { 
-					if(col < 5 && GAME.Grid.currentTiles[row][col] !== null && 
+				for (var col = 6; col >= 0; col--) { 
+					if(col < 6 && GAME.Grid.currentTiles[row][col] !== null && 
 						GAME.Grid.currentTiles[row][col].tileType !== 4 && GAME.Grid.currentTiles[row][col].isAlive && 
 						(GAME.Grid.currentTiles[row][col + 1] === null || !GAME.Grid.currentTiles[row][col + 1].isAlive)) {
 						var dropCol = col + 1;
-						while(dropCol < 5 && (GAME.Grid.currentTiles[row][dropCol + 1] === null || 
+						while(dropCol < 6 && (GAME.Grid.currentTiles[row][dropCol + 1] === null || 
 							GAME.Grid.currentTiles[row][dropCol + 1].isAlive === false)) { dropCol++; }
 						GAME.Grid.setFall(GAME.Grid.currentTiles[row][col], row, dropCol);
 					}
@@ -32,7 +32,7 @@ GAME.Grid.checkGrav = function() {
 			}
 		break;
 		case GAME.Grid.Direction.Left: 
-			for (var col = 5; col >= 0; col--) { 
+			for (var col = 6; col >= 0; col--) { 
 				for (var row = 3; row >= 0; row--) {
 					if(row < 3 && GAME.Grid.currentTiles[row][col] !== null && 
 						GAME.Grid.currentTiles[row][col].tileType !== 4  && GAME.Grid.currentTiles[row][col].isAlive &&
@@ -46,7 +46,7 @@ GAME.Grid.checkGrav = function() {
 			}
 		break;
 		case GAME.Grid.Direction.Right:
-		for (var col = 5; col >= 0; col--) { 
+		for (var col = 6; col >= 0; col--) { 
 				for (var row = 0; row < 4; row++) {
 					if(row > 0 && GAME.Grid.currentTiles[row][col] !== null && 
 						GAME.Grid.currentTiles[row][col].tileType !== 4  && GAME.Grid.currentTiles[row][col].isAlive &&
@@ -79,7 +79,7 @@ GAME.Grid.endDraw = function() {
 GAME.Grid.applyGravity = function() {
 	GAME.Grid.beginDraw();
 	var falling = false;
-	for (var col = 5; col >= 0; col--) { 
+	for (var col = 6; col >= 0; col--) { 
 		for (var row = 3; row >= 0; row--) {
 			if(tiles[row][col].isFalling) {
 				falling = true;
@@ -105,7 +105,7 @@ GAME.Grid.moveTileToward = function(point1, point2, velocity) {
 }
 GAME.Grid.stopFalling = function() { 
 	GAME.Grid.somethingFalling = false;
-	for (var col = 5; col >= 0; col--) { 
+	for (var col = 6; col >= 0; col--) { 
 		for (var row = 3; row >= 0; row--) {
 			tiles[row][col].isFalling = false;
 		}
@@ -116,9 +116,11 @@ GAME.Grid.drawGrid = function() {
 	gridGraphics.clear();
 	gridGraphics.lineStyle(getGridWidth(), 0xFF823A, 1); //width, color, alpha
 	//outside
-	gridGraphics.drawRoundedRect(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6),
-		pixelFromPercentWidth(72), pixelFromPercentHeight(88), 10);
+	gridGraphics.drawRect(pixelFromPercentWidth(14) - gridShifterW, pixelFromPercentHeight(6),
+		pixelFromPercentWidth(84), pixelFromPercentHeight(88));
 	//vertical
+	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6));
+	gridGraphics.lineTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(94));
 	gridGraphics.moveTo(pixelFromPercentWidth(38) - gridShifterW, pixelFromPercentHeight(6));
 	gridGraphics.lineTo(pixelFromPercentWidth(38) - gridShifterW, pixelFromPercentHeight(94));
 	gridGraphics.moveTo(pixelFromPercentWidth(50) - gridShifterW, pixelFromPercentHeight(6));
@@ -130,11 +132,11 @@ GAME.Grid.drawGrid = function() {
 	gridGraphics.moveTo(pixelFromPercentWidth(86) - gridShifterW, pixelFromPercentHeight(6));
 	gridGraphics.lineTo(pixelFromPercentWidth(86) - gridShifterW, pixelFromPercentHeight(94));
 	//horizontal
-	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(72));
+	gridGraphics.moveTo(pixelFromPercentWidth(14) - gridShifterW, pixelFromPercentHeight(72));
 	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(72));
-	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(50));
+	gridGraphics.moveTo(pixelFromPercentWidth(14) - gridShifterW, pixelFromPercentHeight(50));
 	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(50));
-	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(28));
+	gridGraphics.moveTo(pixelFromPercentWidth(14) - gridShifterW, pixelFromPercentHeight(28));
 	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(28));
 	//return
 	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6));
@@ -143,7 +145,7 @@ GAME.Grid.createTiles = function(stage) {
 	tileHeight = pixelFromPercentHeight(22) - 2;
 	tileWidth = pixelFromPercentWidth(12) - 2;
 	for (var row = 0; row < 4; row++) {
-		for (var col = 0; col < 6; col++) {
+		for (var col = 0; col < 7; col++) {
 			tiles[row][col] = new GAME.Tile(row, col, GAME.TileMap.grid1[row][col]); //TODO: Change this to load different grids
 			GAME.Grid.currentTiles[row][col] = tiles[row][col];
 			tiles[row][col].tileColor = GAME.Tile.getRandomTileColor();
@@ -177,7 +179,7 @@ GAME.Grid.drawTiles = function() {
 	tileHeight = pixelFromPercentHeight(22) - 2;
 	tileWidth = pixelFromPercentWidth(12) - 2;
 	for (var row = 0; row < 4; row++) {
-		for (var col = 0; col < 6; col++) {
+		for (var col = 0; col < 7; col++) {
 			if(tiles[row][col].isAlive) GAME.Grid.drawTile(row,col);
 		};
 	};

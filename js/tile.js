@@ -36,16 +36,18 @@ GAME.Tile.percentFromRow = function(row) {
 GAME.Tile.percentFromCol = function(col) {
 	switch(col) {
 		case 0: 
-			return 26;
+			return 14;
 		case 1:
-			return 38;
+			return 26;
 		case 2:
-			return 50;
+			return 38;
 		case 3:
-			return 62;
+			return 50;
 		case 4:
-			return 74;
+			return 62;
 		case 5:
+			return 74;
+		case 6:
 			return 86;
 	}
 }

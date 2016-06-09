@@ -17,10 +17,10 @@ var match = {
 	type: null,
 	path: []
 }
-var GAME_WIDTH = 1136;
-var GAME_HEIGHT = 640;
-var renderer = PIXI.autoDetectRenderer(GAME_WIDTH, GAME_HEIGHT, rendererOptions); 
-var tileCorner = 10;
+var DESKTOP_WIDTH = 1136;
+var DESKTOP_HEIGHT = 640;
+var renderer = PIXI.autoDetectRenderer(DESKTOP_WIDTH, DESKTOP_HEIGHT, rendererOptions); 
+// var tileCorner = 10;
 var selectedAlpha = 1.0;
 var unselectedAlpha = .7;
 var tileHeight, tileWidth;
@@ -49,7 +49,7 @@ function init() {
 	GAME.Grid.createTiles(stage);
 	stage.addChild(gridGraphics);
 	GAME.Title.init();
-	setInterval(update, 100);
+	setInterval(update, 20);
 }
 
 function update() {
@@ -204,32 +204,31 @@ function rotateVertical() {
 
 function resize() {
 	rotateHorizontal();
-	// isVertical = false;
+	// renderer.resize(window.innerWidth, window.innerHeight);
+
 	if(window.orientation === undefined) { //desktop only
 		var oldGrav = GAME.Grid.gravDirection;
 		if(window.innerWidth < window.innerHeight)
 		{ //vert 
 			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+			isVertical = true;
 		} else {
-			GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
+			GAME.Grid.gravDirection = GAME.Grid.Direction.Right;
+			isVertical = false;
 		}
 		if(oldGrav !== GAME.Grid.gravDirection) {
 			GAME.Grid.stopFalling();
 			GAME.Grid.checkGrav();
 		}
-	}
-	if(window.innerWidth > GAME_WIDTH && window.innerHeight > GAME_HEIGHT) { //Larger than needs be, desktop mode
-		// redraw(stage);
-		isVertical = false; //temp till real desktop mode
 		isMobile = false;
-		renderer.resize(GAME_WIDTH, GAME_HEIGHT);
-		renderer.view.style.position = "relative";
-
-		var centerX = Math.ceil((window.innerWidth / 2.0) - (GAME_WIDTH / 2.0));
-		var centerY = Math.ceil((window.innerHeight / 2.0) - (GAME_HEIGHT / 2.0));
-
-		renderer.view.style.top = centerY + "px";
-		renderer.view.style.left = centerX + "px";
+		var w = Math.min(window.innerWidth, DESKTOP_WIDTH);
+		var h = Math.min(window.innerHeight, DESKTOP_HEIGHT);
+		var bufferX = (window.innerWidth - w)/2.0;
+		var bufferY = (window.innerHeight - h)/2.0;
+		renderer.resize(w, h);
+		renderer.view.style.position = "absolute";
+		renderer.view.style.top = bufferY + "px";
+		renderer.view.style.left = bufferX + "px";
 		redraw(stage); //TODO: if vert on desktop probably need to resize like mobile
 	} else {  //mobile/small
 		isMobile = true;
@@ -237,6 +236,7 @@ function resize() {
 		renderer.view.style.position = "absolute";
 		renderer.view.style.top = "0px";
 		renderer.view.style.left = "0px";
+		renderer.resize(window.innerWidth, window.innerHeight);
 
 		if(window.innerWidth < window.innerHeight) { //vert
 			if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
@@ -257,12 +257,12 @@ function resize() {
 			(GAME.Grid.gravDirection === GAME.Grid.Direction.Right && window.orientation === 90) || 
 			(GAME.Grid.gravDirection === GAME.Grid.Direction.Left && window.orientation === -90))) { //prevent double refresh 
 				isTilting = true;
-				renderer.resize(window.innerWidth, window.innerHeight);
+				// renderer.resize(window.innerWidth, window.innerHeight);
 				renderer.render(stage);
 				return;
 			}
 			isVertical = false;
-			renderer.resize(window.innerWidth, window.innerHeight);
+			// renderer.resize(window.innerWidth, window.innerHeight);
 			redraw(stage);
 			if(window.pageYOffset > 0) {
 		 		renderer.view.style.top = window.pageYOffset + "px";
@@ -275,6 +275,7 @@ function resize() {
 
 function orientationchange(event) {  //Mobile only
 	if(window.orientation === undefined) return;
+	var oldDirection = GAME.Grid.gravDirection;
 	switch(window.orientation) {
 		case 0:
 			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
@@ -289,13 +290,12 @@ function orientationchange(event) {  //Mobile only
 	}
 	// isTilting = true;
 	GAME.Grid.stopFalling();
-	// resize();
+	if((oldDirection === GAME.Grid.Direction.Left && GAME.Grid.gravDirection === GAME.Grid.Direction.Right) ||
+		(oldDirection === GAME.Grid.Direction.Right && GAME.Grid.gravDirection === GAME.Grid.Direction.Left)) {	
+		resize();
+	}
 	GAME.Grid.checkGrav();
-} //TODO: this is getting called after resize so vert is considered "right" and drawing upside down
-//when reize is called the orientation variable hasn't changed yet, need to make them independent
-//resize is called twice, once on resize and then orientation change triggers a new resize after it changes
-
-
+} 
 
 
 

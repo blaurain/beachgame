@@ -7,7 +7,7 @@ GAME.Title.fontStyle = {};
 GAME.Title.fontColor = 0xff1010;
 GAME.Title.fontFamily = 'Arial';
 GAME.Title.fontSize = 66;
-GAME.Title.widthPercent = 7;
+GAME.Title.widthPercent = 4;
 GAME.Title.letterLocations = [];
 
 GAME.Title.init = function() {
@@ -33,11 +33,11 @@ GAME.Title.draw = function() {
 	GAME.Title.fontStyle = {
 		font : GAME.Title.fontSize + 'px ' + GAME.Title.fontFamily, 
 		fill : GAME.Title.fontColor}; 
-	GAME.Title.letterS.setStyle(GAME.Title.fontStyle);
-	GAME.Title.letterL.setStyle(GAME.Title.fontStyle);
-	GAME.Title.letterI.setStyle(GAME.Title.fontStyle);
-	GAME.Title.letterD.setStyle(GAME.Title.fontStyle);
-	GAME.Title.letterE.setStyle(GAME.Title.fontStyle);
+	GAME.Title.letterS.style = (GAME.Title.fontStyle);
+	GAME.Title.letterL.style = (GAME.Title.fontStyle);
+	GAME.Title.letterI.style = (GAME.Title.fontStyle);
+	GAME.Title.letterD.style = (GAME.Title.fontStyle);
+	GAME.Title.letterE.style = (GAME.Title.fontStyle);
 	GAME.Title.letterS.x = pixelFromPercentWidth(GAME.Title.widthPercent);
 	GAME.Title.letterL.x = pixelFromPercentWidth(GAME.Title.widthPercent);
 	GAME.Title.letterI.x = pixelFromPercentWidth(GAME.Title.widthPercent);
@@ -61,29 +61,14 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.rotation = 0;
 		GAME.Title.letterD.rotation = 0;
 		GAME.Title.letterE.rotation = 0;
-		GAME.Title.letterS.y = pixelFromPercentHeight(7) + GAME.Title.letterI.height/3.0;
-		GAME.Title.letterL.y = pixelFromPercentHeight(27);
+		GAME.Title.letterS.y = pixelFromPercentHeight(7);
+		GAME.Title.letterL.y = pixelFromPercentHeight(27) - GAME.Title.letterD.height/4.0;
 		GAME.Title.letterI.y = pixelFromPercentHeight(50) - GAME.Title.letterD.height/2.0;
-		GAME.Title.letterD.y = pixelFromPercentHeight(73) - GAME.Title.letterD.height;
-		GAME.Title.letterE.y = pixelFromPercentHeight(93) - GAME.Title.letterE.height - (GAME.Title.letterE.height/3.0);
+		GAME.Title.letterD.y = pixelFromPercentHeight(73) - (4.0 * GAME.Title.letterD.height/5.0);
+		GAME.Title.letterE.y = pixelFromPercentHeight(93) - GAME.Title.letterE.height ;
 	}
-		
-	// GAME.Title.drawArrow();
 }
-GAME.Title.drawArrow = function() {
-	var arrowPos = {'x': pixelFromPercentWidth(GAME.Title.widthPercent), 'y': pixelFromPercentHeight(50)}
-	var arrowHeight = pixelFromPercentHeight(9);
-	var arrowWidth = pixelFromPercentWidth(5); //todo: refine these numbers
-	GAME.Title.arrowGraphic.clear();
-	GAME.Title.arrowGraphic.lineStyle(8, GAME.Title.fontColor, 1); //width, color, alpha
-	GAME.Title.arrowGraphic.moveTo(arrowPos.x + GAME.Title.letterL.width/2.0, arrowPos.y - arrowHeight/2.0);
-	GAME.Title.arrowGraphic.lineTo(arrowPos.x + GAME.Title.letterL.width/2.0, arrowPos.y + arrowHeight/2.0);
-	GAME.Title.arrowGraphic.moveTo(arrowPos.x + GAME.Title.letterL.width/2.0, arrowPos.y - arrowHeight/2.0);
 
-	// GAME.Title.arrowGraphic.lineTo(tile.xPosition + halfWidth, tile.yPosition + (halfHeight/2.0));
-	// GAME.Title.arrowGraphic.lineTo(tile.xPosition + (halfWidth/2.0), tile.yPosition + halfHeight + (halfHeight/2.0));
-	
-}
 
 
 
