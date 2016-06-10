@@ -70,12 +70,6 @@ GAME.Grid.setFall = function(tile, fallRow, fallCol) {
 	tile.col = fallCol;
 	clearMatch();
 }
-GAME.Grid.beginDraw = function() { //TODO: for desktop change this to max draw size 
-	if(isVertical) { renderer.resize(window.innerHeight, window.innerWidth); }
-}
-GAME.Grid.endDraw = function() {
-	if(isVertical) { renderer.resize(window.innerWidth, window.innerHeight); }
-}
 GAME.Grid.applyGravity = function() {
 	GAME.Grid.beginDraw();
 	var falling = false;
@@ -163,8 +157,10 @@ GAME.Grid.createTiles = function(stage) {
 			tiles[row][col].isSelected = false;
 			tiles[row][col].tileGraphic = new PIXI.Graphics();
 			tiles[row][col].tileGraphic.interactive = true;
-			tiles[row][col].tileGraphic.on('mousedown', onTilePressDown.bind({"row": row, "col": col, "tile":tiles[row][col]}));
-			tiles[row][col].tileGraphic.on('touchstart', onTilePressDown.bind({"row": row, "col": col, "tile":tiles[row][col]}));
+			// tiles[row][col].tileGraphic.on('mousedown', inputStart.bind(tiles[row][col]));
+			// tiles[row][col].tileGraphic.on('touchstart', inputStart.bind(tiles[row][col]));
+			// tiles[row][col].tileGraphic.on('touchenter', inputMove.bind(tiles[row][col]));
+			//TODO: add touchstart/touchmove (and click) to a single object make it global check through array for which it's hitting
 			tiles[row][col].tileGraphic.on('tap', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
 			tiles[row][col].tileGraphic.on('click', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
 			stage.addChild(tiles[row][col].tileGraphic);
@@ -278,6 +274,24 @@ GAME.Grid.drawSpecialTile = function(tile) {
 				(tileWidth * (1 - border)), (tileHeight * (1 - border)));
 			tile.overGraphic.endFill();
 			break;
+	}
+}
+GAME.Grid.beginDraw = function() { 
+	if(isVertical) { 
+		if(window.orientation === undefined) {
+			renderer.resize(w,h);
+		} else {
+			renderer.resize(window.innerHeight, window.innerWidth);
+		}
+	}
+}
+GAME.Grid.endDraw = function() {
+	if(isVertical) { 
+		if(window.orientation === undefined) {
+			renderer.resize(h,w);
+		} else {
+			renderer.resize(window.innerWidth, window.innerHeight); 
+		}
 	}
 }
 

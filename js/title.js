@@ -55,6 +55,13 @@ GAME.Title.draw = function() {
 		GAME.Title.letterD.y = pixelFromPercentHeight(27) + GAME.Title.letterD.width;
 		GAME.Title.letterE.y = pixelFromPercentHeight(7) + GAME.Title.letterE.width + (GAME.Title.letterE.width/3.0);
 	} else {
+		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) {
+			GAME.Title.letterS.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
+			GAME.Title.letterL.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
+			GAME.Title.letterI.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
+			GAME.Title.letterD.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
+			GAME.Title.letterE.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
+		}
 		GAME.Title.letterI.x = GAME.Title.letterI.x + GAME.Title.letterI.width/2.0;
 		GAME.Title.letterS.rotation = 0;
 		GAME.Title.letterL.rotation = 0;
@@ -68,7 +75,6 @@ GAME.Title.draw = function() {
 		GAME.Title.letterE.y = pixelFromPercentHeight(93) - GAME.Title.letterE.height ;
 	}
 }
-
 
 
 
