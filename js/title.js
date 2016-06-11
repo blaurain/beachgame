@@ -3,7 +3,8 @@ var GAME = GAME || {};
 GAME.Title = function() {
 }
 GAME.Title.constructor = GAME.Title;
-GAME.Title.fontStyle = {};
+GAME.Title.titleFontStyle = {};
+GAME.Title.tiltFontStyle = {};
 GAME.Title.fontColor = 0xff1010;
 GAME.Title.fontFamily = 'Arial';
 GAME.Title.fontSize = 66;
@@ -11,33 +12,42 @@ GAME.Title.widthPercent = 4;
 GAME.Title.letterLocations = [];
 
 GAME.Title.init = function() {
-	GAME.Title.arrowGraphic = new PIXI.Graphics();
-	stage.addChild(GAME.Title.arrowGraphic);
-	GAME.Title.fontStyle = {
+	GAME.Title.titleFontStyle = {
 		font : GAME.Title.fontSize + 'px ' + GAME.Title.fontFamily, 
-		fill : GAME.Title.fontColor}; 
-	GAME.Title.letterS = new PIXI.Text('S', GAME.Title.fontStyle);
-	GAME.Title.letterL = new PIXI.Text('L', GAME.Title.fontStyle);
-	GAME.Title.letterI = new PIXI.Text('I', GAME.Title.fontStyle);
-	GAME.Title.letterD = new PIXI.Text('D', GAME.Title.fontStyle);
-	GAME.Title.letterE = new PIXI.Text('E', GAME.Title.fontStyle);
+		fill : GAME.Title.fontColor
+	}; 
+	GAME.Title.tiltFontStyle = {
+		font : Math.ceil(GAME.Title.fontSize/3.0) + 'px ' + GAME.Title.fontFamily, 
+		fill : GAME.Title.fontColor,
+		align : 'center'
+	}; 
+	GAME.Title.letterS = new PIXI.Text('S', GAME.Title.titleFontStyle);
+	GAME.Title.letterL = new PIXI.Text('L', GAME.Title.titleFontStyle);
+	GAME.Title.letterI = new PIXI.Text('I', GAME.Title.titleFontStyle);
+	GAME.Title.letterD = new PIXI.Text('D', GAME.Title.titleFontStyle);
+	GAME.Title.letterE = new PIXI.Text('E', GAME.Title.titleFontStyle);
 	stage.addChild(GAME.Title.letterS);
 	stage.addChild(GAME.Title.letterL);
 	stage.addChild(GAME.Title.letterI);
 	stage.addChild(GAME.Title.letterD);
 	stage.addChild(GAME.Title.letterE);
+	if(!isMobile) { 
+		GAME.Title.useArrowText = new PIXI.Text('[tilt with arrow keys]', GAME.Title.tiltFontStyle);
+		stage.addChild(GAME.Title.useArrowText); 
+	}
 	GAME.Title.draw();
 }
 GAME.Title.draw = function() {
 	GAME.Title.fontSize = renderer.height / 8.0;
-	GAME.Title.fontStyle = {
+	GAME.Title.titleFontStyle = {
 		font : GAME.Title.fontSize + 'px ' + GAME.Title.fontFamily, 
-		fill : GAME.Title.fontColor}; 
-	GAME.Title.letterS.style = (GAME.Title.fontStyle);
-	GAME.Title.letterL.style = (GAME.Title.fontStyle);
-	GAME.Title.letterI.style = (GAME.Title.fontStyle);
-	GAME.Title.letterD.style = (GAME.Title.fontStyle);
-	GAME.Title.letterE.style = (GAME.Title.fontStyle);
+		fill : GAME.Title.fontColor
+	}; 
+	GAME.Title.letterS.style = (GAME.Title.titleFontStyle);
+	GAME.Title.letterL.style = (GAME.Title.titleFontStyle);
+	GAME.Title.letterI.style = (GAME.Title.titleFontStyle);
+	GAME.Title.letterD.style = (GAME.Title.titleFontStyle);
+	GAME.Title.letterE.style = (GAME.Title.titleFontStyle);
 	GAME.Title.letterS.x = pixelFromPercentWidth(GAME.Title.widthPercent);
 	GAME.Title.letterL.x = pixelFromPercentWidth(GAME.Title.widthPercent);
 	GAME.Title.letterI.x = pixelFromPercentWidth(GAME.Title.widthPercent);
@@ -73,6 +83,26 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.y = pixelFromPercentHeight(50) - GAME.Title.letterD.height/2.0;
 		GAME.Title.letterD.y = pixelFromPercentHeight(73) - (4.0 * GAME.Title.letterD.height/5.0);
 		GAME.Title.letterE.y = pixelFromPercentHeight(93) - GAME.Title.letterE.height ;
+	}
+	if(!isMobile) {
+		GAME.Title.tiltFontStyle = {
+			font : Math.ceil(GAME.Title.fontSize/3.0) + 'px ' + GAME.Title.fontFamily, 
+			fill : GAME.Title.fontColor
+		}; 
+		GAME.Title.useArrowText.style = (GAME.Title.tiltFontStyle);
+		if(isVertical) {
+			GAME.Title.useArrowText.x = pixelFromPercentWidth(GAME.Title.widthPercent) + GAME.Title.letterD.height - GAME.Title.useArrowText.height/2.0;
+			GAME.Title.useArrowText.y = pixelFromPercentHeight(50) + GAME.Title.useArrowText.width/2.0;
+			GAME.Title.useArrowText.rotation = -Math.PI/2.0;
+		} else {
+			if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) {
+				GAME.Title.useArrowText.x = pixelFromPercentWidth(4);
+			} else {
+				GAME.Title.useArrowText.x = pixelFromPercentWidth(97) - GAME.Title.useArrowText.width;
+			}
+			GAME.Title.useArrowText.y = pixelFromPercentHeight(100) - GAME.Title.useArrowText.height;
+			GAME.Title.useArrowText.rotation = 0;
+		}
 	}
 }
 
