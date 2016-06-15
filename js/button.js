@@ -22,22 +22,26 @@ GAME.Button = function(xPercent, yPercent, width, height, text) {
 		this.buttonGraphic.clear();
 		this.buttonGraphic.lineStyle(getGridWidth(), this.buttonBorderColor, 1);
 		this.buttonGraphic.beginFill(this.buttonColor, 1);
-		var buttonWidth = pixelFromPercentWidth(this.wPercent);
-		var buttonHeight = pixelFromPercentHeight(this.hPercent);
-		var x = pixelFromPercentWidth(this.xPercent) - (buttonWidth/2.0);
-		var y = pixelFromPercentHeight(this.yPercent)- (buttonHeight/2.0);
+		var buttonWidth, buttonHeight, x, y;
+		if(isVertical) {
+			this.buttonText.rotation = -Math.PI/2.0;
+			buttonWidth = pixelFromPercentHeight(this.hPercent);
+			buttonHeight = pixelFromPercentWidth(this.wPercent);
+			x = pixelFromPercentWidth(this.yPercent) - (buttonWidth/2.0);
+			y = pixelFromPercentHeight(this.xPercent) - (buttonHeight/2.0);
+			this.buttonText.x = x + (3.0*this.buttonText.height/8.0);
+			this.buttonText.y = y + (7.5*buttonWidth/5.0);
+		} else {
+			this.buttonText.rotation = 0;
+			buttonWidth = pixelFromPercentWidth(this.wPercent);
+			buttonHeight = pixelFromPercentHeight(this.hPercent);
+			x = pixelFromPercentWidth(this.xPercent) - (buttonWidth/2.0);
+			y = pixelFromPercentHeight(this.yPercent)- (buttonHeight/2.0);
+			this.buttonText.x = x + (buttonWidth/2.0) - (this.buttonText.width/2.0);
+			this.buttonText.y = y + (buttonHeight/2.0) - (this.buttonText.height/2.0);
+		}
 		this.buttonGraphic.drawRoundedRect(x, y, buttonWidth, buttonHeight, this.cornerRadius);
 		this.buttonGraphic.endFill();
-
-		// this.buttonText.clear();
-		// this.fontStyle = {
-		// 	font : Math.ceil(GAME.Title.fontSize) + 'px ' + GAME.Title.fontFamily, 
-		// 	fill : this.buttonTextColor,
-		// 	align : 'center'
-		// }; 
-		// this.buttonText.style = this.fontStyle;
-		this.buttonText.x = x + (buttonWidth/2.0) - (this.buttonText.width/2.0);
-		this.buttonText.y = y + (buttonHeight/2.0) - (this.buttonText.height/2.0);
 	}
 
 	this.show = function () {
