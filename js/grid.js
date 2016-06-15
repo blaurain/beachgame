@@ -14,6 +14,7 @@ GAME.Grid.gravity = .2;
 GAME.Grid.somethingFalling = false;
 GAME.Grid.reverseTileX = 100;
 GAME.Grid.reverseTileY = 78;
+GAME.Grid.gridColor = 0xFF823A;
 GAME.Grid.checkGrav = function() {
 	var toFall = [];
 	switch(GAME.Grid.gravDirection) {
@@ -108,7 +109,7 @@ GAME.Grid.stopFalling = function() {
 GAME.Grid.drawGrid = function() {
 	// gridGraphics.clearBeforeRender = true;
 	gridGraphics.clear();
-	gridGraphics.lineStyle(getGridWidth(), 0xFF823A, 1); //width, color, alpha
+	gridGraphics.lineStyle(getGridWidth(), GAME.Grid.gridColor, 1); //width, color, alpha
 	//outside
 	gridGraphics.drawRect(pixelFromPercentWidth(14) - gridShifterW, pixelFromPercentHeight(6),
 		pixelFromPercentWidth(84), pixelFromPercentHeight(88));
@@ -158,8 +159,8 @@ GAME.Grid.createTiles = function(stage) {
 			tiles[row][col].tileGraphic = new PIXI.Graphics();
 			tiles[row][col].tileGraphic.interactive = true;
 			// tiles[row][col].tileGraphic.on('mousedown', inputStart.bind(tiles[row][col]));
-			// tiles[row][col].tileGraphic.on('touchstart', inputStart.bind(tiles[row][col]));
-			// tiles[row][col].tileGraphic.on('touchenter', inputMove.bind(tiles[row][col]));
+			// tiles[row][col].tileGraphic.on('mousedown', inputMove.bind());
+			tiles[row][col].tileGraphic.on('touchmove', inputMoveToTile.bind(tiles[row][col]));
 			//TODO: add touchstart/touchmove (and click) to a single object make it global check through array for which it's hitting
 			tiles[row][col].tileGraphic.on('tap', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
 			tiles[row][col].tileGraphic.on('click', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));

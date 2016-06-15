@@ -19,7 +19,6 @@ GAME.Tile = function(row, col, type){
 }
 GAME.Tile.constructor = GAME.Tile;
 
-
 GAME.Tile.percentFromRow = function(row) {
 	switch(row) {
 		case 0: 

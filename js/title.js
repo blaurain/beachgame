@@ -1,17 +1,25 @@
 var GAME = GAME || {};
 
-GAME.Title = function() {
-}
+GAME.Title = function() {}
 GAME.Title.constructor = GAME.Title;
 GAME.Title.titleFontStyle = {};
 GAME.Title.tiltFontStyle = {};
 GAME.Title.fontColor = 0xff1010;
 GAME.Title.fontFamily = 'Arial';
 GAME.Title.fontSize = 66;
-GAME.Title.widthPercent = 4;
+GAME.Title.vertWidthPercent = 3;
+GAME.Title.widthPercent = 5;
+GAME.Title.cornerRadius = 15;
+GAME.Title.buttonColor = 0x2c3e50;
+GAME.Title.buttonBorderColor = 0x34495e;
 GAME.Title.letterLocations = [];
 
 GAME.Title.init = function() {
+	GAME.Title.buttonGraphic = new PIXI.Graphics();
+	GAME.Title.buttonGraphic.interactive = true;
+	GAME.Title.buttonGraphic.on('tap', showMenu);
+	GAME.Title.buttonGraphic.on('click', showMenu);
+	stage.addChild(GAME.Title.buttonGraphic);
 	GAME.Title.titleFontStyle = {
 		font : GAME.Title.fontSize + 'px ' + GAME.Title.fontFamily, 
 		fill : GAME.Title.fontColor
@@ -38,6 +46,7 @@ GAME.Title.init = function() {
 	GAME.Title.draw();
 }
 GAME.Title.draw = function() {
+	var xPlacement;
 	GAME.Title.fontSize = renderer.height / 8.0;
 	GAME.Title.titleFontStyle = {
 		font : GAME.Title.fontSize + 'px ' + GAME.Title.fontFamily, 
@@ -48,11 +57,14 @@ GAME.Title.draw = function() {
 	GAME.Title.letterI.style = (GAME.Title.titleFontStyle);
 	GAME.Title.letterD.style = (GAME.Title.titleFontStyle);
 	GAME.Title.letterE.style = (GAME.Title.titleFontStyle);
-	GAME.Title.letterS.x = pixelFromPercentWidth(GAME.Title.widthPercent);
-	GAME.Title.letterL.x = pixelFromPercentWidth(GAME.Title.widthPercent);
-	GAME.Title.letterI.x = pixelFromPercentWidth(GAME.Title.widthPercent);
-	GAME.Title.letterD.x = pixelFromPercentWidth(GAME.Title.widthPercent);
-	GAME.Title.letterE.x = pixelFromPercentWidth(GAME.Title.widthPercent);
+	GAME.Title.buttonGraphic.clear();
+	GAME.Title.buttonGraphic.lineStyle(getGridWidth(), GAME.Grid.gridColor, 1);
+	GAME.Title.buttonGraphic.beginFill(GAME.Title.buttonColor, 1);
+	GAME.Title.buttonGraphic.drawRect(
+			pixelFromPercentWidth(0), 
+			pixelFromPercentHeight(6), 
+			tileWidth, 
+			pixelFromPercentHeight(88));
 	if(isVertical) {
 		GAME.Title.letterS.rotation = -Math.PI/2.0;
 		GAME.Title.letterL.rotation = -Math.PI/2.0;
@@ -64,15 +76,16 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.y = pixelFromPercentHeight(50) + GAME.Title.letterI.width/2.0;
 		GAME.Title.letterD.y = pixelFromPercentHeight(27) + GAME.Title.letterD.width;
 		GAME.Title.letterE.y = pixelFromPercentHeight(7) + GAME.Title.letterE.width + (GAME.Title.letterE.width/3.0);
+		GAME.Title.buttonGraphic.x = pixelFromPercentWidth(2);
+		xPlacement = pixelFromPercentWidth(GAME.Title.vertWidthPercent);
 	} else {
 		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) {
-			GAME.Title.letterS.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
-			GAME.Title.letterL.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
-			GAME.Title.letterI.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
-			GAME.Title.letterD.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
-			GAME.Title.letterE.x = pixelFromPercentWidth(95 - GAME.Title.widthPercent);
+			GAME.Title.buttonGraphic.x = pixelFromPercentWidth(87);
+			xPlacement = pixelFromPercentWidth(96 - GAME.Title.widthPercent);
+		} else {
+			GAME.Title.buttonGraphic.x = pixelFromPercentWidth(2);
+			xPlacement = pixelFromPercentWidth(GAME.Title.widthPercent);
 		}
-		GAME.Title.letterI.x = GAME.Title.letterI.x + GAME.Title.letterI.width/2.0;
 		GAME.Title.letterS.rotation = 0;
 		GAME.Title.letterL.rotation = 0;
 		GAME.Title.letterI.rotation = 0;
@@ -84,6 +97,13 @@ GAME.Title.draw = function() {
 		GAME.Title.letterD.y = pixelFromPercentHeight(73) - (4.0 * GAME.Title.letterD.height/5.0);
 		GAME.Title.letterE.y = pixelFromPercentHeight(93) - GAME.Title.letterE.height ;
 	}
+	GAME.Title.letterS.x = xPlacement;
+	GAME.Title.letterL.x = xPlacement;
+	GAME.Title.letterI.x = xPlacement;
+	GAME.Title.letterD.x = xPlacement;
+	GAME.Title.letterE.x = xPlacement;
+	if(!isVertical) GAME.Title.letterI.x = GAME.Title.letterI.x  + GAME.Title.letterI.width/2.0;
+
 	if(!isMobile) {
 		GAME.Title.tiltFontStyle = {
 			font : Math.ceil(GAME.Title.fontSize/3.0) + 'px ' + GAME.Title.fontFamily, 
@@ -91,7 +111,7 @@ GAME.Title.draw = function() {
 		}; 
 		GAME.Title.useArrowText.style = (GAME.Title.tiltFontStyle);
 		if(isVertical) {
-			GAME.Title.useArrowText.x = pixelFromPercentWidth(GAME.Title.widthPercent) + GAME.Title.letterD.height - GAME.Title.useArrowText.height/2.0;
+			GAME.Title.useArrowText.x = xPlacement + GAME.Title.letterD.height - GAME.Title.useArrowText.height/3.0;
 			GAME.Title.useArrowText.y = pixelFromPercentHeight(50) + GAME.Title.useArrowText.width/2.0;
 			GAME.Title.useArrowText.rotation = -Math.PI/2.0;
 		} else {
@@ -104,6 +124,7 @@ GAME.Title.draw = function() {
 			GAME.Title.useArrowText.rotation = 0;
 		}
 	}
+	GAME.Title.buttonGraphic.endFill();
 }
 
 

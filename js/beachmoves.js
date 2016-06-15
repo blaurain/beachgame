@@ -50,8 +50,15 @@ function init() {
 	};
 	GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 	GAME.Grid.createTiles(stage);
+	// gridGraphics.on('touchmove', inputMove);
+	// gridGraphics.on('mousemove', inputMove);
 	stage.addChild(gridGraphics);
 	GAME.Title.init();
+	GAME.Menu.init();
+	stage.mousedown = inputStart;
+	stage.mousemove = inputMove;
+	stage.touchmove = inputMove;
+
 	setInterval(update, 20);
 }
 
@@ -65,6 +72,7 @@ function redraw(stage) {
 	GAME.Grid.drawTiles();
 	GAME.Grid.drawGrid();
 	GAME.Title.draw();
+	GAME.Menu.draw();
 }
 
 function pixelFromPercentWidth(percent) {
@@ -160,10 +168,18 @@ function inputStart(data) {
 	}
 }
 
-function inputMove(data) {
+function inputMoveToTile(tile) {
 	if(this.isAlive && !this.isSelected) {
 		selectTile(this);
 	}
+}
+
+function inputMove(data) {
+	var d = data;
+	// if(this.isAlive && !this.isSelected) {
+	// 	selectTile(this);
+	// }
+	console.log("INPUT MOVE: pageX--" + data.data.originalEvent.pageX + " pageY--" + data.data.originalEvent.pageY );
 }
 
 function onTilePressDown(data) {
@@ -215,6 +231,11 @@ function onKeyDown(key) {
     if (key.keyCode === 39) {
         desktopShift(true);
     }
+}
+
+function showMenu() {
+	var m = 0;
+	GAME.Menu.show();
 }
 
 function desktopShift(shiftRight) {
