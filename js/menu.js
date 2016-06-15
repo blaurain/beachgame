@@ -20,7 +20,7 @@ GAME.Menu.draw = function () {
 
 GAME.Menu.show = function () {
 	show = true;
-	stage.addChild(GAME.Menu.retryButton.buttonGraphic);	
+	GAME.Menu.retryButton.show();
 	GAME.Menu.draw();
 }
 
