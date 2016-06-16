@@ -114,9 +114,6 @@ function removePathTiles() {
 	clearMatch();
 	GAME.Grid.checkGrav();
 	renderer.render(stage);
-
-	//TEMP for testing TODO: remove
-	// resize();
 }
 
 function clearMatch() {
@@ -163,18 +160,21 @@ function setTileSelected(tile, isSelected) {
 }
 
 function inputStart(data) {
+	if(GAME.Menu.inMenu) return;
 	if(this.isAlive && !this.isSelected) {
 		selectTile(this);
 	}
 }
 
 function inputMoveToTile(tile) {
+	if(GAME.Menu.inMenu) return;
 	if(this.isAlive && !this.isSelected) {
 		selectTile(this);
 	}
 }
 
 function inputMove(data) {
+	if(GAME.Menu.inMenu) return;
 	var d = data;
 	// if(this.isAlive && !this.isSelected) {
 	// 	selectTile(this);
@@ -183,6 +183,7 @@ function inputMove(data) {
 }
 
 function onTilePressDown(data) {
+	if(GAME.Menu.inMenu) return;
 	var tileRow = this.row;
 	var tileCol = this.col;
 // TODO: make selection smoother later, just tap for now
@@ -190,6 +191,7 @@ function onTilePressDown(data) {
 }
 
 function onTileTap(data) {
+	if(GAME.Menu.inMenu) return;
 	//tap can be remove too
 	var tileRow = this.row;
 	var tileCol = this.col;
@@ -234,7 +236,6 @@ function onKeyDown(key) {
 }
 
 function showMenu() {
-	var m = 0;
 	GAME.Menu.show();
 }
 

@@ -1,10 +1,11 @@
 var GAME = GAME || {};
 
-GAME.Button = function(xPercent, yPercent, width, height, text) {
+GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
 	this.xPercent = xPercent;
 	this.yPercent = yPercent;
 	this.wPercent = width;
 	this.hPercent = height;
+	this.yVertPercent = yVertPercent;
 	this.text = text;
 	this.buttonGraphic = new PIXI.Graphics();
 	this.cornerRadius = 15;
@@ -12,7 +13,7 @@ GAME.Button = function(xPercent, yPercent, width, height, text) {
 	this.buttonTextColor = 0x000000;
 	this.buttonBorderColor = 0x34495e;
 	this.fontStyle = {
-		font : Math.ceil(GAME.Title.fontSize) + 'px ' + GAME.Title.fontFamily, 
+		font : Math.ceil(renderer.height / 8.0) + 'px ' + GAME.Title.fontFamily, 
 		fill : this.buttonTextColor,
 		align : 'center'
 	}; 
@@ -20,6 +21,12 @@ GAME.Button = function(xPercent, yPercent, width, height, text) {
 
 	this.draw = function () {
 		this.buttonGraphic.clear();
+		this.fontStyle = {
+			font : Math.ceil(renderer.height / 8.0) + 'px ' + GAME.Title.fontFamily, 
+			fill : this.buttonTextColor,
+			align : 'center'
+		}; 
+		this.buttonText.style = this.fontStyle;
 		this.buttonGraphic.lineStyle(getGridWidth(), this.buttonBorderColor, 1);
 		this.buttonGraphic.beginFill(this.buttonColor, 1);
 		var buttonWidth, buttonHeight, x, y;
@@ -27,10 +34,10 @@ GAME.Button = function(xPercent, yPercent, width, height, text) {
 			this.buttonText.rotation = -Math.PI/2.0;
 			buttonWidth = pixelFromPercentHeight(this.hPercent);
 			buttonHeight = pixelFromPercentWidth(this.wPercent);
-			x = pixelFromPercentWidth(this.yPercent) - (buttonWidth/2.0);
+			x = pixelFromPercentWidth(this.yVertPercent) - (buttonWidth/2.0);
 			y = pixelFromPercentHeight(this.xPercent) - (buttonHeight/2.0);
-			this.buttonText.x = x + (3.0*this.buttonText.height/8.0);
-			this.buttonText.y = y + (7.5*buttonWidth/5.0);
+			this.buttonText.x = x + (buttonWidth/2.0) - (this.buttonText.height/2.0);
+			this.buttonText.y = y + (buttonHeight/2.0) + (this.buttonText.width/2.0);
 		} else {
 			this.buttonText.rotation = 0;
 			buttonWidth = pixelFromPercentWidth(this.wPercent);
