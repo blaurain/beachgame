@@ -141,7 +141,7 @@ GAME.Grid.createTiles = function(stage) {
 	tileWidth = pixelFromPercentWidth(12) - 2;
 	for (var row = 0; row < 4; row++) {
 		for (var col = 0; col < 7; col++) {
-			tiles[row][col] = new GAME.Tile(row, col, GAME.TileMap.grid1[row][col]); //TODO: Change this to load different grids
+			tiles[row][col] = new GAME.Tile(row, col, currentGrid[row][col]); //TODO: Change this to load different grids
 			GAME.Grid.currentTiles[row][col] = tiles[row][col];
 			tiles[row][col].tileColor = GAME.Tile.getRandomTileColor();
 			switch(GAME.Grid.gravDirection) {

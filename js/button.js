@@ -1,6 +1,7 @@
 var GAME = GAME || {};
 
 GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
+	this.show = false;
 	this.xPercent = xPercent;
 	this.yPercent = yPercent;
 	this.wPercent = width;
@@ -49,17 +50,19 @@ GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
 		}
 		this.buttonGraphic.drawRoundedRect(x, y, buttonWidth, buttonHeight, this.cornerRadius);
 		this.buttonGraphic.endFill();
+		this.buttonGraphic.interactive = true;
+		this.buttonGraphic.buttonMode = true;
+		this.buttonGraphic.hitArea = new PIXI.Rectangle(x, y, buttonWidth, buttonHeight);
 	}
 
 	this.show = function () {
-		show = true;
+		this.show = true;
 		stage.addChild(this.buttonGraphic);	
 		stage.addChild(this.buttonText);
-		this.draw();
 	}
 
 	this.hide = function () {
-		show = false;
+		this.show = false;
 		stage.removeChild(this.buttonGraphic);
 		stage.removeChild(this.buttonText); //TODO: cleanup 
 	}

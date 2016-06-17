@@ -30,6 +30,7 @@ var isMobile = false;
 var isTilting = false;
 var gravSet = false;
 var gridGraphics = new PIXI.Graphics();
+var currentGrid;
 var tiles = [[]];
 var w, h;
 
@@ -48,18 +49,21 @@ function init() {
 		tiles[row] = [];
 		GAME.Grid.currentTiles[row] = [];
 	};
+	setCurrentGrid(0); //TODO: load from saved local shit
 	GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 	GAME.Grid.createTiles(stage);
-	// gridGraphics.on('touchmove', inputMove);
-	// gridGraphics.on('mousemove', inputMove);
 	stage.addChild(gridGraphics);
 	GAME.Title.init();
-	GAME.Menu.init();
 	stage.mousedown = inputStart;
 	stage.mousemove = inputMove;
 	stage.touchmove = inputMove;
 
 	setInterval(update, 20);
+}
+
+function reload() {
+	//make a removeTiles() 
+	GAME.Grid.createTiles(stage);
 }
 
 function update() {
@@ -100,6 +104,35 @@ function getMatchIconWidth(halfTile) {
 	else if(halfTile < 40) return baseWidth + 1.5;
 	else if(halfTile < 50) return baseWidth + 2.0;
 	else return baseWidth + 2.5;
+}
+
+function loadGrid() {
+
+}
+
+function saveGrid(gridNum) {
+
+}
+
+function setCurrentGrid(gridNum) {
+	GAME.TileMap.currentGridIndex = gridNum;
+	switch(gridNum) {
+		case 0:
+			currentGrid = GAME.TileMap.grid0;
+			break;
+		case 1:
+			currentGrid = GAME.TileMap.grid1;
+			break;
+		case 2:
+			currentGrid = GAME.TileMap.grid2;
+			break;
+	}
+}
+
+function nextGrid() {
+	if(GAME.TileMap.currentGridIndex >= GAME.TileMap.numberOfGrids) setCurrentGrid(0);
+	else setCurrentGrid(GAME.TileMap.currentGridIndex + 1);
+
 }
 
 function removePathTiles() {
@@ -251,10 +284,7 @@ function desktopShift(shiftRight) {
 	}
 
 	GAME.Grid.stopFalling();
-	// if((oldDirection === GAME.Grid.Direction.Left && GAME.Grid.gravDirection === GAME.Grid.Direction.Right) ||
-		// (oldDirection === GAME.Grid.Direction.Right && GAME.Grid.gravDirection === GAME.Grid.Direction.Left)) {	
-		resize();
-	// }
+	resize();
 	GAME.Grid.checkGrav();
 }
 

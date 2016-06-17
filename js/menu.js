@@ -8,14 +8,17 @@ GAME.Menu.backGraphic = new PIXI.Graphics();
 GAME.Menu.init = function () {
 	GAME.Menu.backGraphic = new PIXI.Graphics();
 	GAME.Menu.backButton = new GAME.Button(50, 80, 35, 25, 'Back', 70);
-	GAME.Menu.backButton.buttonGraphic.on('tap', GAME.Menu.backClicked);
-	GAME.Menu.backButton.buttonGraphic.on('click', GAME.Menu.backClicked);
+	GAME.Menu.backButton.buttonGraphic.interactive = true;
+	GAME.Menu.backButton.buttonGraphic.on('tap', GAME.Menu.backClicked.bind(true));
+	GAME.Menu.backButton.buttonGraphic.on('click', GAME.Menu.backClicked.bind(true));
 	GAME.Menu.retryButton = new GAME.Button(50, 50, 35, 25, 'Retry', 50);
-	GAME.Menu.retryButton.buttonGraphic.on('tap', GAME.Menu.retryClicked);
-	GAME.Menu.retryButton.buttonGraphic.on('click', GAME.Menu.retryClicked);
+	GAME.Menu.retryButton.buttonGraphic.interactive = true;
+	GAME.Menu.retryButton.buttonGraphic.on('tap', GAME.Menu.retryClicked.bind(true));
+	GAME.Menu.retryButton.buttonGraphic.on('click', GAME.Menu.retryClicked.bind(true));
 	GAME.Menu.nextButton = new GAME.Button(50, 20, 35, 25, 'Next', 30);
-	GAME.Menu.nextButton.buttonGraphic.on('tap', GAME.Menu.nextClicked);
-	GAME.Menu.nextButton.buttonGraphic.on('click', GAME.Menu.nextClicked);
+	GAME.Menu.nextButton.buttonGraphic.interactive = true;
+	GAME.Menu.nextButton.buttonGraphic.on('tap', GAME.Menu.nextClicked.bind(true));
+	GAME.Menu.nextButton.buttonGraphic.on('click', GAME.Menu.nextClicked.bind(true));
 }
 
 GAME.Menu.draw = function () {
@@ -30,12 +33,13 @@ GAME.Menu.draw = function () {
 
 GAME.Menu.show = function () {
 	if(GAME.Menu.inMenu) return;
+	GAME.Menu.init();
 	GAME.Menu.inMenu = true;
 	stage.addChild(GAME.Menu.backGraphic);
 	GAME.Menu.backButton.show();
 	GAME.Menu.retryButton.show();
 	GAME.Menu.nextButton.show();
-	GAME.Menu.draw();
+	resize();
 }
 
 GAME.Menu.hide = function () {
@@ -45,7 +49,6 @@ GAME.Menu.hide = function () {
 	GAME.Menu.retryButton.hide();
 	GAME.Menu.backButton.hide();
 	GAME.Menu.nextButton.hide();
-	//stage.removeChild(....) //TODO: cleanup 
 }
 
 GAME.Menu.drawBack = function () {
@@ -57,13 +60,15 @@ GAME.Menu.drawBack = function () {
 }
 
 GAME.Menu.retryClicked = function() {
-	var r = 0;
+	location.reload();
 }
 
 GAME.Menu.backClicked = function() {
-	var r = 0;
+	GAME.Menu.hide();
 }
 
 GAME.Menu.nextClicked = function() {
-	var r = 0;
+	nextGrid();
 }
+
+
