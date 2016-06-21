@@ -46,7 +46,7 @@ GAME.Title.init = function() {
 	GAME.Title.draw();
 }
 GAME.Title.draw = function() {
-	var xPlacement;
+	var xPlacement, xRect = 0;
 	GAME.Title.fontSize = renderer.height / 8.0;
 	GAME.Title.titleFontStyle = {
 		font : GAME.Title.fontSize + 'px ' + GAME.Title.fontFamily, 
@@ -60,11 +60,6 @@ GAME.Title.draw = function() {
 	GAME.Title.buttonGraphic.clear();
 	GAME.Title.buttonGraphic.lineStyle(getGridWidth(), GAME.Grid.gridColor, 1);
 	GAME.Title.buttonGraphic.beginFill(GAME.Title.buttonColor, 1);
-	GAME.Title.buttonGraphic.drawRect(
-			pixelFromPercentWidth(0), 
-			pixelFromPercentHeight(6), 
-			tileWidth, 
-			pixelFromPercentHeight(88));
 	if(isVertical) {
 		GAME.Title.letterS.rotation = -Math.PI/2.0;
 		GAME.Title.letterL.rotation = -Math.PI/2.0;
@@ -76,15 +71,17 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.y = pixelFromPercentHeight(50) + GAME.Title.letterI.width/2.0;
 		GAME.Title.letterD.y = pixelFromPercentHeight(27) + GAME.Title.letterD.width;
 		GAME.Title.letterE.y = pixelFromPercentHeight(7) + GAME.Title.letterE.width + (GAME.Title.letterE.width/3.0);
-		GAME.Title.buttonGraphic.x = pixelFromPercentWidth(2);
+		// GAME.Title.buttonGraphic.x = pixelFromPercentWidth(2);
+		xRect = pixelFromPercentWidth(2);
 		xPlacement = pixelFromPercentWidth(GAME.Title.vertWidthPercent);
 	} else {
 		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) {
-			GAME.Title.buttonGraphic.x = pixelFromPercentWidth(87);
-			xPlacement = pixelFromPercentWidth(96 - GAME.Title.widthPercent);
+			xRect = pixelFromPercentWidth(98) - gridShifterW;
+			xPlacement = xRect + (tileWidth/2.0) - (GAME.Title.letterD.width/2.0);
+
 		} else {
-			GAME.Title.buttonGraphic.x = pixelFromPercentWidth(2);
-			xPlacement = pixelFromPercentWidth(GAME.Title.widthPercent);
+			xRect = pixelFromPercentWidth(2);
+			xPlacement = xRect + (tileWidth/2.0) - (GAME.Title.letterD.width/2.0);
 		}
 		GAME.Title.letterS.rotation = 0;
 		GAME.Title.letterL.rotation = 0;
@@ -97,6 +94,11 @@ GAME.Title.draw = function() {
 		GAME.Title.letterD.y = pixelFromPercentHeight(73) - (4.0 * GAME.Title.letterD.height/5.0);
 		GAME.Title.letterE.y = pixelFromPercentHeight(93) - GAME.Title.letterE.height ;
 	}
+	GAME.Title.buttonGraphic.drawRect(
+		xRect, 
+		pixelFromPercentHeight(6), 
+		tileWidth, 
+		pixelFromPercentHeight(88));
 	GAME.Title.letterS.x = xPlacement;
 	GAME.Title.letterL.x = xPlacement;
 	GAME.Title.letterI.x = xPlacement;

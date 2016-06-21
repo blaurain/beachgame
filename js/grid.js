@@ -119,6 +119,8 @@ GAME.Grid.drawGrid = function() {
 	gridGraphics.clear();
 	gridGraphics.lineStyle(getGridWidth(), GAME.Grid.gridColor, 1); //width, color, alpha
 	//outside
+	// var xGrid = 0;
+	// if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) xGrid = 2;
 	gridGraphics.drawRect(pixelFromPercentWidth(14) - gridShifterW, pixelFromPercentHeight(6),
 		pixelFromPercentWidth(84), pixelFromPercentHeight(88));
 	//vertical

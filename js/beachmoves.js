@@ -50,7 +50,7 @@ function init() {
 	};
 	setCurrentGrid(0); //TODO: load from saved local shit
 	GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
-	GAME.Grid.createTiles(stage);
+	GAME.Grid.createTiles();
 	GAME.Grid.createGrid();
 	GAME.Title.init();
 	stage.mousedown = inputStart;
@@ -350,7 +350,7 @@ function resizeDesktop() {
 		bufferY = (window.innerHeight)/2.0 - renderer.height/2.0;
 	} else {
 		isVertical = false;
-		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = 80;
+		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = pixelFromPercentWidth(10);
 		else gridShifterW = 0;
 		rotateHorizontal();
 		redraw(stage);
@@ -392,15 +392,13 @@ function resizeMobile() {
 		(GAME.Grid.gravDirection === GAME.Grid.Direction.Right && window.orientation === 90) || 
 		(GAME.Grid.gravDirection === GAME.Grid.Direction.Left && window.orientation === -90))) { //prevent double refresh 
 			isTilting = true;
-			// renderer.resize(window.innerWidth, window.innerHeight);
 			renderer.render(stage);
 			return;
 		}
-		isVertical = false;
-		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = 80;
+		isVertical = false; 
+		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = pixelFromPercentWidth(10);
 		else gridShifterW = 0;
 
-		// renderer.resize(window.innerWidth, window.innerHeight);
 		redraw(stage);
 		if(window.pageYOffset > 0) {
 	 		renderer.view.style.top = window.pageYOffset + "px";
