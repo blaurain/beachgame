@@ -372,7 +372,7 @@ function resizeMobile() {
 	h = window.innerHeight;
 	renderer.resize(w, h);
 
-	if(window.innerWidth < window.innerHeight) { //vert
+	if(window.innerWidth < window.innerHeight) { //vert //TODO: FIX MOBILE TILTING ANIMATION
 		if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
 			isTilting = true;
 			renderer.render(stage);

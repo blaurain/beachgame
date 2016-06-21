@@ -4,15 +4,17 @@ GAME.Title = function() {}
 GAME.Title.constructor = GAME.Title;
 GAME.Title.titleFontStyle = {};
 GAME.Title.tiltFontStyle = {};
-GAME.Title.fontColor = 0xff1010;
+GAME.Title.fontColor = 0xffffff;
+GAME.Title.hamburgerColor = 0xfcf03b;
+GAME.Title.buttonColor = 0x2c3e50;
+GAME.Title.buttonBorderColor = 0x34495e;
 GAME.Title.fontFamily = 'Arial';
 GAME.Title.fontSize = 66;
 GAME.Title.vertWidthPercent = 3;
 GAME.Title.widthPercent = 5;
 GAME.Title.cornerRadius = 15;
-GAME.Title.buttonColor = 0x2c3e50;
-GAME.Title.buttonBorderColor = 0x34495e;
 GAME.Title.letterLocations = [];
+GAME.Title.letterHeights = [25, 42, 59, 76, 93];
 
 GAME.Title.init = function() {
 	GAME.Title.buttonGraphic = new PIXI.Graphics();
@@ -43,10 +45,12 @@ GAME.Title.init = function() {
 		GAME.Title.useArrowText = new PIXI.Text('[tilt with arrow keys]', GAME.Title.tiltFontStyle);
 		stage.addChild(GAME.Title.useArrowText); 
 	}
+	GAME.Title.hamburgerGraphic = new PIXI.Graphics();
+	stage.addChild(GAME.Title.hamburgerGraphic);
 	GAME.Title.draw();
 }
 GAME.Title.draw = function() {
-	var xPlacement, xRect = 0;
+	var xPlacement, xRect = 0, lineStart, lineEnd;
 	GAME.Title.fontSize = renderer.height / 8.0;
 	GAME.Title.titleFontStyle = {
 		font : GAME.Title.fontSize + 'px ' + GAME.Title.fontFamily, 
@@ -60,20 +64,29 @@ GAME.Title.draw = function() {
 	GAME.Title.buttonGraphic.clear();
 	GAME.Title.buttonGraphic.lineStyle(getGridWidth(), GAME.Grid.gridColor, 1);
 	GAME.Title.buttonGraphic.beginFill(GAME.Title.buttonColor, 1);
+	GAME.Title.hamburgerGraphic.clear();
+	GAME.Title.hamburgerGraphic.lineStyle(getGridWidth(), GAME.Title.hamburgerColor, 1); //width, color, alpha
 	if(isVertical) {
 		GAME.Title.letterS.rotation = -Math.PI/2.0;
 		GAME.Title.letterL.rotation = -Math.PI/2.0;
 		GAME.Title.letterI.rotation = -Math.PI/2.0;
 		GAME.Title.letterD.rotation = -Math.PI/2.0;
 		GAME.Title.letterE.rotation = -Math.PI/2.0;
-		GAME.Title.letterS.y = pixelFromPercentHeight(93) - GAME.Title.letterI.width/3.0;
-		GAME.Title.letterL.y = pixelFromPercentHeight(73);
-		GAME.Title.letterI.y = pixelFromPercentHeight(50) + GAME.Title.letterI.width/2.0;
-		GAME.Title.letterD.y = pixelFromPercentHeight(27) + GAME.Title.letterD.width;
-		GAME.Title.letterE.y = pixelFromPercentHeight(7) + GAME.Title.letterE.width + (GAME.Title.letterE.width/3.0);
-		// GAME.Title.buttonGraphic.x = pixelFromPercentWidth(2);
+		GAME.Title.letterS.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]) - GAME.Title.letterI.width/3.0;
+		GAME.Title.letterL.y = pixelFromPercentHeight(GAME.Title.letterHeights[3]);
+		GAME.Title.letterI.y = pixelFromPercentHeight(GAME.Title.letterHeights[2]) + GAME.Title.letterI.width/2.0;
+		GAME.Title.letterD.y = pixelFromPercentHeight(GAME.Title.letterHeights[1]) + GAME.Title.letterD.width;
+		GAME.Title.letterE.y = pixelFromPercentHeight(GAME.Title.letterHeights[0]) + GAME.Title.letterE.width + (GAME.Title.letterE.width/3.0);
 		xRect = pixelFromPercentWidth(2);
 		xPlacement = pixelFromPercentWidth(GAME.Title.vertWidthPercent);
+		lineStart = xRect + (2.0*tileWidth/10.0);
+		lineEnd = xRect + (6.0*tileWidth/10.0);
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(21));
+		GAME.Title.hamburgerGraphic.lineTo(lineStart, pixelFromPercentHeight(9));
+		GAME.Title.hamburgerGraphic.moveTo(lineStart + Math.abs(lineStart - lineEnd)/2.0, pixelFromPercentHeight(21));
+		GAME.Title.hamburgerGraphic.lineTo(lineStart + Math.abs(lineStart - lineEnd)/2.0, pixelFromPercentHeight(9));
+		GAME.Title.hamburgerGraphic.moveTo(lineEnd, pixelFromPercentHeight(21));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(9));
 	} else {
 		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) {
 			xRect = pixelFromPercentWidth(98) - gridShifterW;
@@ -88,11 +101,19 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.rotation = 0;
 		GAME.Title.letterD.rotation = 0;
 		GAME.Title.letterE.rotation = 0;
-		GAME.Title.letterS.y = pixelFromPercentHeight(7);
-		GAME.Title.letterL.y = pixelFromPercentHeight(27) - GAME.Title.letterD.height/4.0;
-		GAME.Title.letterI.y = pixelFromPercentHeight(50) - GAME.Title.letterD.height/2.0;
-		GAME.Title.letterD.y = pixelFromPercentHeight(73) - (4.0 * GAME.Title.letterD.height/5.0);
-		GAME.Title.letterE.y = pixelFromPercentHeight(93) - GAME.Title.letterE.height ;
+		GAME.Title.letterS.y = pixelFromPercentHeight(GAME.Title.letterHeights[0]);
+		GAME.Title.letterL.y = pixelFromPercentHeight(GAME.Title.letterHeights[1]) - GAME.Title.letterD.height/4.0;
+		GAME.Title.letterI.y = pixelFromPercentHeight(GAME.Title.letterHeights[2]) - GAME.Title.letterD.height/2.0;
+		GAME.Title.letterD.y = pixelFromPercentHeight(GAME.Title.letterHeights[3]) - (4.0 * GAME.Title.letterD.height/5.0);
+		GAME.Title.letterE.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]) - GAME.Title.letterE.height ;
+		lineStart = xRect + (2.0*tileWidth/10.0);
+		lineEnd = xRect + (8.0*tileWidth/10.0);
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(10));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(10));
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(14));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(14));
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(18));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(18));
 	}
 	GAME.Title.buttonGraphic.drawRect(
 		xRect, 
@@ -105,7 +126,6 @@ GAME.Title.draw = function() {
 	GAME.Title.letterD.x = xPlacement;
 	GAME.Title.letterE.x = xPlacement;
 	if(!isVertical) GAME.Title.letterI.x = GAME.Title.letterI.x  + GAME.Title.letterI.width/2.0;
-
 	if(!isMobile) {
 		GAME.Title.tiltFontStyle = {
 			font : Math.ceil(GAME.Title.fontSize/3.0) + 'px ' + GAME.Title.fontFamily, 
@@ -127,6 +147,11 @@ GAME.Title.draw = function() {
 		}
 	}
 	GAME.Title.buttonGraphic.endFill();
+	//Hamburger Menu Graphic
+
+	// GAME.Title.hamburgerGraphic.pivot = new PIXI.Point(lineStart + lineEnd/2.0, pixelFromPercentHeight(17));
+	// if(isVertical) GAME.Title.hamburgerGraphic.rotation = -Math.PI/2.0;
+	// else GAME.Title.hamburgerGraphic.rotation = 0; //TODO: figure out rotation with pivot, seems to work just not right order
 }
 
 
