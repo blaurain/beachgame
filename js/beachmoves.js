@@ -271,7 +271,11 @@ function onKeyDown(key) {
 }
 
 function showMenu() {
-	GAME.Menu.show();
+	if(GAME.Menu.inMenu) {
+		GAME.Menu.hide();
+	} else {
+		GAME.Menu.show();
+	}
 }
 
 function desktopShift(shiftRight) {
@@ -311,7 +315,7 @@ function resize() {
 	if(window.orientation === undefined) { //desktop only
 		resizeDesktop();
 	} else {  //mobile/small
-		resizeMobile();
+		if(!resizeMobile()) return; //returns false on bail
 	}
  	isTilting = false;
  	renderer.render(stage);
@@ -375,8 +379,9 @@ function resizeMobile() {
 	if(window.innerWidth < window.innerHeight) { //vert //TODO: FIX MOBILE TILTING ANIMATION
 		if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
 			isTilting = true;
+			GAME.Grid.stopFalling();
 			renderer.render(stage);
-			return;
+			return false;
 		} //prevent double refresh
 		isVertical = true;
 		gridShifterW = 0;
@@ -392,8 +397,9 @@ function resizeMobile() {
 		(GAME.Grid.gravDirection === GAME.Grid.Direction.Right && window.orientation === 90) || 
 		(GAME.Grid.gravDirection === GAME.Grid.Direction.Left && window.orientation === -90))) { //prevent double refresh 
 			isTilting = true;
+			GAME.Grid.stopFalling();
 			renderer.render(stage);
-			return;
+			return false;
 		}
 		isVertical = false; 
 		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = pixelFromPercentWidth(10);
@@ -404,6 +410,7 @@ function resizeMobile() {
 	 		renderer.view.style.top = window.pageYOffset + "px";
 		}
 	}
+	return true;
 }
 
 function orientationchange(event) {  //Mobile only
