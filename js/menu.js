@@ -49,6 +49,7 @@ GAME.Menu.hide = function () {
 	GAME.Menu.retryButton.hide();
 	GAME.Menu.backButton.hide();
 	GAME.Menu.nextButton.hide();
+	renderer.render(stage);
 }
 
 GAME.Menu.drawBack = function () {
@@ -60,7 +61,9 @@ GAME.Menu.drawBack = function () {
 }
 
 GAME.Menu.retryClicked = function() {
-	location.reload();
+	// location.reload();
+	resetGame();	
+	GAME.Menu.hide();
 }
 
 GAME.Menu.backClicked = function() {
@@ -69,6 +72,7 @@ GAME.Menu.backClicked = function() {
 
 GAME.Menu.nextClicked = function() {
 	nextGrid();
+	GAME.Menu.hide();
 }
 
 

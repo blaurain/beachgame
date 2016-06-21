@@ -14,7 +14,9 @@ GAME.Tile = function(row, col, type){
 	var tileColor;
 	var xPosition, yPosition;
 	var tileGraphic, overGraphic;
-	if(this.tileType !== 0) this.isMatchTile = true;
+	if(this.tileType !== 0) this.hasOver = true;
+	else this.hasOver = false;
+	if(this.tileType === 1 || this.tileType === 2 || this.tileType === 3) this.isMatchTile = true;
 	else this.isMatchTile = false;
 }
 GAME.Tile.constructor = GAME.Tile;

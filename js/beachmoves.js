@@ -20,7 +20,6 @@ var match = {
 var DESKTOP_WIDTH = 1136; //16:9 aspect ratio
 var DESKTOP_HEIGHT = 640;
 var renderer = PIXI.autoDetectRenderer(DESKTOP_WIDTH, DESKTOP_HEIGHT, rendererOptions); 
-// var tileCorner = 10;
 var selectedAlpha = 1.0;
 var unselectedAlpha = .7;
 var tileHeight, tileWidth;
@@ -29,7 +28,7 @@ var isVertical = false;
 var isMobile = false;
 var isTilting = false;
 var gravSet = false;
-var gridGraphics = new PIXI.Graphics();
+var gridGraphics;
 var currentGrid;
 var tiles = [[]];
 var w, h;
@@ -52,18 +51,20 @@ function init() {
 	setCurrentGrid(0); //TODO: load from saved local shit
 	GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 	GAME.Grid.createTiles(stage);
-	stage.addChild(gridGraphics);
+	GAME.Grid.createGrid();
 	GAME.Title.init();
 	stage.mousedown = inputStart;
 	stage.mousemove = inputMove;
 	stage.touchmove = inputMove;
-
 	setInterval(update, 20);
 }
 
-function reload() {
-	//make a removeTiles() 
-	GAME.Grid.createTiles(stage);
+function resetGame() {
+	GAME.Grid.clearTiles();
+	GAME.Grid.createTiles();
+	GAME.Grid.clearGrid();
+	GAME.Grid.createGrid();
+	resize();
 }
 
 function update() {
@@ -130,9 +131,10 @@ function setCurrentGrid(gridNum) {
 }
 
 function nextGrid() {
+	GAME.TileMap.currentGridIndex++;
 	if(GAME.TileMap.currentGridIndex >= GAME.TileMap.numberOfGrids) setCurrentGrid(0);
-	else setCurrentGrid(GAME.TileMap.currentGridIndex + 1);
-
+	else setCurrentGrid(GAME.TileMap.currentGridIndex);
+	resetGame();
 }
 
 function removePathTiles() {
@@ -140,7 +142,7 @@ function removePathTiles() {
 		match.path[i].isAlive = false;
 		GAME.Grid.currentTiles[match.path[i].row][match.path[i].col] = null;
 		match.path[i].tileGraphic.visible = false;
-		if(match.path[i].isMatchTile) {
+		if(match.path[i].hasOver) {
 			match.path[i].overGraphic.clear();
 		} 
 	};
@@ -307,95 +309,103 @@ function resize() {
 	}
 
 	if(window.orientation === undefined) { //desktop only
-		var bufferX, bufferY;
-		isMobile = false;		
-		window.scrollBy(0,0);
-
-		//is it restricted by height, width or nothing
-		if(window.innerHeight < DESKTOP_WIDTH) { //keep at 16:9 aspect ratio
-			//restricted by height
-			w = window.innerHeight;
-			h = (9.0/16.0) * window.innerHeight;
-		} else if(window.innerWidth < DESKTOP_WIDTH && ((DESKTOP_HEIGHT - window.innerHeight) < (DESKTOP_WIDTH - window.innerWidth))) {
-			//restricted by width
-			w = window.innerWidth;
-			h = (9.0/16.0) * window.innerWidth;
-		} else {
-			//restricted by nothing
-			w = DESKTOP_WIDTH;
-			h = DESKTOP_HEIGHT;
-		}
-				
-		renderer.resize(w, h);
-
-		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Down) {
-			isVertical = true;
-			gridShifterW = 0;
-			GAME.Grid.beginDraw();
-			redraw(stage);
-			GAME.Grid.endDraw();
-			rotateVertical();
-			bufferX = (window.innerWidth)/2.0 - renderer.width/2.0;
-			bufferY = (window.innerHeight)/2.0 - renderer.height/2.0;
-		} else {
-			isVertical = false;
-			if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = 80;
-			else gridShifterW = 0;
-			rotateHorizontal();
-			redraw(stage);
-			bufferX = (window.innerWidth - w)/2.0;
-			bufferY = (window.innerHeight - h)/2.0;
-		}
-		renderer.view.style.position = "absolute";
-		renderer.view.style.top = bufferY + "px";
-		renderer.view.style.left = bufferX + "px";
+		resizeDesktop();
 	} else {  //mobile/small
-		isMobile = true;
-		window.scrollBy(0,0);
-		renderer.view.style.position = "absolute";
-		renderer.view.style.top = "0px";
-		renderer.view.style.left = "0px";
-		w = window.innerWidth;
-		h = window.innerHeight;
-		renderer.resize(w, h);
-
-		if(window.innerWidth < window.innerHeight) { //vert
-			if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
-				isTilting = true;
-				renderer.render(stage);
-				return;
-			} //prevent double refresh
-			isVertical = true;
-			gridShifterW = 0;
-			GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
-			GAME.Grid.beginDraw();
-			redraw(stage);
-			GAME.Grid.endDraw();
-			rotateVertical();
-		} else {
-			//horizontal
-			if(window.orientation !== undefined && (
-			(GAME.Grid.gravDirection === GAME.Grid.Direction.Down) ||
-			(GAME.Grid.gravDirection === GAME.Grid.Direction.Right && window.orientation === 90) || 
-			(GAME.Grid.gravDirection === GAME.Grid.Direction.Left && window.orientation === -90))) { //prevent double refresh 
-				isTilting = true;
-				// renderer.resize(window.innerWidth, window.innerHeight);
-				renderer.render(stage);
-				return;
-			}
-			isVertical = false;
-			if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = 80;
-			else gridShifterW = 0;
-
-			// renderer.resize(window.innerWidth, window.innerHeight);
-			redraw(stage);
-			if(window.pageYOffset > 0) {
-		 		renderer.view.style.top = window.pageYOffset + "px";
-			}
-		}
+		resizeMobile();
 	}
  	isTilting = false;
  	renderer.render(stage);
+}
+
+function resizeDesktop() {
+	var bufferX, bufferY;
+	isMobile = false;		
+	window.scrollBy(0,0);
+
+	//is it restricted by height, width or nothing
+	if(window.innerHeight < DESKTOP_WIDTH) { //keep at 16:9 aspect ratio
+		//restricted by height
+		w = window.innerHeight;
+		h = (9.0/16.0) * window.innerHeight;
+	} else if(window.innerWidth < DESKTOP_WIDTH && ((DESKTOP_HEIGHT - window.innerHeight) < (DESKTOP_WIDTH - window.innerWidth))) {
+		//restricted by width
+		w = window.innerWidth;
+		h = (9.0/16.0) * window.innerWidth;
+	} else {
+		//restricted by nothing
+		w = DESKTOP_WIDTH;
+		h = DESKTOP_HEIGHT;
+	}
+			
+	renderer.resize(w, h);
+
+	if(GAME.Grid.gravDirection === GAME.Grid.Direction.Down) {
+		isVertical = true;
+		gridShifterW = 0;
+		GAME.Grid.beginDraw();
+		redraw(stage);
+		GAME.Grid.endDraw();
+		rotateVertical();
+		bufferX = (window.innerWidth)/2.0 - renderer.width/2.0;
+		bufferY = (window.innerHeight)/2.0 - renderer.height/2.0;
+	} else {
+		isVertical = false;
+		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = 80;
+		else gridShifterW = 0;
+		rotateHorizontal();
+		redraw(stage);
+		bufferX = (window.innerWidth - w)/2.0;
+		bufferY = (window.innerHeight - h)/2.0;
+	}
+	renderer.view.style.position = "absolute";
+	renderer.view.style.top = bufferY + "px";
+	renderer.view.style.left = bufferX + "px";
+}
+
+function resizeMobile() {
+	isMobile = true;
+	window.scrollBy(0,0);
+	renderer.view.style.position = "absolute";
+	renderer.view.style.top = "0px";
+	renderer.view.style.left = "0px";
+	w = window.innerWidth;
+	h = window.innerHeight;
+	renderer.resize(w, h);
+
+	if(window.innerWidth < window.innerHeight) { //vert
+		if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
+			isTilting = true;
+			renderer.render(stage);
+			return;
+		} //prevent double refresh
+		isVertical = true;
+		gridShifterW = 0;
+		GAME.Grid.gravDirection = GAME.Grid.Direction.Down;
+		GAME.Grid.beginDraw();
+		redraw(stage);
+		GAME.Grid.endDraw();
+		rotateVertical();
+	} else {
+		//horizontal
+		if(window.orientation !== undefined && (
+		(GAME.Grid.gravDirection === GAME.Grid.Direction.Down) ||
+		(GAME.Grid.gravDirection === GAME.Grid.Direction.Right && window.orientation === 90) || 
+		(GAME.Grid.gravDirection === GAME.Grid.Direction.Left && window.orientation === -90))) { //prevent double refresh 
+			isTilting = true;
+			// renderer.resize(window.innerWidth, window.innerHeight);
+			renderer.render(stage);
+			return;
+		}
+		isVertical = false;
+		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = 80;
+		else gridShifterW = 0;
+
+		// renderer.resize(window.innerWidth, window.innerHeight);
+		redraw(stage);
+		if(window.pageYOffset > 0) {
+	 		renderer.view.style.top = window.pageYOffset + "px";
+		}
+	}
 }
 
 function orientationchange(event) {  //Mobile only

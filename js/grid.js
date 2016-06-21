@@ -106,6 +106,14 @@ GAME.Grid.stopFalling = function() {
 		}
 	}
 }
+GAME.Grid.createGrid = function() {
+	gridGraphics = new PIXI.Graphics();
+	stage.addChild(gridGraphics);
+}
+GAME.Grid.clearGrid = function() {
+	gridGraphics.clear();
+	stage.removeChild(gridGraphics);
+}
 GAME.Grid.drawGrid = function() {
 	// gridGraphics.clearBeforeRender = true;
 	gridGraphics.clear();
@@ -136,7 +144,25 @@ GAME.Grid.drawGrid = function() {
 	//return
 	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6));
 }
-GAME.Grid.createTiles = function(stage) {
+GAME.Grid.clearTiles = function() {
+	for (var row = 0; row < 4; row++) {
+		for (var col = 0; col < 7; col++) {
+			tiles[row][col].tileGraphic.clear();
+			stage.removeChild(tiles[row][col].tileGraphic);
+			if(tiles[row][col].tileType !== 0) {
+				tiles[row][col].overGraphic.clear();
+				stage.removeChild(tiles[row][col].overGraphic);
+			}
+			tiles[row][col] = null;
+		}
+	}
+	for (var row = 0; row < 4; row++) { //seperate to avoid cross reference conflict
+		for (var col = 0; col < 7; col++) {
+			GAME.Grid.currentTiles[row][col] = null;
+		}
+	}
+}
+GAME.Grid.createTiles = function() {
 	tileHeight = pixelFromPercentHeight(22) - 2;
 	tileWidth = pixelFromPercentWidth(12) - 2;
 	for (var row = 0; row < 4; row++) {
@@ -158,8 +184,6 @@ GAME.Grid.createTiles = function(stage) {
 			tiles[row][col].isSelected = false;
 			tiles[row][col].tileGraphic = new PIXI.Graphics();
 			tiles[row][col].tileGraphic.interactive = true;
-			// tiles[row][col].tileGraphic.on('mousedown', inputStart.bind(tiles[row][col]));
-			// tiles[row][col].tileGraphic.on('mousedown', inputMove.bind());
 			tiles[row][col].tileGraphic.on('touchmove', inputMoveToTile.bind(tiles[row][col]));
 			//TODO: add touchstart/touchmove (and click) to a single object make it global check through array for which it's hitting
 			tiles[row][col].tileGraphic.on('tap', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
