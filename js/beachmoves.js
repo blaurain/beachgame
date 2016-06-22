@@ -376,7 +376,7 @@ function resizeMobile() {
 	h = window.innerHeight;
 	renderer.resize(w, h);
 
-	if(window.innerWidth < window.innerHeight) { //vert //TODO: FIX MOBILE TILTING ANIMATION
+	if(window.innerWidth < window.innerHeight) { //vert
 		if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
 			isTilting = true;
 			GAME.Grid.stopFalling();
@@ -404,7 +404,6 @@ function resizeMobile() {
 		isVertical = false; 
 		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) gridShifterW = pixelFromPercentWidth(10);
 		else gridShifterW = 0;
-
 		redraw(stage);
 		if(window.pageYOffset > 0) {
 	 		renderer.view.style.top = window.pageYOffset + "px";
@@ -417,7 +416,6 @@ function orientationchange(event) {  //Mobile only
 	if(window.orientation === undefined) return;
 	var oldDirection = GAME.Grid.gravDirection;
 	setGravity();
-	// isTilting = true;
 	GAME.Grid.stopFalling();
 	if((oldDirection === GAME.Grid.Direction.Left && GAME.Grid.gravDirection === GAME.Grid.Direction.Right) ||
 		(oldDirection === GAME.Grid.Direction.Right && GAME.Grid.gravDirection === GAME.Grid.Direction.Left)) {	
