@@ -208,13 +208,31 @@ function inputMoveToTile(tile) {
 	}
 }
 
-function inputMove(data) {
+function inputMove(event) {
 	if(GAME.Menu.inMenu) return;
-	var d = data;
-	// if(this.isAlive && !this.isSelected) {
-	// 	selectTile(this);
-	// }
-	console.log("INPUT MOVE: pageX--" + data.data.originalEvent.pageX + " pageY--" + data.data.originalEvent.pageY );
+	var hitPos = event.data.getLocalPosition(gridGraphics);
+	var hitPosParent = event.data.getLocalPosition(gridGraphics.parent); 
+
+	for (var row = 0; row < 4; row++) {
+		for (var col = 0; col < 7; col++) {
+			var x = tiles[row][col].xPosition;
+			var y = tiles[row][col].yPosition;
+			var x2 = x + tileWidth;
+			var y2 = y + tileHeight; //TODO: might need to change if vert
+			if(hitPos.x > x && hitPos.x < x2 && hitPos.y > y && hitPos.y < y2) {
+				if(tiles[row][col].isAlive && !tiles[row][col].isSelected) {
+					selectTile(tiles[row][col]);
+					return;
+				}
+			}
+			if(isVertical) {
+
+			} else {
+
+			}
+		}
+	}
+	// console.log("INPUT MOVE: pageX--" + event.data.originalEvent.pageX + " pageY--" + event.data.originalEvent.pageY );
 }
 
 function onTilePressDown(data) {

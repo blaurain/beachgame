@@ -145,6 +145,9 @@ GAME.Grid.drawGrid = function() {
 	gridGraphics.lineTo(pixelFromPercentWidth(98) - gridShifterW, pixelFromPercentHeight(28));
 	//return
 	gridGraphics.moveTo(pixelFromPercentWidth(26) - gridShifterW, pixelFromPercentHeight(6));
+	gridGraphics.interactive = true;
+	gridGraphics.on('touchstart', inputMove.bind());
+	gridGraphics.on('touchmove', inputMove.bind());
 }
 GAME.Grid.clearTiles = function() {
 	for (var row = 0; row < 4; row++) {
@@ -186,7 +189,7 @@ GAME.Grid.createTiles = function() {
 			tiles[row][col].isSelected = false;
 			tiles[row][col].tileGraphic = new PIXI.Graphics();
 			tiles[row][col].tileGraphic.interactive = true;
-			tiles[row][col].tileGraphic.on('touchmove', inputMoveToTile.bind(tiles[row][col]));
+			// tiles[row][col].tileGraphic.on('touchmove', inputMoveToTile.bind(tiles[row][col]));
 			//TODO: add touchstart/touchmove (and click) to a single object make it global check through array for which it's hitting
 			tiles[row][col].tileGraphic.on('tap', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
 			tiles[row][col].tileGraphic.on('click', onTileTap.bind({"row": row, "col": col, "tile":tiles[row][col]}));
@@ -296,7 +299,7 @@ GAME.Grid.drawSpecialTile = function(tile) {
 			var border = .4;
 			tile.tileGraphic.beginFill(0x000000, 1);
 			tile.overGraphic.lineStyle(0, 0x000000, 1); //width, color, alpha
-			tile.overGraphic.beginFill(tile.tileColor, 1);
+			tile.overGraphic.beginFill(0xFFFFFF, 1);
 			tile.overGraphic.drawRect(tile.xPosition + (tileWidth * (border/2.0)), tile.yPosition + (tileHeight * (border/2.0)), 
 				(tileWidth * (1 - border)), (tileHeight * (1 - border)));
 			tile.overGraphic.endFill();

@@ -115,7 +115,6 @@ GAME.Menu.hideInstructions = function () {
 }
 
 GAME.Menu.retryClicked = function() {
-	// location.reload();
 	resetGame();	
 	GAME.Menu.hide();
 }
