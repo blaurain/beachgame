@@ -57,8 +57,8 @@ GAME.Tile.getRandomTileColor = function() {
 switch(Math.floor(Math.random() * 8)) {
     case 0:
         return 0x72F6FF;
-    // case 1:
-    //     return 0xF04155;
+    case 1:
+        return 0x1abc9c;
     case 2:
         return 0xC1E8C7;
     // case 3:
@@ -71,8 +71,8 @@ switch(Math.floor(Math.random() * 8)) {
         return 0x95CFB7; 
     case 7:
         return 0xEDE9F8;
-        //  case 5:
-        // return 0xD3658D;
+    // case 5:
+    //     return 0xf1c40f;
     default:
         return 0x00AAFF;
 }

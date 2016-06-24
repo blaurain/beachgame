@@ -8,7 +8,7 @@ GAME.Title.fontColor = 0xffffff;
 GAME.Title.hamburgerColor = 0xfcf03b;
 GAME.Title.buttonColor = 0x2c3e50;
 GAME.Title.buttonBorderColor = 0x34495e;
-GAME.Title.fontFamily = 'Arial';
+GAME.Title.fontFamily = 'Lucida Console';
 GAME.Title.fontSize = 66;
 GAME.Title.vertWidthPercent = 3;
 GAME.Title.widthPercent = 5;
@@ -72,7 +72,7 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.rotation = -Math.PI/2.0;
 		GAME.Title.letterD.rotation = -Math.PI/2.0;
 		GAME.Title.letterE.rotation = -Math.PI/2.0;
-		GAME.Title.letterS.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]) - GAME.Title.letterI.width/3.0;
+		GAME.Title.letterS.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]) - GAME.Title.letterS.width/3.0;
 		GAME.Title.letterL.y = pixelFromPercentHeight(GAME.Title.letterHeights[3]);
 		GAME.Title.letterI.y = pixelFromPercentHeight(GAME.Title.letterHeights[2]) + GAME.Title.letterI.width/2.0;
 		GAME.Title.letterD.y = pixelFromPercentHeight(GAME.Title.letterHeights[1]) + GAME.Title.letterD.width;
@@ -81,12 +81,13 @@ GAME.Title.draw = function() {
 		xPlacement = pixelFromPercentWidth(GAME.Title.vertWidthPercent);
 		lineStart = xRect + (2.0*tileWidth/10.0);
 		lineEnd = xRect + (6.0*tileWidth/10.0);
-		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(21));
-		GAME.Title.hamburgerGraphic.lineTo(lineStart, pixelFromPercentHeight(9));
-		GAME.Title.hamburgerGraphic.moveTo(lineStart + Math.abs(lineStart - lineEnd)/2.0, pixelFromPercentHeight(21));
-		GAME.Title.hamburgerGraphic.lineTo(lineStart + Math.abs(lineStart - lineEnd)/2.0, pixelFromPercentHeight(9));
-		GAME.Title.hamburgerGraphic.moveTo(lineEnd, pixelFromPercentHeight(21));
-		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(9));
+		var left = 21, right = 10;
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(left));
+		GAME.Title.hamburgerGraphic.lineTo(lineStart, pixelFromPercentHeight(right));
+		GAME.Title.hamburgerGraphic.moveTo(lineStart + Math.abs(lineStart - lineEnd)/2.0, pixelFromPercentHeight(left));
+		GAME.Title.hamburgerGraphic.lineTo(lineStart + Math.abs(lineStart - lineEnd)/2.0, pixelFromPercentHeight(right));
+		GAME.Title.hamburgerGraphic.moveTo(lineEnd, pixelFromPercentHeight(left));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(right));
 	} else {
 		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) {
 			xRect = pixelFromPercentWidth(98) - gridShifterW;
@@ -108,12 +109,13 @@ GAME.Title.draw = function() {
 		GAME.Title.letterE.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]) - GAME.Title.letterE.height ;
 		lineStart = xRect + (2.0*tileWidth/10.0);
 		lineEnd = xRect + (8.0*tileWidth/10.0);
-		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(10));
-		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(10));
-		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(14));
-		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(14));
-		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(18));
-		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(18));
+		var startHeight = 12;
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(startHeight));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(startHeight));
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(startHeight + 4));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(startHeight + 4));
+		GAME.Title.hamburgerGraphic.moveTo(lineStart, pixelFromPercentHeight(startHeight + 8));
+		GAME.Title.hamburgerGraphic.lineTo(lineEnd, pixelFromPercentHeight(startHeight + 8));
 	}
 	GAME.Title.buttonGraphic.drawRect(
 		xRect, 
@@ -125,7 +127,7 @@ GAME.Title.draw = function() {
 	GAME.Title.letterI.x = xPlacement;
 	GAME.Title.letterD.x = xPlacement;
 	GAME.Title.letterE.x = xPlacement;
-	if(!isVertical) GAME.Title.letterI.x = GAME.Title.letterI.x  + GAME.Title.letterI.width/2.0;
+	if(!isVertical) GAME.Title.letterI.x = GAME.Title.letterI.x  + GAME.Title.letterI.width/3.0;
 	if(!isMobile) {
 		GAME.Title.tiltFontStyle = {
 			font : Math.ceil(GAME.Title.fontSize/3.0) + 'px ' + GAME.Title.fontFamily, 
