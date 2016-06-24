@@ -23,7 +23,7 @@ var renderer = PIXI.autoDetectRenderer(DESKTOP_WIDTH, DESKTOP_HEIGHT, rendererOp
 var selectedAlpha = 1.0;
 var unselectedAlpha = .7;
 var tileHeight, tileWidth;
-var gridShifterW = 0, gridShifterH = 0;
+var gridShifterW = 0, gridShifterH = 0, matches = 0;
 var isVertical = false;
 var isMobile = false;
 var isTilting = false;
@@ -53,6 +53,9 @@ function init() {
 	GAME.Grid.createTiles();
 	GAME.Grid.createGrid();
 	GAME.Title.init();
+	GAME.Menu.init();
+	GAME.Ender.init();
+
 	stage.mousedown = inputStart;
 	stage.mousemove = inputMove;
 	stage.touchmove = inputMove;
@@ -60,6 +63,7 @@ function init() {
 }
 
 function resetGame() {
+	matches = 0;
 	GAME.Grid.clearTiles();
 	GAME.Grid.createTiles();
 	GAME.Grid.clearGrid();
@@ -78,6 +82,7 @@ function redraw(stage) {
 	GAME.Grid.drawGrid();
 	GAME.Title.draw();
 	GAME.Menu.draw();
+	GAME.Ender.draw();
 }
 
 function pixelFromPercentWidth(percent) {
@@ -176,6 +181,10 @@ function selectTile(tile) {
 		setTileSelected(tile, true);
 		if(tile.isMatchTile && tile.tileType === match.type) { //match complete
 			removePathTiles();
+			matches++;
+			if(matches >= 3) { //game over
+				GAME.Ender.show();
+			}
 		}
 	} else if(!isTouchingPath(tile)) { //not selectable and away from path, select new
 		clearMatch();
@@ -394,7 +403,7 @@ function resizeMobile() {
 	h = window.innerHeight;
 	renderer.resize(w, h);
 
-	if(window.innerWidth < window.innerHeight) { //vert
+	if(window.innerWidth < window.innerHeight) { //vert //should this be by gravity?
 		if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
 			isTilting = true;
 			GAME.Grid.stopFalling();

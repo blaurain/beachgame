@@ -46,7 +46,6 @@ GAME.Menu.draw = function () {
 
 GAME.Menu.show = function () {
 	if(GAME.Menu.inMenu) return;
-	GAME.Menu.init();
 	GAME.Menu.inMenu = true;
 	stage.addChild(GAME.Menu.backGraphic);
 	GAME.Menu.backButton.show();

@@ -1,7 +1,7 @@
 var GAME = GAME || {};
 
 GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
-	this.show = false;
+	this.showButton= false;
 	this.xPercent = xPercent;
 	this.yPercent = yPercent;
 	this.wPercent = width;
@@ -48,7 +48,7 @@ GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
 			this.buttonText.x = x + (buttonWidth/2.0) - (this.buttonText.width/2.0);
 			this.buttonText.y = y + (buttonHeight/2.0) - (this.buttonText.height/2.0);
 		}
-		this.buttonGraphic.drawRoundedRect(x, y, buttonWidth, buttonHeight, this.cornerRadius);
+		this.buttonGraphic.drawRect(x, y, buttonWidth, buttonHeight);
 		this.buttonGraphic.endFill();
 		this.buttonGraphic.interactive = true;
 		this.buttonGraphic.buttonMode = true;
@@ -56,13 +56,13 @@ GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
 	}
 
 	this.show = function () {
-		this.show = true;
+		this.showButton = true;
 		stage.addChild(this.buttonGraphic);	
 		stage.addChild(this.buttonText);
 	}
 
 	this.hide = function () {
-		this.show = false;
+		this.showButton = false;
 		stage.removeChild(this.buttonGraphic);
 		stage.removeChild(this.buttonText); //TODO: cleanup 
 	}
