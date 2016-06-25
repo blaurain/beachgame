@@ -132,6 +132,9 @@ function setCurrentGrid(gridNum) {
 		case 2:
 			currentGrid = GAME.TileMap.grid2;
 			break;
+		case 3:
+			currentGrid = GAME.TileMap.grid3;
+			break;
 	}
 }
 

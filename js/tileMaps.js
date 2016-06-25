@@ -2,7 +2,7 @@ var GAME = GAME || {};
 
 GAME.TileMap = function() {}
 GAME.TileMap.constructor = GAME.TileMap;
-GAME.TileMap.numberOfGrids = 3;
+GAME.TileMap.numberOfGrids = 4;
 GAME.TileMap.currentGridIndex = 0;
 
 GAME.TileMap.grid0 = [
@@ -25,6 +25,20 @@ GAME.TileMap.grid2 = [
   [1,0,0,0,0,0,3],
   [3,4,0,4,0,4,2]
 ]
+
+GAME.TileMap.grid3 = [
+  [0,0,0,3,0,0,0],
+  [0,1,4,4,4,2,0],
+  [0,4,3,2,1,4,0],
+  [0,0,0,4,0,0,0]
+]
+
+// GAME.TileMap.grid2 = [
+//   [0,0,0,0,0,0,0],
+//   [0,0,0,0,0,0,0],
+//   [0,0,0,0,0,0,0],
+//   [0,0,0,0,0,0,0]
+// ]
 
 // GAME.TileMap.grid2 = [
 //   [0,0,0,0,0,0,0],
