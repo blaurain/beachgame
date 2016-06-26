@@ -48,7 +48,7 @@ function init() {
 		tiles[row] = [];
 		GAME.Grid.currentTiles[row] = [];
 	};
-	setCurrentGrid(0); //TODO: load from saved local shit
+	GAME.TileMap.setCurrentGrid(0); //TODO: load from saved local shit
 	GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 	GAME.Grid.createTiles();
 	GAME.Grid.createGrid();
@@ -120,28 +120,17 @@ function saveGrid(gridNum) {
 
 }
 
-function setCurrentGrid(gridNum) {
-	GAME.TileMap.currentGridIndex = gridNum;
-	switch(gridNum) {
-		case 0:
-			currentGrid = GAME.TileMap.grid0;
-			break;
-		case 1:
-			currentGrid = GAME.TileMap.grid1;
-			break;
-		case 2:
-			currentGrid = GAME.TileMap.grid2;
-			break;
-		case 3:
-			currentGrid = GAME.TileMap.grid3;
-			break;
-	}
-}
-
 function nextGrid() {
 	GAME.TileMap.currentGridIndex++;
-	if(GAME.TileMap.currentGridIndex >= GAME.TileMap.numberOfGrids) setCurrentGrid(0);
-	else setCurrentGrid(GAME.TileMap.currentGridIndex);
+	if(GAME.TileMap.currentGridIndex >= GAME.TileMap.numberOfGrids) GAME.TileMap.setCurrentGrid(0);
+	else GAME.TileMap.setCurrentGrid(GAME.TileMap.currentGridIndex);
+	resetGame();
+}
+
+function previousGrid() {
+	GAME.TileMap.currentGridIndex--;
+	if(GAME.TileMap.currentGridIndex < 0) GAME.TileMap.setCurrentGrid(GAME.TileMap.numberOfGrids - 1);
+	else GAME.TileMap.setCurrentGrid(GAME.TileMap.currentGridIndex);
 	resetGame();
 }
 

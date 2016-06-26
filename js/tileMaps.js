@@ -40,6 +40,24 @@ GAME.TileMap.grid3 = [
 //   [0,0,0,0,0,0,0]
 // ]
 
+GAME.TileMap.setCurrentGrid = function(gridNum) {
+	GAME.TileMap.currentGridIndex = gridNum;
+	switch(gridNum) {
+		case 0:
+			currentGrid = GAME.TileMap.grid0;
+			break;
+		case 1:
+			currentGrid = GAME.TileMap.grid1;
+			break;
+		case 2:
+			currentGrid = GAME.TileMap.grid2;
+			break;
+		case 3:
+			currentGrid = GAME.TileMap.grid3;
+			break;
+	}
+}
+
 // GAME.TileMap.grid2 = [
 //   [0,0,0,0,0,0,0],
 //   [0,0,0,0,0,0,0],

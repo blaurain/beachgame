@@ -1,12 +1,13 @@
 var GAME = GAME || {};
 
-GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
+GAME.Button = function(xPercent, yPercent, width, height, text, xVertPercent, yVertPercent) {
 	this.showButton= false;
 	this.xPercent = xPercent;
 	this.yPercent = yPercent;
 	this.wPercent = width;
 	this.hPercent = height;
 	this.yVertPercent = yVertPercent;
+	this.xVertPercent = xVertPercent;
 	this.text = text;
 	this.buttonGraphic = new PIXI.Graphics();
 	this.cornerRadius = 15;
@@ -19,8 +20,13 @@ GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
 		align : 'center'
 	}; 
 	this.buttonText = new PIXI.Text(text, this.fontStyle);
+	this.drawManualX = false;
 
-	this.draw = function () {
+	this.draw = function (manualX) {
+		if(manualX) {
+			this.drawManualX = true;
+			this.manualX = manualX;
+		}
 		this.buttonGraphic.clear();
 		this.fontStyle = {
 			font : Math.ceil(renderer.height / 8.0) + 'px ' + GAME.Title.fontFamily, 
@@ -30,29 +36,36 @@ GAME.Button = function(xPercent, yPercent, width, height, text, yVertPercent) {
 		this.buttonText.style = this.fontStyle;
 		this.buttonGraphic.lineStyle(getGridWidth(), this.buttonBorderColor, 1);
 		this.buttonGraphic.beginFill(this.buttonColor, 1);
-		var buttonWidth, buttonHeight, x, y;
 		if(isVertical) {
 			this.buttonText.rotation = -Math.PI/2.0;
-			buttonWidth = pixelFromPercentHeight(this.hPercent);
-			buttonHeight = pixelFromPercentWidth(this.wPercent);
-			x = pixelFromPercentWidth(this.yVertPercent) - (buttonWidth/2.0);
-			y = pixelFromPercentHeight(this.xPercent) - (buttonHeight/2.0);
-			this.buttonText.x = x + (buttonWidth/2.0) - (this.buttonText.height/2.0);
-			this.buttonText.y = y + (buttonHeight/2.0) + (this.buttonText.width/2.0);
+			this.buttonWidth = pixelFromPercentHeight(this.hPercent);
+			this.buttonHeight = pixelFromPercentWidth(this.wPercent);
+			this.buttonX = pixelFromPercentWidth(this.yVertPercent) - (this.buttonWidth/2.0);
+			if(this.drawManualX) {
+				this.buttonY = this.manualX;
+			} else {
+				this.buttonY = pixelFromPercentHeight(this.xPercent) - (this.buttonHeight/2.0);
+			}
+			this.buttonText.x = this.buttonX + (this.buttonWidth/2.0) - (this.buttonText.height/2.0);
+			this.buttonText.y = this.buttonY + (this.buttonHeight/2.0) + (this.buttonText.width/2.0);
 		} else {
 			this.buttonText.rotation = 0;
-			buttonWidth = pixelFromPercentWidth(this.wPercent);
-			buttonHeight = pixelFromPercentHeight(this.hPercent);
-			x = pixelFromPercentWidth(this.xPercent) - (buttonWidth/2.0);
-			y = pixelFromPercentHeight(this.yPercent)- (buttonHeight/2.0);
-			this.buttonText.x = x + (buttonWidth/2.0) - (this.buttonText.width/2.0);
-			this.buttonText.y = y + (buttonHeight/2.0) - (this.buttonText.height/2.0);
+			this.buttonWidth = pixelFromPercentWidth(this.wPercent);
+			this.buttonHeight = pixelFromPercentHeight(this.hPercent);
+			if(this.drawManualX) {
+				this.buttonX = this.manualX;
+			} else {
+				this.buttonX = pixelFromPercentWidth(this.xPercent) - (this.buttonWidth/2.0);
+			}
+			this.buttonY = pixelFromPercentHeight(this.yPercent)- (this.buttonHeight/2.0);
+			this.buttonText.x = this.buttonX + (this.buttonWidth/2.0) - (this.buttonText.width/2.0);
+			this.buttonText.y = this.buttonY + (this.buttonHeight/2.0) - (this.buttonText.height/2.0);
 		}
-		this.buttonGraphic.drawRect(x, y, buttonWidth, buttonHeight);
+		this.buttonGraphic.drawRect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight);
 		this.buttonGraphic.endFill();
 		this.buttonGraphic.interactive = true;
 		this.buttonGraphic.buttonMode = true;
-		this.buttonGraphic.hitArea = new PIXI.Rectangle(x, y, buttonWidth, buttonHeight);
+		this.buttonGraphic.hitArea = new PIXI.Rectangle(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight);
 	}
 
 	this.show = function () {

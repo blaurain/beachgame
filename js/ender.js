@@ -8,7 +8,7 @@ GAME.Ender.winY = 25;
 GAME.Ender.winYVert = 50;
 GAME.Ender.winX = 50;
 GAME.Ender.winXVert = 35;
-GAME.Ender.enderPhrases = [ 'KEEP SLIDIN\'', 'SLIDE ON!', 'AWESOME', 'NICE JOB!']
+GAME.Ender.enderPhrases = ['Right on!', 'Awesome!', 'Nice!', 'Good Stuff!', 'Far Out!', 'Groovy!']
 GAME.Ender.enderPhrase = GAME.Ender.enderPhrases[0];
 GAME.Ender.backCornerRadius = 15;
 GAME.Ender.backColor = 0x2980b9;
@@ -22,7 +22,7 @@ GAME.Ender.backBorderWidthVert = 75;
 GAME.Ender.init = function () {
 	GAME.Ender.backGraphic = new PIXI.Graphics();
 	GAME.Ender.backBorderGraphic = new PIXI.Graphics();
-	GAME.Ender.nextButton = new GAME.Button(50, 63, 35, 25, 'Next', 60);
+	GAME.Ender.nextButton = new GAME.Button(50, 63, 35, 25, 'Next', 50, 60);
 	GAME.Ender.nextButton.buttonGraphic.interactive = true;
 	GAME.Ender.nextButton.buttonGraphic.on('tap', GAME.Ender.nextClicked.bind(true));
 	GAME.Ender.nextButton.buttonGraphic.on('click', GAME.Ender.nextClicked.bind(true));

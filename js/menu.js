@@ -12,18 +12,22 @@ GAME.Menu.instructionXVert = 16;
 
 GAME.Menu.init = function () {
 	GAME.Menu.backGraphic = new PIXI.Graphics();
-	GAME.Menu.backButton = new GAME.Button(50, 80, 35, 25, 'Back', 85);
+	GAME.Menu.backButton = new GAME.Button(50, 80, 35, 22, 'Back', 50, 80);
 	GAME.Menu.backButton.buttonGraphic.interactive = true;
 	GAME.Menu.backButton.buttonGraphic.on('tap', GAME.Menu.backClicked.bind(true));
 	GAME.Menu.backButton.buttonGraphic.on('click', GAME.Menu.backClicked.bind(true));
-	GAME.Menu.retryButton = new GAME.Button(50, 50, 35, 25, 'Retry', 65);
+	GAME.Menu.nextMapButton = new GAME.Button(60, 50, 15, 22, '>', 32, 65);
+	GAME.Menu.nextMapButton.buttonGraphic.interactive = true;
+	GAME.Menu.nextMapButton.buttonGraphic.on('tap', GAME.Menu.nextMapClicked.bind(true));
+	GAME.Menu.nextMapButton.buttonGraphic.on('click', GAME.Menu.nextMapClicked.bind(true));
+	GAME.Menu.backMapButton = new GAME.Button(40, 50, 15, 22, '<', 68, 65);
+	GAME.Menu.backMapButton.buttonGraphic.interactive = true;
+	GAME.Menu.backMapButton.buttonGraphic.on('tap', GAME.Menu.backMapClicked.bind(true));
+	GAME.Menu.backMapButton.buttonGraphic.on('click', GAME.Menu.backMapClicked.bind(true));
+	GAME.Menu.retryButton = new GAME.Button(50, 20, 35, 22, 'Retry', 50, 50);
 	GAME.Menu.retryButton.buttonGraphic.interactive = true;
 	GAME.Menu.retryButton.buttonGraphic.on('tap', GAME.Menu.retryClicked.bind(true));
 	GAME.Menu.retryButton.buttonGraphic.on('click', GAME.Menu.retryClicked.bind(true));
-	GAME.Menu.nextButton = new GAME.Button(50, 20, 35, 25, 'Next', 45);
-	GAME.Menu.nextButton.buttonGraphic.interactive = true;
-	GAME.Menu.nextButton.buttonGraphic.on('tap', GAME.Menu.nextClicked.bind(true));
-	GAME.Menu.nextButton.buttonGraphic.on('click', GAME.Menu.nextClicked.bind(true));
 	GAME.Menu.instructionFontStyle = {
 		font : Math.ceil(GAME.Title.fontSize) + 'px ' + GAME.Title.fontFamily, 
 		fill : GAME.Title.fontColor,
@@ -38,10 +42,22 @@ GAME.Menu.draw = function () {
 		GAME.Menu.drawBack();
 		GAME.Menu.backButton.draw();
 		GAME.Menu.retryButton.draw();
-		GAME.Menu.nextButton.draw();
 		GAME.Menu.drawInstructions();
+		GAME.Menu.drawMapButtons();
 	}
 	renderer.render(stage);
+}
+
+GAME.Menu.drawMapButtons = function () {
+	if(isVertical) {
+		GAME.Menu.nextMapButton.draw(GAME.Menu.retryButton.buttonY);
+		GAME.Menu.backMapButton.draw(GAME.Menu.retryButton.buttonY + 
+			GAME.Menu.retryButton.buttonHeight - pixelFromPercentWidth(GAME.Menu.backMapButton.wPercent));
+	} else {
+		GAME.Menu.nextMapButton.draw(GAME.Menu.retryButton.buttonX + 
+			GAME.Menu.retryButton.buttonWidth - pixelFromPercentWidth(GAME.Menu.backMapButton.wPercent));
+		GAME.Menu.backMapButton.draw(GAME.Menu.retryButton.buttonX);
+	}
 }
 
 GAME.Menu.show = function () {
@@ -50,7 +66,8 @@ GAME.Menu.show = function () {
 	stage.addChild(GAME.Menu.backGraphic);
 	GAME.Menu.backButton.show();
 	GAME.Menu.retryButton.show();
-	GAME.Menu.nextButton.show();
+	GAME.Menu.nextMapButton.show();
+	GAME.Menu.backMapButton.show();
 	GAME.Menu.showInstructions();
 	resize();
 }
@@ -61,7 +78,8 @@ GAME.Menu.hide = function () {
 	stage.removeChild(GAME.Menu.backGraphic);
 	GAME.Menu.retryButton.hide();
 	GAME.Menu.backButton.hide();
-	GAME.Menu.nextButton.hide();
+	GAME.Menu.nextMapButton.hide();
+	GAME.Menu.backMapButton.hide();
 	GAME.Menu.hideInstructions();
 	renderer.render(stage);
 }
@@ -122,9 +140,13 @@ GAME.Menu.backClicked = function() {
 	GAME.Menu.hide();
 }
 
-GAME.Menu.nextClicked = function() {
+GAME.Menu.nextMapClicked = function() {
 	nextGrid();
 	GAME.Menu.hide();
 }
 
+GAME.Menu.backMapClicked = function() {
+	previousGrid();
+	GAME.Menu.hide();
+}
 
