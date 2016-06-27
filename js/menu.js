@@ -12,19 +12,19 @@ GAME.Menu.instructionXVert = 16;
 
 GAME.Menu.init = function () {
 	GAME.Menu.backGraphic = new PIXI.Graphics();
-	GAME.Menu.backButton = new GAME.Button(50, 80, 35, 22, 'Back', 50, 80);
+	GAME.Menu.backButton = new GAME.Button(50, 80, 35, 25, 'Back', 50, 85);
 	GAME.Menu.backButton.buttonGraphic.interactive = true;
 	GAME.Menu.backButton.buttonGraphic.on('tap', GAME.Menu.backClicked.bind(true));
 	GAME.Menu.backButton.buttonGraphic.on('click', GAME.Menu.backClicked.bind(true));
-	GAME.Menu.nextMapButton = new GAME.Button(60, 50, 15, 22, '>', 32, 65);
+	GAME.Menu.nextMapButton = new GAME.Button(60, 50, 15, 25, '>', 32, 65);
 	GAME.Menu.nextMapButton.buttonGraphic.interactive = true;
 	GAME.Menu.nextMapButton.buttonGraphic.on('tap', GAME.Menu.nextMapClicked.bind(true));
 	GAME.Menu.nextMapButton.buttonGraphic.on('click', GAME.Menu.nextMapClicked.bind(true));
-	GAME.Menu.backMapButton = new GAME.Button(40, 50, 15, 22, '<', 68, 65);
+	GAME.Menu.backMapButton = new GAME.Button(40, 50, 15, 25, '<', 68, 65);
 	GAME.Menu.backMapButton.buttonGraphic.interactive = true;
 	GAME.Menu.backMapButton.buttonGraphic.on('tap', GAME.Menu.backMapClicked.bind(true));
 	GAME.Menu.backMapButton.buttonGraphic.on('click', GAME.Menu.backMapClicked.bind(true));
-	GAME.Menu.retryButton = new GAME.Button(50, 20, 35, 22, 'Retry', 50, 50);
+	GAME.Menu.retryButton = new GAME.Button(50, 20, 35, 25, 'Retry', 50, 45);
 	GAME.Menu.retryButton.buttonGraphic.interactive = true;
 	GAME.Menu.retryButton.buttonGraphic.on('tap', GAME.Menu.retryClicked.bind(true));
 	GAME.Menu.retryButton.buttonGraphic.on('click', GAME.Menu.retryClicked.bind(true));
