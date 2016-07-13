@@ -14,7 +14,7 @@ GAME.Grid.gravity = .2;
 GAME.Grid.somethingFalling = false;
 GAME.Grid.reverseTileX = 100;
 GAME.Grid.reverseTileY = 78;
-GAME.Grid.gridColor = 0xFF823A;
+GAME.Grid.gridColor = 0x428bca;
 GAME.Grid.checkGrav = function() {
 	var toFall = [];
 	switch(GAME.Grid.gravDirection) {

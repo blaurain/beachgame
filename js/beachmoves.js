@@ -9,7 +9,8 @@ var rendererOptions = {
   transparent: false,
   resolution: 1,
   autoResize: true,
-  clearBeforeRender: true
+  clearBeforeRender: true,
+  backgroundColor: 0xF3E642
 }
 var match = {
 	start: null,

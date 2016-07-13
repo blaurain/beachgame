@@ -4,9 +4,9 @@ GAME.Title = function() {}
 GAME.Title.constructor = GAME.Title;
 GAME.Title.titleFontStyle = {};
 GAME.Title.tiltFontStyle = {};
-GAME.Title.fontColor = 0xffffff;
-GAME.Title.hamburgerColor = 0xFFCF4B;
-GAME.Title.buttonColor = 0x34495E;
+GAME.Title.fontColor = 0x000000;
+GAME.Title.hamburgerColor = 0x7f8c8d;
+GAME.Title.buttonColor = 0xfbf298;
 GAME.Title.buttonBorderColor = 0x34495e;
 GAME.Title.fontFamily = 'Lucida Console';
 GAME.Title.fontSize = 66;
@@ -91,11 +91,11 @@ GAME.Title.draw = function() {
 	} else {
 		if(GAME.Grid.gravDirection === GAME.Grid.Direction.Right) {
 			xRect = pixelFromPercentWidth(98) - gridShifterW;
-			xPlacement = xRect + (tileWidth/2.0) - (GAME.Title.letterD.width/2.0);
+			xPlacement = xRect + (tileWidth/2.0) - (2.0*GAME.Title.letterD.width/5.0);
 
 		} else {
 			xRect = pixelFromPercentWidth(2);
-			xPlacement = xRect + (tileWidth/2.0) - (GAME.Title.letterD.width/2.0);
+			xPlacement = xRect + (tileWidth/2.0) - (2.0*GAME.Title.letterD.width/5.0);
 		}
 		GAME.Title.letterS.rotation = 0;
 		GAME.Title.letterL.rotation = 0;
