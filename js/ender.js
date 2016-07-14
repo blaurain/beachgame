@@ -11,8 +11,9 @@ GAME.Ender.winXVert = 35;
 GAME.Ender.enderPhrases = ['Right on!', 'Awesome!', 'Nice!', 'Good Stuff!', 'Far Out!', 'Groovy!']
 GAME.Ender.enderPhrase = GAME.Ender.enderPhrases[0];
 GAME.Ender.backCornerRadius = 15;
-GAME.Ender.backColor = 0x34495E;
-GAME.Ender.backBorderColor = 0x233240;
+GAME.Ender.backColor = 0x8BCBDE;
+GAME.Ender.backBorderColor = 0xBADEB2;
+GAME.Ender.backTextColor = 0x000000;
 GAME.Ender.backBorderHeight = 60;
 GAME.Ender.backBorderWidth = 45;
 GAME.Ender.backBorderHeightVert = 40;
@@ -28,7 +29,7 @@ GAME.Ender.init = function () {
 	GAME.Ender.nextButton.buttonGraphic.on('click', GAME.Ender.nextClicked.bind(true));
 	GAME.Ender.winFontStyle = {
 		font : Math.ceil(GAME.Title.fontSize) + 'px ' + GAME.Title.fontFamily, 
-		fill : GAME.Title.fontColor,
+		fill : GAME.Ender.backTextColor,
 		align : 'center'
 	}; 
 	GAME.Ender.winText = new PIXI.Text(GAME.Ender.enderPhrase, GAME.Ender.winFontStyle);
@@ -56,6 +57,9 @@ GAME.Ender.show = function () {
 	stage.addChild(GAME.Ender.backBorderGraphic);
 	GAME.Ender.nextButton.show();
 	GAME.Ender.showEnder();
+	if(!isMobile) {
+		document.body.style.backgroundColor = '#312e0d';
+	}
 	resize();
 }
 
@@ -66,6 +70,9 @@ GAME.Ender.hide = function () {
 	stage.removeChild(GAME.Ender.backBorderGraphic);
 	GAME.Ender.nextButton.hide();
 	GAME.Ender.hideEnder();
+	if(!isMobile) {
+		document.body.style.backgroundColor = '#F3E642';
+	}
 	renderer.render(stage);
 }
 
@@ -93,7 +100,7 @@ GAME.Ender.drawBack = function () {
 GAME.Ender.drawEnder = function () {
 	var winFontStyle = {
 			font : Math.ceil(GAME.Title.fontSize) + 'px ' + GAME.Title.fontFamily, 
-			fill : GAME.Title.fontColor,
+			fill : GAME.Ender.backTextColor,
 			align : 'center'
 		}; 
 	GAME.Ender.winText.style = winFontStyle;

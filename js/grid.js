@@ -216,7 +216,8 @@ GAME.Grid.drawTile = function(row, col) {
 	tileGraphic.clear();
 	if(!tile.isAlive) return; //dont draw anything if not alive
 	tileGraphic.lineStyle(0, tile.tileColor, selectedAlpha);
-	if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
+	// if(tile.isSelected) tileGraphic.beginFill(tile.tileColor, selectedAlpha);
+	if(tile.isSelected) tileGraphic.beginFill(match.start.tileColor, selectedAlpha);
 	else tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
 	if(tile.isFalling) { //animate tile fall
 		switch(GAME.Grid.gravDirection) {

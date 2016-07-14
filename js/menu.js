@@ -9,6 +9,7 @@ GAME.Menu.instructionY = 20;
 GAME.Menu.instructionYVert = 50;
 GAME.Menu.instructionX = 22;
 GAME.Menu.instructionXVert = 16;
+GAME.Menu.menuFontColor = 0xFFFFFF;
 
 GAME.Menu.init = function () {
 	GAME.Menu.backGraphic = new PIXI.Graphics();
@@ -30,7 +31,7 @@ GAME.Menu.init = function () {
 	GAME.Menu.retryButton.buttonGraphic.on('click', GAME.Menu.retryClicked.bind(true));
 	GAME.Menu.instructionFontStyle = {
 		font : Math.ceil(GAME.Title.fontSize) + 'px ' + GAME.Title.fontFamily, 
-		fill : GAME.Title.fontColor,
+		fill : GAME.Menu.menuFontColor,
 		align : 'center'
 	}; 
 	GAME.Menu.tiltText = new PIXI.Text('tilt\nto\nslide', GAME.Menu.instructionFontStyle);
@@ -69,6 +70,9 @@ GAME.Menu.show = function () {
 	GAME.Menu.nextMapButton.show();
 	GAME.Menu.backMapButton.show();
 	GAME.Menu.showInstructions();
+	if(!isMobile) {
+		document.body.style.backgroundColor = '#312e0d';
+	}
 	resize();
 }
 
@@ -81,6 +85,9 @@ GAME.Menu.hide = function () {
 	GAME.Menu.nextMapButton.hide();
 	GAME.Menu.backMapButton.hide();
 	GAME.Menu.hideInstructions();
+	if(!isMobile) {
+		document.body.style.backgroundColor = '#F3E642';
+	}
 	renderer.render(stage);
 }
 
@@ -95,7 +102,7 @@ GAME.Menu.drawBack = function () {
 GAME.Menu.drawInstructions = function () {
 	var fontStyle = {
 			font : Math.ceil(GAME.Title.fontSize) + 'px ' + GAME.Title.fontFamily, 
-			fill : GAME.Title.fontColor,
+			fill : GAME.Menu.menuFontColor,
 			align : 'center'
 		}; 
 	GAME.Menu.tiltText.style = fontStyle;

@@ -11,9 +11,9 @@ GAME.Button = function(xPercent, yPercent, width, height, text, xVertPercent, yV
 	this.text = text;
 	this.buttonGraphic = new PIXI.Graphics();
 	this.cornerRadius = 15;
-	this.buttonColor = 0x2980B9;
+	this.buttonColor = 0xefe8c2;
 	this.buttonTextColor = 0x000000;
-	this.buttonBorderColor = 0x004790;
+	this.buttonBorderColor = 0xdd8c77;
 	this.fontStyle = {
 		font : Math.ceil(renderer.height / 8.0) + 'px ' + GAME.Title.fontFamily, 
 		fill : this.buttonTextColor,

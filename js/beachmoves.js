@@ -21,8 +21,8 @@ var match = {
 var DESKTOP_WIDTH = 1136; //16:9 aspect ratio
 var DESKTOP_HEIGHT = 640;
 var renderer = PIXI.autoDetectRenderer(DESKTOP_WIDTH, DESKTOP_HEIGHT, rendererOptions); 
-var selectedAlpha = 1.0;
-var unselectedAlpha = .7;
+var selectedAlpha = .7;
+var unselectedAlpha = 1.0;
 var tileHeight, tileWidth;
 var gridShifterW = 0, gridShifterH = 0, matches = 0;
 var isVertical = false;
@@ -189,7 +189,7 @@ function selectTile(tile) {
 function setTileSelected(tile, isSelected) {
 	tile.isSelected = isSelected;
 	tile.tileGraphic.clear();
-	if(isSelected) tile.tileGraphic.beginFill(tile.tileColor, selectedAlpha);
+	if(isSelected) tile.tileGraphic.beginFill(match.start.tileColor, selectedAlpha);
 	else tile.tileGraphic.beginFill(tile.tileColor, unselectedAlpha);
 	tile.tileGraphic.drawRect(tile.xPosition, tile.yPosition, tileWidth, tileHeight);
 	tile.tileGraphic.endFill();
