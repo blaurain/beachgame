@@ -63,12 +63,14 @@ switch(Math.floor(Math.random() * 8)) {
         return 0xFF7D4F; 
     case 3: //red
         return 0xD3658D;
-    // case 4: //purple
-    //     return 0x9b59b6;
-    // case 5:
-    //     return 0x1abc9c;
-    // case 4:
-    //     return 0x16a085;
+    case 4: //purple
+        return 0x9b59b6;
+    case 5: //tan
+        return 0xc7b29b;
+    case 6: //light green
+        return 0xA7FFEB;
+    case 7: //peach
+        return 0xFFAB91;
     default: //pink
         return 0xEDE9F8;
 	}
