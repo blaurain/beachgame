@@ -18,6 +18,7 @@ var match = {
 	type: null,
 	path: []
 }
+var saveGameKey = "slideGameState";
 var DESKTOP_WIDTH = 1136; //16:9 aspect ratio
 var DESKTOP_HEIGHT = 640;
 var renderer = PIXI.autoDetectRenderer(DESKTOP_WIDTH, DESKTOP_HEIGHT, rendererOptions); 
@@ -49,7 +50,7 @@ function init() {
 		tiles[row] = [];
 		GAME.Grid.currentTiles[row] = [];
 	};
-	GAME.TileMap.setCurrentGrid(0); //TODO: load from saved local shit
+	GAME.TileMap.setCurrentGrid(0, false); 
 	GAME.Grid.gravDirection = GAME.Grid.Direction.Left;
 	GAME.Grid.createTiles();
 	GAME.Grid.createGrid();
@@ -61,6 +62,7 @@ function init() {
 	stage.mousemove = inputMove;
 	stage.touchmove = inputMove;
 	setInterval(update, 20);
+	loadGrid();
 }
 
 function resetGame() {
@@ -114,24 +116,28 @@ function getMatchIconWidth(halfTile) {
 }
 
 function loadGrid() {
-
+	if(localStorage.getItem(saveGameKey)) {
+		var level = parseInt(localStorage.getItem(saveGameKey));
+		GAME.TileMap.setCurrentGrid(level, false); //TODO: fix this loading, its setting right and still loading 0th map
+		resetGame();
+	}
 }
 
 function saveGrid(gridNum) {
-
+	localStorage.setItem(saveGameKey, gridNum);
 }
 
 function nextGrid() {
 	GAME.TileMap.currentGridIndex++;
-	if(GAME.TileMap.currentGridIndex >= GAME.TileMap.numberOfGrids) GAME.TileMap.setCurrentGrid(0);
-	else GAME.TileMap.setCurrentGrid(GAME.TileMap.currentGridIndex);
+	if(GAME.TileMap.currentGridIndex >= GAME.TileMap.numberOfGrids) GAME.TileMap.setCurrentGrid(0, true);
+	else GAME.TileMap.setCurrentGrid(GAME.TileMap.currentGridIndex, true);
 	resetGame();
 }
 
 function previousGrid() {
 	GAME.TileMap.currentGridIndex--;
-	if(GAME.TileMap.currentGridIndex < 0) GAME.TileMap.setCurrentGrid(GAME.TileMap.numberOfGrids - 1);
-	else GAME.TileMap.setCurrentGrid(GAME.TileMap.currentGridIndex);
+	if(GAME.TileMap.currentGridIndex < 0) GAME.TileMap.setCurrentGrid(GAME.TileMap.numberOfGrids - 1, true);
+	else GAME.TileMap.setCurrentGrid(GAME.TileMap.currentGridIndex, true);
 	resetGame();
 }
 
