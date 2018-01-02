@@ -9,12 +9,12 @@ GAME.Title.hamburgerColor = 0x7f8c8d;
 GAME.Title.buttonColor = 0xfbf298;
 GAME.Title.buttonBorderColor = 0x34495e;
 GAME.Title.fontFamily = 'Lucida Console';
-GAME.Title.fontSize = 66;
+GAME.Title.fontSize = 46;
 GAME.Title.vertWidthPercent = 3;
 GAME.Title.widthPercent = 5;
 GAME.Title.cornerRadius = 15;
 GAME.Title.letterLocations = [];
-GAME.Title.letterHeights = [25, 42, 59, 76, 93];
+GAME.Title.letterHeights = [25, 33, 51, 64, 77, 90];
 
 GAME.Title.init = function() {
 	GAME.Title.buttonGraphic = new PIXI.Graphics();
@@ -36,11 +36,13 @@ GAME.Title.init = function() {
 	GAME.Title.letterI = new PIXI.Text('I', GAME.Title.titleFontStyle);
 	GAME.Title.letterD = new PIXI.Text('D', GAME.Title.titleFontStyle);
 	GAME.Title.letterE = new PIXI.Text('E', GAME.Title.titleFontStyle);
+	GAME.Title.letterR = new PIXI.Text('R', GAME.Title.titleFontStyle);
 	stage.addChild(GAME.Title.letterS);
 	stage.addChild(GAME.Title.letterL);
 	stage.addChild(GAME.Title.letterI);
 	stage.addChild(GAME.Title.letterD);
 	stage.addChild(GAME.Title.letterE);
+	stage.addChild(GAME.Title.letterR);
 	if(!isMobile) { 
 		GAME.Title.useArrowText = new PIXI.Text('[tilt with arrow keys]', GAME.Title.tiltFontStyle);
 		stage.addChild(GAME.Title.useArrowText); 
@@ -61,6 +63,7 @@ GAME.Title.draw = function() {
 	GAME.Title.letterI.style = (GAME.Title.titleFontStyle);
 	GAME.Title.letterD.style = (GAME.Title.titleFontStyle);
 	GAME.Title.letterE.style = (GAME.Title.titleFontStyle);
+	GAME.Title.letterR.style = (GAME.Title.titleFontStyle);
 	GAME.Title.buttonGraphic.clear();
 	GAME.Title.buttonGraphic.lineStyle(getGridWidth(), GAME.Grid.gridColor, 1);
 	GAME.Title.buttonGraphic.beginFill(GAME.Title.buttonColor, 1);
@@ -72,11 +75,13 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.rotation = -Math.PI/2.0;
 		GAME.Title.letterD.rotation = -Math.PI/2.0;
 		GAME.Title.letterE.rotation = -Math.PI/2.0;
-		GAME.Title.letterS.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]) - GAME.Title.letterS.width/3.0;
-		GAME.Title.letterL.y = pixelFromPercentHeight(GAME.Title.letterHeights[3]);
-		GAME.Title.letterI.y = pixelFromPercentHeight(GAME.Title.letterHeights[2]) + GAME.Title.letterI.width/2.0;
-		GAME.Title.letterD.y = pixelFromPercentHeight(GAME.Title.letterHeights[1]) + GAME.Title.letterD.width;
-		GAME.Title.letterE.y = pixelFromPercentHeight(GAME.Title.letterHeights[0]) + GAME.Title.letterE.width + (GAME.Title.letterE.width/3.0);
+		GAME.Title.letterR.rotation = -Math.PI/2.0;
+		GAME.Title.letterS.y = pixelFromPercentHeight(GAME.Title.letterHeights[5]) - GAME.Title.letterS.width/2.0;
+		GAME.Title.letterL.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]);
+		GAME.Title.letterI.y = pixelFromPercentHeight(GAME.Title.letterHeights[3]) + GAME.Title.letterI.width/2.0;
+		GAME.Title.letterD.y = pixelFromPercentHeight(GAME.Title.letterHeights[2]) + GAME.Title.letterD.width;
+		GAME.Title.letterE.y = pixelFromPercentHeight(GAME.Title.letterHeights[1]) + (2.0 * GAME.Title.letterE.width) ;
+		GAME.Title.letterR.y = pixelFromPercentHeight(GAME.Title.letterHeights[0]) + (1.5 * GAME.Title.letterR.width) ;
 		xRect = pixelFromPercentWidth(2);
 		xPlacement = pixelFromPercentWidth(GAME.Title.vertWidthPercent);
 		lineStart = xRect + (2.0*tileWidth/10.0);
@@ -102,11 +107,13 @@ GAME.Title.draw = function() {
 		GAME.Title.letterI.rotation = 0;
 		GAME.Title.letterD.rotation = 0;
 		GAME.Title.letterE.rotation = 0;
+		GAME.Title.letterR.rotation = 0;
 		GAME.Title.letterS.y = pixelFromPercentHeight(GAME.Title.letterHeights[0]);
-		GAME.Title.letterL.y = pixelFromPercentHeight(GAME.Title.letterHeights[1]) - GAME.Title.letterD.height/4.0;
+		GAME.Title.letterL.y = pixelFromPercentHeight(GAME.Title.letterHeights[1]) + GAME.Title.letterL.height/12.0;
 		GAME.Title.letterI.y = pixelFromPercentHeight(GAME.Title.letterHeights[2]) - GAME.Title.letterD.height/2.0;
 		GAME.Title.letterD.y = pixelFromPercentHeight(GAME.Title.letterHeights[3]) - (4.0 * GAME.Title.letterD.height/5.0);
 		GAME.Title.letterE.y = pixelFromPercentHeight(GAME.Title.letterHeights[4]) - GAME.Title.letterE.height ;
+		GAME.Title.letterR.y = pixelFromPercentHeight(GAME.Title.letterHeights[5]) - (1.2 * GAME.Title.letterR.height);
 		lineStart = xRect + (2.0*tileWidth/10.0);
 		lineEnd = xRect + (8.0*tileWidth/10.0);
 		var startHeight = 12;
@@ -127,6 +134,7 @@ GAME.Title.draw = function() {
 	GAME.Title.letterI.x = xPlacement;
 	GAME.Title.letterD.x = xPlacement;
 	GAME.Title.letterE.x = xPlacement;
+	GAME.Title.letterR.x = xPlacement;
 	if(!isVertical) GAME.Title.letterI.x = GAME.Title.letterI.x  + GAME.Title.letterI.width/3.0;
 	if(!isMobile) {
 		GAME.Title.tiltFontStyle = {

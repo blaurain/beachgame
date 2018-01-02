@@ -341,7 +341,7 @@ function resize() {
 	if(window.orientation === undefined) { //desktop only
 		resizeDesktop();
 	} else {  //mobile/small
-		if(!resizeMobile()) return; //returns false on bail
+	//	if(!resizeMobile()) return; //returns false on bail
 	}
  	isTilting = false;
  	renderer.render(stage);
@@ -401,7 +401,7 @@ function resizeMobile() {
 	w = window.innerWidth;
 	h = window.innerHeight;
 	renderer.resize(w, h);
-
+//BILLY bug is with 10.3 ios where it doesn't have consistant values for window.orientation and grid.gravDirection is pulled from that value too
 	if(window.innerWidth < window.innerHeight) { //vert //should this be by gravity?
 		if(window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down && window.orientation === 0) {
 			isTilting = true;
@@ -437,18 +437,17 @@ function resizeMobile() {
 	}
 	return true;
 }
-
 function orientationchange(event) {  //Mobile only
 	if(window.orientation === undefined) return;
 	var oldDirection = GAME.Grid.gravDirection;
 	setGravity();
 	GAME.Grid.stopFalling();
-	if((oldDirection === GAME.Grid.Direction.Left && GAME.Grid.gravDirection === GAME.Grid.Direction.Right) ||
-		(oldDirection === GAME.Grid.Direction.Right && GAME.Grid.gravDirection === GAME.Grid.Direction.Left)) {	
-		resize();
-	}
+	//if((oldDirection === GAME.Grid.Direction.Left && GAME.Grid.gravDirection === GAME.Grid.Direction.Right) ||
+	//	(oldDirection === GAME.Grid.Direction.Right && GAME.Grid.gravDirection === GAME.Grid.Direction.Left)) {	
+		resize(); 
+	//} //TODO: this is temp comment out to try resizing on event orientation change instead of resize
 	GAME.Grid.checkGrav();
-} 
+}
 function setGravity() {
 	switch(window.orientation) {
 		case 0:
