@@ -60,7 +60,11 @@ GAME.Ender.show = function () {
 	if(!isMobile) {
 		document.body.style.backgroundColor = '#312e0d';
 	}
-	resize();
+	// resize();
+	
+		GAME.Grid.beginDraw();
+		redraw(stage);
+		GAME.Grid.endDraw();
 }
 
 GAME.Ender.hide = function () {
