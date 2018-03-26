@@ -55,24 +55,27 @@ GAME.Tile.percentFromCol = function(col) {
 
 GAME.Tile.getRandomTileColor = function() {
 switch(Math.floor(Math.random() * 8)) {
-    case 0: //powder
-        return 0xB0E0E6;
-    case 1: //skyblue
-        return 0x87CEEB;
-    case 2: //royal
-        return 0x4169E1; 
-    case 3: //cadet
-        return 0x5F9EA0;
-    case 4: //cornflower
-        return 0x6495ED;
-    case 5: //dodger
-        return 0x1E90FF;
-    case 6: ///lavender
-        return 0xE6E6FA;
-    case 7: //lightsky
-        return 0x87CEFA;
-    default: //lightsky
-        return 0xE87CEFA;
+    // case 0: //powder
+    //     return 0xB0E0E6;
+    // case 1: //skyblue
+    //     return 0x87CEEB;
+    // case 2: //royal
+    //     return 0x4169E1; 
+    // case 3: //cadet
+    //     return 0x5F9EA0;
+    // case 4: //cornflower
+    //     return 0x6495ED;
+    // case 5: //dodger
+    //     return 0x1E90FF;
+    // case 6: ///lavender
+    //     return 0xE6E6FA;
+    // case 7: //lightsky
+    //     return 0x87CEFA;
+    // default: //lightsky
+    //     return 0xE87CEFA;
+
+    default:
+    	return 0xf2e452;
 	}
 }
 

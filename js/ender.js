@@ -58,13 +58,12 @@ GAME.Ender.show = function () {
 	GAME.Ender.nextButton.show();
 	GAME.Ender.showEnder();
 	if(!isMobile) {
-		document.body.style.backgroundColor = '#312e0d';
+		document.body.style.backgroundColor = backgroundColFade;
+		resize();
 	}
-	// resize();
-	
-		GAME.Grid.beginDraw();
-		redraw(stage);
-		GAME.Grid.endDraw();
+	else {
+		resizeMobile();
+	}
 }
 
 GAME.Ender.hide = function () {
@@ -75,7 +74,7 @@ GAME.Ender.hide = function () {
 	GAME.Ender.nextButton.hide();
 	GAME.Ender.hideEnder();
 	if(!isMobile) {
-		document.body.style.backgroundColor = '#F3E642';
+		document.body.style.backgroundColor = backgroundCol;
 	}
 	renderer.render(stage);
 }

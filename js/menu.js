@@ -71,9 +71,11 @@ GAME.Menu.show = function () {
 	GAME.Menu.backMapButton.show();
 	GAME.Menu.showInstructions();
 	if(!isMobile) {
-		document.body.style.backgroundColor = '#312e0d';
+		document.body.style.backgroundColor = backgroundColFade;
+		resize();		
+	} else {
+		resizeMobile();
 	}
-	resize();
 }
 
 GAME.Menu.hide = function () {
@@ -86,7 +88,7 @@ GAME.Menu.hide = function () {
 	GAME.Menu.backMapButton.hide();
 	GAME.Menu.hideInstructions();
 	if(!isMobile) {
-		document.body.style.backgroundColor = '#F3E642';
+		document.body.style.backgroundColor = backgroundCol;
 	}
 	renderer.render(stage);
 }

@@ -4,13 +4,15 @@ var stage = new PIXI.Container();
 
 // create a renderer instance
 // var mainCanvas = document.getElementById('mainCanvas');
+var backgroundCol = 0x428bca;
+var backgroundColFade = 0x3a6f9c;
 var rendererOptions = {
   antialiasing: false,
   transparent: false,
   resolution: 1,
   autoResize: true,
   clearBeforeRender: true,
-  backgroundColor: 0xF3E642
+  backgroundColor: backgroundCol
 }
 var match = {
 	start: null,
@@ -72,7 +74,10 @@ function resetGame() {
 	GAME.Grid.createTiles();
 	GAME.Grid.clearGrid();
 	GAME.Grid.createGrid();
-	resize();
+	if(isMobile) resizeMobile();
+	else resizeDesktop();
+	//else resize();
+
 }
 
 function update() {
@@ -234,11 +239,11 @@ function inputMove(event) {
 					return;
 				}
 			}
-			if(isVertical) {
+			// if(isVertical) {
 
-			} else {
+			// } else {
 
-			}
+			// }
 		}
 	}
 	// console.log("INPUT MOVE: pageX--" + event.data.originalEvent.pageX + " pageY--" + event.data.originalEvent.pageY );
@@ -344,8 +349,8 @@ function resize() {
 	} else {  //mobile/small
 		if(!firstDraw) {
 			if(!resizeMobile()) return;
-		} else if(window.innerWidth < window.innerHeight && window.orientation !== undefined && GAME.Grid.gravDirection !== GAME.Grid.Direction.Down) {
-			return;
+		} else {
+			resizeMobile();
 		}
 	//	if(!resizeMobile()) return; //returns false on bail
 	}
@@ -423,7 +428,8 @@ function resizeMobile() {
 		redraw(stage);
 		GAME.Grid.endDraw();
 		rotateVertical();
-		if(firstDraw) renderer.render(stage);
+		// if(firstDraw) renderer.render(stage);
+		renderer.render(stage);
 	} else {
 		//horizontal
 		if(window.orientation !== undefined && (
